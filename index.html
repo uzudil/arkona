@@ -31,7 +31,7 @@
 
         #palette {
             float: left;
-            width: 120px;
+            width: 300px;
             background: #888;
             padding: 10px;
             border: 1px solid #444;
@@ -39,6 +39,7 @@
         }
 
         #palette .block {
+            float: left;
             background-image: url('/assets/images/arkona.svg');
             border: #888 3px solid;
             cursor: pointer;
@@ -51,15 +52,14 @@
 </head>
 
 <body>
-
+    <div id="menu">
+        <a href="#" id="new-map">New</a><br>
+        <a href="#" id="save-map" download="map.json">Save</a><br>
+        <a href="#" id="load-map">Load</a><br>
+    </div>
     <div class="clearfix">
         <div id="content"></div>
-        <div id="menu">
-            <a href="#" id="new-map">New</a>
-            <a href="#" id="save-map">Save</a>
-            <a href="#" id="load-map">Load</a>
-        </div>
-        <div id="palette"></div>
+        <div id="palette" class="clearfix"></div>
     </div>
 
     <script src="dist/vendor.bundle.js"></script>

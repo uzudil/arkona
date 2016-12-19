@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import * as Config from '../config/Config'
+import $ from 'jquery'
 
 class BlockInfo {
 	constructor() {
@@ -23,6 +24,11 @@ class BlockInfo {
 	}
 }
 
+/**
+ * A map section made of blocks.
+ *
+ * Some ideas came from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
+ */
 export default class {
 
 	constructor(game) {
@@ -31,15 +37,15 @@ export default class {
 		this.floor = game.add.group()
 
 		this.game.world.bringToTop(this.group)
-
-		this.infos = {}
 	}
 
-	newMap(w, h) {
+	newMap(name, w, h) {
+		this.name = name
 		this.w = w
 		this.h = h
 
 		this.infos = {}
+		this.world = {}
 		while(this.group.children.length > 0) this.group.children[0].destroy()
 		while(this.floor.children.length > 0) this.floor.children[0].destroy()
 
@@ -60,6 +66,9 @@ export default class {
 		this.floor.add(sprite)
 		sprite.anchor.setTo(0.5, 1)
 
+		// save coord data
+		this._saveCoordData(name, x, y, 0)
+
 		return sprite
 	}
 
@@ -70,11 +79,7 @@ export default class {
 		let sprite = this.game.add.sprite(screenX, screenY, 'sprites', name)
 		this.group.add(sprite)
 
-		// set some calculated values
-		sprite.name = name
-		sprite.gamePos = [x, y, z]
-		// from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
-		sprite.isoDepth = x + y + 0.001 * z
+		this._saveInSprite(sprite, name, x, y, z)
 
 		let size = Config.BLOCKS[name].size
 		let baseHeight = size[1] * Config.GRID_SIZE
@@ -87,6 +92,13 @@ export default class {
 		return sprite
 	}
 
+	_saveInSprite(sprite, name, x, y, z) {
+		// set some calculated values
+		if(name) sprite.name = name
+		sprite.gamePos = [x, y, z]
+		sprite.isoDepth = x + y + 0.001 * z
+	}
+
 	removeSprite(sprite) {
 		this.clearInfo(sprite.name, sprite.gamePos[0], sprite.gamePos[1], sprite.gamePos[2])
 	}
@@ -95,9 +107,9 @@ export default class {
 		// move to new position
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x, y, z)
-		sprite.gamePos = [x, y, z]
-		// from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
-		sprite.isoDepth = x + y + 0.001 * z
+
+		this._saveInSprite(sprite, null, x, y, z)
+
 		sprite.x = screenX
 		sprite.y = screenY
 
@@ -107,6 +119,7 @@ export default class {
 	}
 
 	clearInfo(name, x, y, z) {
+		// delete block data
 		this._visit3(name, x, y, z, (xx, yy, zz) => {
 			let key = this._key(xx, yy, zz)
 			let info = this.infos[key]
@@ -114,9 +127,18 @@ export default class {
 				delete this.infos[key]
 			}
 		})
+
+		// delete coord. data
+		let key = this._key(x, y, 0)
+		let info = this.world[key]
+		if(info) {
+			let n = info.indexOf(name)
+			if(n >= 0) info.splice(n, 1)
+		}
 	}
 
 	updateInfo(name, x, y, z, sprite) {
+		// save block data
 		this._visit3(name, x, y, z, (xx, yy, zz) => {
 			let key = this._key(xx, yy, zz)
 			let info = this.infos[key]
@@ -126,6 +148,19 @@ export default class {
 			}
 			info.set(x, y, z, sprite, name, [])
 		})
+
+		// save in coordinate map
+		this._saveCoordData(name, x, y, z)
+	}
+
+	_saveCoordData(name, x, y, z) {
+		let key = this._key(x, y, z)
+		let info = this.world[key]
+		if(!info) {
+			info = []
+			this.world[key] = info
+		}
+		info.push(name)
 	}
 
 	debugSprite(sprite) {
@@ -149,7 +184,7 @@ export default class {
 	 */
 	getTopAt(worldX, worldY, sprite) {
 		let maxZ = 0
-		if(sprite) {
+		if(sprite && !this.isFlat(sprite)) {
 			this._visit(sprite.name, worldX, worldY, (xx, yy) => {
 				for (let z = 15; z >= 0; z--) {
 					let info = this.infos[this._key(xx, yy, z)]
@@ -161,6 +196,14 @@ export default class {
 			})
 		}
 		return maxZ
+	}
+
+	isFlat(sprite) {
+		return sprite && this.isFlatByName(sprite.name)
+	}
+
+	isFlatByName(name) {
+		return Config.BLOCKS[name].size[2] == 0
 	}
 
 	_visit(name, worldX, worldY, fx) {
@@ -213,7 +256,7 @@ export default class {
 	}
 
 	toScreenCoordsFloor(worldX, worldY) {
-		return this.toScreenCoords(worldX + 2, worldY + 2, 0)
+		return this.toScreenCoords(worldX, worldY, 0)
 	}
 
 	move(dx, dy) {
@@ -221,5 +264,35 @@ export default class {
 		this.floor.y += dy
 		this.group.x += dx
 		this.group.y += dy
+	}
+
+	save() {
+		return JSON.stringify({
+			version: Config.MAP_VERSION,
+			name: this.name,
+			width: this.w,
+			height: this.h,
+			world: this.world
+		})
+	}
+
+	load() {
+		$.ajax({
+			url: "/assets/maps/" + this.name + ".json",
+			dataType: "json",
+			success: (data) => {
+				this.newMap(this.name, data.width, data.height)
+				for(let key in data.world) {
+					let [x, y, z] = key.split(".").map(s => parseInt(s, 10))
+					for(let name of data.world[key]) {
+						if(this.isFlatByName(name)) {
+							this.addFloor(name, x, y)
+						} else {
+							this.addSprite(name, x, y, z)
+						}
+					}
+				}
+			}
+		})
 	}
 }

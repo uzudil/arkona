@@ -4,36 +4,44 @@ import Block from '../world/Block'
 import {getRandom} from '../utils'
 import * as Config from '../config/Config'
 import Palette from '../editor/Palette'
+import $ from 'jquery'
 
 export default class extends Phaser.State {
   init () {}
   preload () {
     document.getElementById("new-map").onclick = () => {
+      this.blocks.name = prompt("Map name:", this.blocks.name)
       let [w, h] = prompt("New map size:", "40x40").split("x").map(s => parseInt(s, 10))
       // ensure they're multiples of Config.GRID_SIZE
       w = w % Config.GRID_SIZE == 0 ? w : (((w / Config.GRID_SIZE)|0) + 1) * Config.GRID_SIZE
       h = h % Config.GRID_SIZE == 0 ? h : (((h / Config.GRID_SIZE)|0) + 1) * Config.GRID_SIZE
-      this.startNewMap(w, h)
+      this.startNewMap(this.blocks.name, w, h)
+    }
+    document.getElementById("save-map").onclick = () => {
+      this.blocks.name = prompt("Map name:", this.blocks.name)
+      let save = $("#save-map")
+      save.attr("download", this.blocks.name + ".json")
+      save.attr("href", "data:text/json;charset=utf-8," + encodeURIComponent(this.blocks.save()))
+    }
+    document.getElementById("load-map").onclick = () => {
+      this.blocks.name = prompt("Map name:", this.blocks.name)
+      this.blocks.load()
     }
   }
 
   create () {
     this.blocks = new Block(this)
+    this.blocks.newMap("demo", 40, 40)
 
     for(let x = 0; x < 40; x += 4) {
       for(let y = 0; y < 40; y += 4) {
-        this.blocks.addFloor('grass', x, y)
-
-        if(!(x >= 5 && x < 12) && !(y >= 5 && y < 12)) {
-          if (Math.random() > 0.2) this.blocks.addTree(getRandom(["oak", "brown", "pine"]), x, y, 0)
-        }
+        if (Math.random() > 0.2) this.blocks.addTree(getRandom(["oak", "brown", "pine"]), x, y, 0)
       }
     }
 
     this.blocks.sort()
 
     this.activeBlock = null
-    this.activeBlockName = null
     this.palette = new Palette(this)
 
     var style = { font: "bold 14px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "top" };
@@ -65,7 +73,7 @@ export default class extends Phaser.State {
     this.addNew = false
   }
 
-  update () {
+  moveCamera() {
     if (this.cursors.up.isDown) {
       this.blocks.move(0, Config.GRID_SIZE)
     } else if (this.cursors.down.isDown) {
@@ -77,6 +85,10 @@ export default class extends Phaser.State {
     } else if (this.cursors.right.isDown) {
       this.blocks.move(-Config.GRID_SIZE, 0)
     }
+  }
+
+  update () {
+    this.moveCamera()
 
     // find new top z
     let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
@@ -92,7 +104,12 @@ export default class extends Phaser.State {
 
       // handle click
       if(this.game.input.activePointer.isDown && this.addNew) {
-        let newSprite = this.blocks.addSprite(this.activeBlock.name, x, y, z)
+        let newSprite
+        if(this.blocks.isFlat(this.activeBlock)) {
+          newSprite = this.blocks.addFloor(this.activeBlock.name, x, y)
+        } else {
+          newSprite = this.blocks.addSprite(this.activeBlock.name, x, y, z)
+        }
         //this.blocks.debugSprite(newSprite)
 
         z = this.blocks.getTopAt(x, y, this.activeBlock)

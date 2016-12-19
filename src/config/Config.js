@@ -4,13 +4,17 @@ export const BLOCKS = {
 	"oak": { size: [4, 4, 4], pos: [64, 64], dim: [64, 64] },
 	"pine": { size: [4, 4, 4], pos: [128, 64], dim: [64, 64] },
 	"grass": { size: [4, 4, 0], pos: [96, 0], dim: [64, 64] },
+	"mud": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32] },
 	"wood.column": { size: [1, 1, 6], pos: [176, 0], dim: [16, 64] },
 	"stone.wall.x": { size: [4, 1, 6], pos: [216, 0], dim: [40, 96] },
-	"stone.wall.y": { size: [1, 4, 6], pos: [280, 0], dim: [40, 96] }
+	"stone.wall.y": { size: [1, 4, 6], pos: [280, 0], dim: [40, 96] },
+	"wood.door.y": { size: [1, 2, 6], pos: [336, 0], dim: [24, 68] },
+	"wood.door.x": { size: [2, 1, 6], pos: [368, 0], dim: [24, 68] },
 }
 
 export const GRID_SIZE = 8
 export const DEBUG_COORDS = false
+export const MAP_VERSION = 1
 
 export function toCss(name) {
 	return "" +
