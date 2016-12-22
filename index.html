@@ -26,11 +26,16 @@
         }
 
         #menu {
+            background: white;
+            border: 1px solid #ccc;
+            padding: 2px;
+        }
+
+        #right-menu {
             float: left;
         }
 
         #palette {
-            float: left;
             width: 300px;
             background: #888;
             padding: 10px;
@@ -52,14 +57,16 @@
 </head>
 
 <body>
-    <div id="menu">
-        <a href="#" id="new-map">New</a><br>
-        <a href="#" id="save-map" download="map.json">Save</a><br>
-        <a href="#" id="load-map">Load</a><br>
-    </div>
     <div class="clearfix">
         <div id="content"></div>
-        <div id="palette" class="clearfix"></div>
+        <div id="right-menu">
+            <div id="menu">
+                <a href="#" id="new-map">New</a>
+                <a href="#" id="save-map" download="map.json">Save</a>
+                <a href="#" id="load-map">Load</a>
+            </div>
+            <div id="palette" class="clearfix"></div>
+        </div>
     </div>
 
     <script src="dist/vendor.bundle.js"></script>

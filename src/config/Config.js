@@ -1,15 +1,30 @@
+// don't chane the names
 export const BLOCKS = {
 	"trunk": { size: [2, 2, 4], pos: [0, 0], dim: [32, 48] },
 	"brown": { size: [4, 4, 3], pos: [32, 0], dim: [64, 48] },
 	"oak": { size: [4, 4, 4], pos: [64, 64], dim: [64, 64] },
 	"pine": { size: [4, 4, 4], pos: [128, 64], dim: [64, 64] },
+
 	"grass": { size: [4, 4, 0], pos: [96, 0], dim: [64, 64] },
-	"mud": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32] },
+	"mud.puddle": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32] },
+	"mud": { size: [4, 4, 0], pos: [96, 128], dim: [64, 64] },
+
+	"grass.edge1.w": { size: [2, 2, 0], pos: [176, 128], dim: [32, 32] },
+	"grass.edge1.n": { size: [2, 2, 0], pos: [208, 128], dim: [32, 32] },
+	"grass.edge1.e": { size: [2, 2, 0], pos: [208, 160], dim: [32, 32] },
+	"grass.edge1.s": { size: [2, 2, 0], pos: [176, 160], dim: [32, 32] },
+	"grass.edge2.w": { size: [2, 2, 0], pos: [256, 128], dim: [32, 32] },
+	"grass.edge2.n": { size: [2, 2, 0], pos: [288, 128], dim: [32, 32] },
+	"grass.edge2.e": { size: [2, 2, 0], pos: [288, 160], dim: [32, 32] },
+	"grass.edge2.s": { size: [2, 2, 0], pos: [256, 160], dim: [32, 32] },
+
 	"wood.column": { size: [1, 1, 6], pos: [176, 0], dim: [16, 64] },
 	"stone.wall.x": { size: [4, 1, 6], pos: [216, 0], dim: [40, 96] },
 	"stone.wall.y": { size: [1, 4, 6], pos: [280, 0], dim: [40, 96] },
 	"wood.door.y": { size: [1, 2, 6], pos: [336, 0], dim: [24, 68] },
 	"wood.door.x": { size: [2, 1, 6], pos: [368, 0], dim: [24, 68] },
+
+	"person": { size: [2, 1, 6], pos: [400, 0], dim: [24, 68] },
 }
 
 export const GRID_SIZE = 8

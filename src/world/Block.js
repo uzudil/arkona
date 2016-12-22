@@ -2,25 +2,19 @@ import Phaser from 'phaser'
 import * as Config from '../config/Config'
 import $ from 'jquery'
 
-class BlockInfo {
-	constructor() {
-		this.clear()
+class ImageInfo {
+	constructor(name, image) {
+		this.name = name
+		this.image = image
 	}
+}
 
-	set(x, y, z, sprite, name, objects) {
+class BlockInfo {
+	constructor(x, y, z, imageInfo) {
 		this.x = x
 		this.y = y
 		this.z = z
-		this.sprite = sprite
-		this.name = name
-		this.objects = objects
-	}
-
-	clear() {
-		this.x = this.y = this.z = 0
-		this.sprite = null
-		this.name = null
-		this.objects = []
+		this.imageInfos = [ imageInfo ]
 	}
 }
 
@@ -34,8 +28,10 @@ export default class {
 	constructor(game) {
 		this.game = game
 		this.group = game.add.group()
+		this.edges = game.add.group()
 		this.floor = game.add.group()
 
+		this.game.world.bringToTop(this.edges)
 		this.game.world.bringToTop(this.group)
 	}
 
@@ -47,41 +43,43 @@ export default class {
 		this.infos = {}
 		this.world = {}
 		while(this.group.children.length > 0) this.group.children[0].destroy()
+		while(this.edges.children.length > 0) this.edges.children[0].destroy()
 		while(this.floor.children.length > 0) this.floor.children[0].destroy()
 
 		for(let x = 0; x < w; x += 4) {
 			for(let y = 0; y < h; y += 4) {
-				this.addFloor('grass', x, y)
+				this.set('grass', x, y, 0)
 			}
 		}
 	}
 
-	addFloor(name, x, y) {
-		let screenX, screenY
-		[ screenX, screenY ] = this.toScreenCoordsFloor(x, y)
-
-		let sprite = this.game.add.sprite(screenX, screenY, 'sprites', name)
-		sprite.gamePos = [x, y, 0]
-
-		this.floor.add(sprite)
-		sprite.anchor.setTo(0.5, 1)
-
-		// save coord data
-		this._saveCoordData(name, x, y, 0)
-
-		return sprite
+	isInBounds(x, y) {
+		return x >= 0 && x < this.w && y >= 0 && y < this.h
 	}
 
-	addSprite(name, x, y, z, skipInfo) {
+	isGrass(x, y) {
+		let key = this._key(x, y, 0)
+		let info = this.world[key]
+		console.log("key=" + key, info)
+		return info && info.imageInfos.find(i => i.name == "grass")
+	}
+
+	set(name, x, y, z, skipInfo) {
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x, y, z)
 
-		let sprite = this.game.add.sprite(screenX, screenY, 'sprites', name)
-		this.group.add(sprite)
+		let sprite = this.game.add.image(screenX, screenY, 'sprites', name)
+		let size = Config.BLOCKS[name].size
+		if(size[2] > 0) {
+			this.group.add(sprite)
+		} else if(name.indexOf(".edge") > 0) {
+			this.edges.add(sprite)
+		} else {
+			this.floor.add(sprite)
+		}
 
 		this._saveInSprite(sprite, name, x, y, z)
 
-		let size = Config.BLOCKS[name].size
 		let baseHeight = size[1] * Config.GRID_SIZE
 		sprite.anchor.setTo(1 - baseHeight / sprite._frame.width, 1)
 
@@ -92,18 +90,7 @@ export default class {
 		return sprite
 	}
 
-	_saveInSprite(sprite, name, x, y, z) {
-		// set some calculated values
-		if(name) sprite.name = name
-		sprite.gamePos = [x, y, z]
-		sprite.isoDepth = x + y + 0.001 * z
-	}
-
-	removeSprite(sprite) {
-		this.clearInfo(sprite.name, sprite.gamePos[0], sprite.gamePos[1], sprite.gamePos[2])
-	}
-
-	setSprite(sprite, x, y, z, skipInfo) {
+	moveTo(sprite, x, y, z, skipInfo) {
 		// move to new position
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x, y, z)
@@ -114,61 +101,71 @@ export default class {
 		sprite.y = screenY
 
 		if(!skipInfo) {
+			// todo: remove data from previous place
+
 			this.updateInfo(sprite.name, x, y, z, sprite)
 		}
 	}
 
-	clearInfo(name, x, y, z) {
-		// delete block data
-		this._visit3(name, x, y, z, (xx, yy, zz) => {
-			let key = this._key(xx, yy, zz)
-			let info = this.infos[key]
-			if(info) {
-				delete this.infos[key]
-			}
-		})
+	_saveInSprite(sprite, name, x, y, z) {
+		// set some calculated values
+		if(name) sprite.name = name
+		sprite.gamePos = [x, y, z]
+		sprite.isoDepth = x + y + 0.001 * z
+	}
 
-		// delete coord. data
-		let key = this._key(x, y, 0)
-		let info = this.world[key]
-		if(info) {
-			let n = info.indexOf(name)
-			if(n >= 0) info.splice(n, 1)
+	clear(name, x, y, z) {
+		let block = Config.BLOCKS[name]
+		if(block.size[2] == 0) {
+			let key = this._key(x, y, z)
+			let info = this.world[key]
+			if (info) {
+				for (let imageInfo of info.imageInfos) imageInfo.image.destroy()
+				delete this.world[key]
+			}
+		} else {
+			this._visit3(name, x, y, z, (xx, yy, zz) => {
+				let key = this._key(xx, yy, zz)
+				let info = this.infos[key]
+				if (info) {
+					for (let imageInfo of info.imageInfos) imageInfo.image.destroy()
+					delete this.infos[key]
+				}
+
+				if (x == xx && y == yy && z == zz) {
+					delete this.world[key]
+				}
+			})
 		}
 	}
 
-	updateInfo(name, x, y, z, sprite) {
-		// save block data
-		this._visit3(name, x, y, z, (xx, yy, zz) => {
-			let key = this._key(xx, yy, zz)
-			let info = this.infos[key]
-			if(info == null) {
-				info = new BlockInfo()
-				this.infos[key] = info
+	updateInfo(name, x, y, z, image) {
+		let block = Config.BLOCKS[name]
+		if(block.size[2] == 0) {
+			let key = this._key(x, y, z)
+			let info = this.world[key]
+			if (info == null) {
+				info = new BlockInfo(x, y, z, new ImageInfo(name, image))
+				this.world[key] = info
+			} else {
+				info.imageInfos.push(new ImageInfo(name, image))
 			}
-			info.set(x, y, z, sprite, name, [])
-		})
+		} else {
+			this._visit3(name, x, y, z, (xx, yy, zz) => {
+				let key = this._key(xx, yy, zz)
+				let info = this.infos[key]
+				if (info == null) {
+					info = new BlockInfo(x, y, z, new ImageInfo(name, image))
+					this.infos[key] = info
+				} else {
+					info.imageInfos.push(new ImageInfo(name, image))
+				}
 
-		// save in coordinate map
-		this._saveCoordData(name, x, y, z)
-	}
-
-	_saveCoordData(name, x, y, z) {
-		let key = this._key(x, y, z)
-		let info = this.world[key]
-		if(!info) {
-			info = []
-			this.world[key] = info
+				if (x == xx && y == yy && z == zz) {
+					this.world[key] = info
+				}
+			})
 		}
-		info.push(name)
-	}
-
-	debugSprite(sprite) {
-		this._visit3(sprite.name, sprite.gamePos[0], sprite.gamePos[1], sprite.gamePos[2], (xx, yy, zz) => {
-			let key = this._key(xx, yy, zz)
-			let info = this.infos[key]
-			console.log(key + ": ", info)
-		})
 	}
 
 	_key(x, y, z) {
@@ -218,8 +215,12 @@ export default class {
 	_visit3(name, worldX, worldY, worldZ, fx) {
 		let block = Config.BLOCKS[name]
 		this._visit(name, worldX, worldY, (xx, yy) => {
-			for (let zz = worldZ; zz < worldZ + block.size[2]; zz++) {
-				fx(xx, yy, zz)
+			if(block.size[2] == 0) {
+				fx(xx, yy, 0)
+			} else {
+				for (let zz = worldZ; zz < worldZ + block.size[2]; zz++) {
+					fx(xx, yy, zz)
+				}
 			}
 		})
 	}
@@ -262,6 +263,8 @@ export default class {
 	move(dx, dy) {
 		this.floor.x += dx
 		this.floor.y += dy
+		this.edges.x += dx
+		this.edges.y += dy
 		this.group.x += dx
 		this.group.y += dy
 	}
@@ -272,7 +275,15 @@ export default class {
 			name: this.name,
 			width: this.w,
 			height: this.h,
-			world: this.world
+			world: Object.keys(this.world).map(key => {
+				let info = this.world[key]
+				return {
+					x: info.x,
+					y: info.y,
+					z: info.z,
+					images: info.imageInfos.map(ii => ii.name)
+				}
+			})
 		})
 	}
 
@@ -282,14 +293,9 @@ export default class {
 			dataType: "json",
 			success: (data) => {
 				this.newMap(this.name, data.width, data.height)
-				for(let key in data.world) {
-					let [x, y, z] = key.split(".").map(s => parseInt(s, 10))
-					for(let name of data.world[key]) {
-						if(this.isFlatByName(name)) {
-							this.addFloor(name, x, y)
-						} else {
-							this.addSprite(name, x, y, z)
-						}
+				for(let info of data.world) {
+					for(let image of info.images) {
+						this.set(image, info.x, info.y, info.z)
 					}
 				}
 			}

@@ -33,14 +33,6 @@ export default class extends Phaser.State {
     this.blocks = new Block(this)
     this.blocks.newMap("demo", 40, 40)
 
-    for(let x = 0; x < 40; x += 4) {
-      for(let y = 0; y < 40; y += 4) {
-        if (Math.random() > 0.2) this.blocks.addTree(getRandom(["oak", "brown", "pine"]), x, y, 0)
-      }
-    }
-
-    this.blocks.sort()
-
     this.activeBlock = null
     this.palette = new Palette(this)
 
@@ -60,6 +52,8 @@ export default class extends Phaser.State {
     }
 
     this.cursors = this.game.input.keyboard.createCursorKeys()
+    this.ground1 = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE)
+    this.ground2 = this.game.input.keyboard.addKey(Phaser.Keyboard.TWO)
   }
 
   render () {
@@ -69,7 +63,7 @@ export default class extends Phaser.State {
     if(this.activeBlock) this.activeBlock.destroy()
 
     let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
-    this.activeBlock = this.blocks.addSprite(name, x, y, z, true)
+    this.activeBlock = this.blocks.set(name, x, y, z, true)
     this.addNew = false
   }
 
@@ -87,12 +81,61 @@ export default class extends Phaser.State {
     }
   }
 
+  drawGround(x, y) {
+    let gw = Config.BLOCKS['grass'].size[0]
+    let gh = Config.BLOCKS['grass'].size[1]
+    let gx = ((x / gw)|0) * gw
+    let gy = ((y / gh)|0) * gh
+
+    let ground = null
+    if (this.ground1.isDown) {
+      ground = "grass"
+    } else if(this.ground2.isDown) {
+      ground = "mud"
+    }
+
+    if(ground) {
+      this.blocks.clear("grass", gx, gy, 0)
+      this.blocks.set(ground, gx, gy, 0)
+      for(let xx = -1; xx <= 1; xx++) {
+        for(let yy = -1; yy <= 1; yy++) {
+          this.drawGroundEdges(gx + xx * gw, gy + yy * gh)
+        }
+      }
+    }
+  }
+
+  drawGroundEdges(gx, gy) {
+    if(!this.blocks.isGrass(gx, gy)) {
+      let gw = Config.BLOCKS['grass'].size[0]
+      let gh = Config.BLOCKS['grass'].size[1]
+      let n = this.blocks.isGrass(gx, gy - gh)
+      let s = this.blocks.isGrass(gx, gy + gh)
+      let w = this.blocks.isGrass(gx - gw, gy)
+      let e = this.blocks.isGrass(gx + gw, gy)
+      let index = 1 + ((Math.random() * 2)|0)
+
+      console.log("n=" + n + " s=" + s + " w=" + w + " e=" + e)
+
+      this.blocks.clear("grass.edge1.n", gx - 1, gy - 3, 0)
+      if (n) this.blocks.set("grass.edge" + index + ".n", gx - 1, gy - 3, 0)
+      this.blocks.clear("grass.edge1.n", gx - 1, gy + 1, 0)
+      if (s) this.blocks.set("grass.edge" + index + ".s", gx - 1, gy + 1, 0)
+      this.blocks.clear("grass.edge1.n", gx + 1, gy - 1, 0)
+      if (e) this.blocks.set("grass.edge" + index + ".e", gx + 1, gy - 1, 0)
+      this.blocks.clear("grass.edge1.n", gx - 3, gy - 1, 0)
+      if (w) this.blocks.set("grass.edge" + index + ".w", gx - 3, gy - 1, 0)
+    }
+  }
+
   update () {
     this.moveCamera()
 
     // find new top z
     let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
     z = this.blocks.getTopAt(x, y, this.activeBlock)
+
+    if(this.blocks.isInBounds(x, y)) this.drawGround(x, y)
 
     if(this.activeBlock) {
 
@@ -103,14 +146,13 @@ export default class extends Phaser.State {
       }
 
       // handle click
-      if(this.game.input.activePointer.isDown && this.addNew) {
+      if(this.game.input.activePointer.isDown && this.addNew && this.blocks.isInBounds(x, y)) {
         let newSprite
         if(this.blocks.isFlat(this.activeBlock)) {
-          newSprite = this.blocks.addFloor(this.activeBlock.name, x, y)
+          newSprite = this.blocks.set(this.activeBlock.name, x, y, 0)
         } else {
-          newSprite = this.blocks.addSprite(this.activeBlock.name, x, y, z)
+          newSprite = this.blocks.set(this.activeBlock.name, x, y, z)
         }
-        //this.blocks.debugSprite(newSprite)
 
         z = this.blocks.getTopAt(x, y, this.activeBlock)
         this.addNew = false // only add one
@@ -118,14 +160,14 @@ export default class extends Phaser.State {
       if(!this.game.input.activePointer.isDown) this.addNew = true
 
       // move active block to new position
-      this.blocks.setSprite(this.activeBlock, x, y, z, true)
+      this.blocks.moveTo(this.activeBlock, x, y, z, true)
 
       this.blocks.sort()
     }
     this.posLabel.text = "Pos: " + x + "," + y + "," + z
   }
 
-  startNewMap(w, h) {
-    this.blocks.newMap(w, h)
+  startNewMap(name, w, h) {
+    this.blocks.newMap(name, w, h)
   }
 }
