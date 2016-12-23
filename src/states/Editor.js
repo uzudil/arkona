@@ -1,6 +1,6 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
-import Block from '../world/Block'
+import Block, { isFlat } from '../world/Block'
 import {getRandom} from '../utils'
 import * as Config from '../config/Config'
 import Palette from '../editor/Palette'
@@ -54,6 +54,7 @@ export default class extends Phaser.State {
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.ground1 = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE)
     this.ground2 = this.game.input.keyboard.addKey(Phaser.Keyboard.TWO)
+    this.tree = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
   }
 
   render () {
@@ -128,6 +129,17 @@ export default class extends Phaser.State {
     }
   }
 
+  drawObject(x, y, z) {
+    if(this.tree.isDown && this.blocks.isFree(x, y, 0, 4, 4, 8)) {
+      this.blocks.clear("trunk", x, y, 0)
+      this.blocks.set("trunk", x, y, 0)
+      let name = getRandom(["oak", "pine", "brown"])
+      this.blocks.clear(name, x, y, 4)
+      this.blocks.set(name, x, y, 4)
+      this.blocks.sort()
+    }
+  }
+
   update () {
     this.moveCamera()
 
@@ -135,7 +147,10 @@ export default class extends Phaser.State {
     let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
     z = this.blocks.getTopAt(x, y, this.activeBlock)
 
-    if(this.blocks.isInBounds(x, y)) this.drawGround(x, y)
+    if(this.blocks.isInBounds(x, y)) {
+      this.drawGround(x, y)
+      this.drawObject(x, y, z)
+    }
 
     if(this.activeBlock) {
 
@@ -148,7 +163,7 @@ export default class extends Phaser.State {
       // handle click
       if(this.game.input.activePointer.isDown && this.addNew && this.blocks.isInBounds(x, y)) {
         let newSprite
-        if(this.blocks.isFlat(this.activeBlock)) {
+        if(isFlat(this.activeBlock)) {
           newSprite = this.blocks.set(this.activeBlock.name, x, y, 0)
         } else {
           newSprite = this.blocks.set(this.activeBlock.name, x, y, z)

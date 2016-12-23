@@ -2,6 +2,40 @@ import Phaser from 'phaser'
 import * as Config from '../config/Config'
 import $ from 'jquery'
 
+function _key(x, y, z) {
+	return x + "." + y + "." + z
+}
+
+function _visit(name, worldX, worldY, fx) {
+	let block = Config.BLOCKS[name]
+	for(let xx = worldX - block.size[0]; xx < worldX; xx++) {
+		for (let yy = worldY - block.size[1]; yy < worldY; yy++) {
+			fx(xx, yy)
+		}
+	}
+}
+
+function _visit3(name, worldX, worldY, worldZ, fx) {
+	let block = Config.BLOCKS[name]
+	_visit(name, worldX, worldY, (xx, yy) => {
+		if(block.size[2] == 0) {
+			fx(xx, yy, 0)
+		} else {
+			for (let zz = worldZ; zz < worldZ + block.size[2]; zz++) {
+				fx(xx, yy, zz)
+			}
+		}
+	})
+}
+
+export function isFlat(sprite) {
+	return sprite && isFlatByName(sprite.name)
+}
+
+function isFlatByName(name) {
+	return Config.BLOCKS[name].size[2] == 0
+}
+
 class ImageInfo {
 	constructor(name, image) {
 		this.name = name
@@ -18,6 +52,160 @@ class BlockInfo {
 	}
 }
 
+class Layer {
+	constructor(game, name, sorted) {
+		this.game = game
+		this.name = name
+		this.sorted = sorted
+		this.group = game.add.group()
+		this.infos = {} // 3d space
+		this.world = {} // origin space
+	}
+
+	reset() {
+		this.infos = {}
+		this.world = {}
+		while(this.group.children.length > 0) this.group.children[0].destroy()
+	}
+
+	hasImage(name, x, y) {
+		let key = _key(x, y, 0)
+		let info = this.world[key]
+		return info && info.imageInfos.find(i => i.name == name)
+	}
+
+	set(name, x, y, z, sprite, skipInfo) {
+		this.group.add(sprite)
+		if(!skipInfo) {
+			// todo: remove data from previous place
+			this.updateInfo(name, x, y, z, sprite)
+		}
+	}
+
+	clear(name, x, y, z) {
+		let key = _key(x, y, z)
+		let info = this.world[key]
+		if (info) {
+			for (let imageInfo of info.imageInfos) imageInfo.image.destroy()
+			delete this.world[key]
+		}
+
+		let block = Config.BLOCKS[name]
+		if(block.size[2] > 0) {
+			_visit3(name, x, y, z, (xx, yy, zz) => {
+				let key = _key(xx, yy, zz)
+				let info = this.infos[key]
+				if (info) {
+					for (let imageInfo of info.imageInfos) imageInfo.image.destroy()
+					delete this.infos[key]
+				}
+
+				if (x == xx && y == yy && z == zz) {
+					delete this.world[key]
+				}
+			})
+		}
+	}
+
+	updateInfo(name, x, y, z, image) {
+		let key = _key(x, y, z)
+		let info = this.world[key]
+		if (info == null) {
+			info = new BlockInfo(x, y, z, new ImageInfo(name, image))
+			this.world[key] = info
+		} else {
+			info.imageInfos.push(new ImageInfo(name, image))
+		}
+
+		let block = Config.BLOCKS[name]
+		if(block.size[2] > 0) {
+			_visit3(name, x, y, z, (xx, yy, zz) => {
+				let key = _key(xx, yy, zz)
+				let info = this.infos[key]
+				if (info == null) {
+					info = new BlockInfo(x, y, z, new ImageInfo(name, image))
+					this.infos[key] = info
+				} else {
+					info.imageInfos.push(new ImageInfo(name, image))
+				}
+			})
+		}
+	}
+
+	/**
+	 * The lowest empty z coordinate at this location.
+	 *
+	 * @param worldX
+	 * @param worldY
+	 * @param sprite
+	 */
+	getTopAt(worldX, worldY, sprite) {
+		let maxZ = 0
+		if(sprite && !isFlat(sprite)) {
+			_visit(sprite.name, worldX, worldY, (xx, yy) => {
+				for (let z = 15; z >= 0; z--) {
+					let info = this.infos[_key(xx, yy, z)]
+					if (info) {
+						if (z + 1 > maxZ) maxZ = z + 1
+						break
+					}
+				}
+			})
+		}
+		return maxZ
+	}
+
+	isFree(worldX, worldY, worldZ, w, h, d) {
+		for(let xx = worldX - w; xx < worldX; xx++) {
+			for (let yy = worldY - h; yy < worldY; yy++) {
+				for (let zz = worldZ; zz < worldZ + d; zz++) {
+					let info = this.infos[_key(xx, yy, zz)]
+					if (info) return false
+				}
+			}
+		}
+		return true
+	}
+
+	sort() {
+		if(this.sorted) {
+			// from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
+			this.group.customSort((a, b) => {
+				return a.isoDepth > b.isoDepth ? 1 : (a.isoDepth < b.isoDepth ? -1 : 0);
+			})
+		}
+	}
+
+	move(dx, dy) {
+		this.group.x += dx
+		this.group.y += dy
+	}
+
+	save() {
+		return {
+			name: this.name,
+			world: Object.keys(this.world).map(key => {
+				let info = this.world[key]
+				return {
+					x: info.x,
+					y: info.y,
+					z: info.z,
+					images: info.imageInfos.map(ii => ii.name)
+				}
+			})
+		}
+	}
+
+	load(layerInfo, blocks) {
+		for(let info of layerInfo.world) {
+			for (let image of info.images) {
+				blocks.set(image, info.x, info.y, info.z)
+			}
+		}
+		this.sort()
+	}
+}
+
 /**
  * A map section made of blocks.
  *
@@ -27,24 +215,22 @@ export default class {
 
 	constructor(game) {
 		this.game = game
-		this.group = game.add.group()
-		this.edges = game.add.group()
-		this.floor = game.add.group()
-
-		this.game.world.bringToTop(this.edges)
-		this.game.world.bringToTop(this.group)
+		this.floorLayer = new Layer(game, "floor")
+		this.edgeLayer = new Layer(game, "edge")
+		this.objectLayer = new Layer(game, "object", true)
+		this.roofLayer = new Layer(game, "roof")
+		this.layers = [
+			this.floorLayer, this.edgeLayer, this.objectLayer, this.roofLayer
+		]
+		this.layersByName = {}
+		for(let layer of this.layers) this.layersByName[layer.name] = layer
 	}
 
 	newMap(name, w, h) {
 		this.name = name
 		this.w = w
 		this.h = h
-
-		this.infos = {}
-		this.world = {}
-		while(this.group.children.length > 0) this.group.children[0].destroy()
-		while(this.edges.children.length > 0) this.edges.children[0].destroy()
-		while(this.floor.children.length > 0) this.floor.children[0].destroy()
+		for(let layer of this.layers) layer.reset()
 
 		for(let x = 0; x < w; x += 4) {
 			for(let y = 0; y < h; y += 4) {
@@ -58,10 +244,24 @@ export default class {
 	}
 
 	isGrass(x, y) {
-		let key = this._key(x, y, 0)
-		let info = this.world[key]
-		console.log("key=" + key, info)
-		return info && info.imageInfos.find(i => i.name == "grass")
+		return this.floorLayer.hasImage("grass", x, y)
+	}
+
+	_getLayer(name) {
+		let size = Config.BLOCKS[name].size
+		let layer
+		if(size[2] > 0) {
+			layer = this.objectLayer
+		} else if(name.indexOf(".edge") > 0) {
+			layer = this.edgeLayer
+		} else {
+			layer = this.floorLayer
+		}
+		return layer
+	}
+
+	clear(name, x, y, z) {
+		this._getLayer(name).clear(name, x, y, z)
 	}
 
 	set(name, x, y, z, skipInfo) {
@@ -70,23 +270,13 @@ export default class {
 
 		let sprite = this.game.add.image(screenX, screenY, 'sprites', name)
 		let size = Config.BLOCKS[name].size
-		if(size[2] > 0) {
-			this.group.add(sprite)
-		} else if(name.indexOf(".edge") > 0) {
-			this.edges.add(sprite)
-		} else {
-			this.floor.add(sprite)
-		}
 
 		this._saveInSprite(sprite, name, x, y, z)
 
 		let baseHeight = size[1] * Config.GRID_SIZE
 		sprite.anchor.setTo(1 - baseHeight / sprite._frame.width, 1)
 
-		if(!skipInfo) {
-			this.updateInfo(name, x, y, z, sprite)
-		}
-
+		this._getLayer(name).set(name, x, y, z, sprite, skipInfo)
 		return sprite
 	}
 
@@ -99,6 +289,8 @@ export default class {
 
 		sprite.x = screenX
 		sprite.y = screenY
+
+		this._getLayer(sprite.name).set(sprite.name, x, y, z, sprite, skipInfo)
 
 		if(!skipInfo) {
 			// todo: remove data from previous place
@@ -114,64 +306,6 @@ export default class {
 		sprite.isoDepth = x + y + 0.001 * z
 	}
 
-	clear(name, x, y, z) {
-		let block = Config.BLOCKS[name]
-		if(block.size[2] == 0) {
-			let key = this._key(x, y, z)
-			let info = this.world[key]
-			if (info) {
-				for (let imageInfo of info.imageInfos) imageInfo.image.destroy()
-				delete this.world[key]
-			}
-		} else {
-			this._visit3(name, x, y, z, (xx, yy, zz) => {
-				let key = this._key(xx, yy, zz)
-				let info = this.infos[key]
-				if (info) {
-					for (let imageInfo of info.imageInfos) imageInfo.image.destroy()
-					delete this.infos[key]
-				}
-
-				if (x == xx && y == yy && z == zz) {
-					delete this.world[key]
-				}
-			})
-		}
-	}
-
-	updateInfo(name, x, y, z, image) {
-		let block = Config.BLOCKS[name]
-		if(block.size[2] == 0) {
-			let key = this._key(x, y, z)
-			let info = this.world[key]
-			if (info == null) {
-				info = new BlockInfo(x, y, z, new ImageInfo(name, image))
-				this.world[key] = info
-			} else {
-				info.imageInfos.push(new ImageInfo(name, image))
-			}
-		} else {
-			this._visit3(name, x, y, z, (xx, yy, zz) => {
-				let key = this._key(xx, yy, zz)
-				let info = this.infos[key]
-				if (info == null) {
-					info = new BlockInfo(x, y, z, new ImageInfo(name, image))
-					this.infos[key] = info
-				} else {
-					info.imageInfos.push(new ImageInfo(name, image))
-				}
-
-				if (x == xx && y == yy && z == zz) {
-					this.world[key] = info
-				}
-			})
-		}
-	}
-
-	_key(x, y, z) {
-		return x + "." + y + "." + z
-	}
-
 	/**
 	 * The lowest empty z coordinate at this location.
 	 *
@@ -180,61 +314,16 @@ export default class {
 	 * @param sprite
 	 */
 	getTopAt(worldX, worldY, sprite) {
-		let maxZ = 0
-		if(sprite && !this.isFlat(sprite)) {
-			this._visit(sprite.name, worldX, worldY, (xx, yy) => {
-				for (let z = 15; z >= 0; z--) {
-					let info = this.infos[this._key(xx, yy, z)]
-					if (info) {
-						if (z + 1 > maxZ) maxZ = z + 1
-						break
-					}
-				}
-			})
-		}
-		return maxZ
+		return this.objectLayer.getTopAt(worldX, worldY, sprite)
 	}
 
-	isFlat(sprite) {
-		return sprite && this.isFlatByName(sprite.name)
-	}
 
-	isFlatByName(name) {
-		return Config.BLOCKS[name].size[2] == 0
-	}
-
-	_visit(name, worldX, worldY, fx) {
-		let block = Config.BLOCKS[name]
-		for(let xx = worldX - block.size[0]; xx < worldX; xx++) {
-			for (let yy = worldY - block.size[1]; yy < worldY; yy++) {
-				fx(xx, yy)
-			}
-		}
-	}
-
-	_visit3(name, worldX, worldY, worldZ, fx) {
-		let block = Config.BLOCKS[name]
-		this._visit(name, worldX, worldY, (xx, yy) => {
-			if(block.size[2] == 0) {
-				fx(xx, yy, 0)
-			} else {
-				for (let zz = worldZ; zz < worldZ + block.size[2]; zz++) {
-					fx(xx, yy, zz)
-				}
-			}
-		})
-	}
-
-	addTree(name, x, y, z) {
-		this.addSprite("trunk", x, y, z)
-		this.addSprite(name, x, y, z + Config.BLOCKS["trunk"].size[2])
+	isFree(worldX, worldY, worldZ, w, h, d) {
+		return this.objectLayer.isFree(worldX, worldY, worldZ, w, h, d)
 	}
 
 	sort() {
-		// from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
-		this.group.customSort((a, b) => {
-			return a.isoDepth > b.isoDepth ? 1 : (a.isoDepth < b.isoDepth ? -1 : 0);
-		})
+		this.objectLayer.sort()
 	}
 
 	toScreenCoords(worldX, worldY, worldZ) {
@@ -245,8 +334,8 @@ export default class {
 	}
 
 	toWorldCoords(screenX, screenY) {
-		let sx = (screenX - this.game.world.centerX - this.floor.x) / Config.GRID_SIZE
-		let sy = (screenY - this.floor.y) / Config.GRID_SIZE
+		let sx = (screenX - this.game.world.centerX - this.floorLayer.group.x) / Config.GRID_SIZE
+		let sy = (screenY - this.floorLayer.group.y) / Config.GRID_SIZE
 		let worldY = (sy - 10 - sx) / 2
 		let worldX = sx + worldY
 		return [
@@ -261,12 +350,7 @@ export default class {
 	}
 
 	move(dx, dy) {
-		this.floor.x += dx
-		this.floor.y += dy
-		this.edges.x += dx
-		this.edges.y += dy
-		this.group.x += dx
-		this.group.y += dy
+		for(let layer of this.layers) layer.move(dx, dy)
 	}
 
 	save() {
@@ -275,15 +359,7 @@ export default class {
 			name: this.name,
 			width: this.w,
 			height: this.h,
-			world: Object.keys(this.world).map(key => {
-				let info = this.world[key]
-				return {
-					x: info.x,
-					y: info.y,
-					z: info.z,
-					images: info.imageInfos.map(ii => ii.name)
-				}
-			})
+			layers: this.layers.map(layer => layer.save())
 		})
 	}
 
@@ -293,10 +369,8 @@ export default class {
 			dataType: "json",
 			success: (data) => {
 				this.newMap(this.name, data.width, data.height)
-				for(let info of data.world) {
-					for(let image of info.images) {
-						this.set(image, info.x, info.y, info.z)
-					}
+				for(let layerInfo of data.layers) {
+					this.layersByName[layerInfo.name].load(layerInfo, this)
 				}
 			}
 		})
