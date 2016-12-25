@@ -218,7 +218,7 @@ export default class {
 		this.floorLayer = new Layer(game, "floor")
 		this.edgeLayer = new Layer(game, "edge")
 		this.objectLayer = new Layer(game, "object", true)
-		this.roofLayer = new Layer(game, "roof")
+		this.roofLayer = new Layer(game, "roof", true)
 		this.layers = [
 			this.floorLayer, this.edgeLayer, this.objectLayer, this.roofLayer
 		]
@@ -226,15 +226,17 @@ export default class {
 		for(let layer of this.layers) this.layersByName[layer.name] = layer
 	}
 
-	newMap(name, w, h) {
+	newMap(name, w, h, emptyMap) {
 		this.name = name
 		this.w = w
 		this.h = h
 		for(let layer of this.layers) layer.reset()
 
-		for(let x = 0; x < w; x += 4) {
-			for(let y = 0; y < h; y += 4) {
-				this.set('grass', x, y, 0)
+		if(!emptyMap) {
+			for (let x = 0; x < w; x += 4) {
+				for (let y = 0; y < h; y += 4) {
+					this.set('grass', x, y, 0)
+				}
 			}
 		}
 	}
@@ -244,16 +246,22 @@ export default class {
 	}
 
 	isGrass(x, y) {
-		return this.floorLayer.hasImage("grass", x, y)
+		return this.isInBounds(x, y) && this.floorLayer.hasImage("grass", x, y)
+	}
+
+	toggleRoof() {
+		this.roofLayer.group.visible = !this.roofLayer.group.visible
 	}
 
 	_getLayer(name) {
 		let size = Config.BLOCKS[name].size
 		let layer
-		if(size[2] > 0) {
-			layer = this.objectLayer
-		} else if(name.indexOf(".edge") > 0) {
+		if(name.indexOf(".edge") > 0) {
 			layer = this.edgeLayer
+		} else if(name.indexOf("roof.") >= 0) {
+			layer = this.roofLayer
+		} else if(size[2] > 0) {
+			layer = this.objectLayer
 		} else {
 			layer = this.floorLayer
 		}
@@ -368,7 +376,7 @@ export default class {
 			url: "/assets/maps/" + this.name + ".json",
 			dataType: "json",
 			success: (data) => {
-				this.newMap(this.name, data.width, data.height)
+				this.newMap(this.name, data.width, data.height, true)
 				for(let layerInfo of data.layers) {
 					this.layersByName[layerInfo.name].load(layerInfo, this)
 				}

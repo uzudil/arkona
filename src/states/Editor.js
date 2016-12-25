@@ -27,6 +27,9 @@ export default class extends Phaser.State {
       this.blocks.name = prompt("Map name:", this.blocks.name)
       this.blocks.load()
     }
+    document.getElementById("toggle-roof").onclick = () => {
+      this.blocks.toggleRoof()
+    }
   }
 
   create () {
@@ -54,6 +57,9 @@ export default class extends Phaser.State {
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.ground1 = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE)
     this.ground2 = this.game.input.keyboard.addKey(Phaser.Keyboard.TWO)
+    this.ground3 = this.game.input.keyboard.addKey(Phaser.Keyboard.THREE)
+    this.ground4 = this.game.input.keyboard.addKey(Phaser.Keyboard.FOUR)
+    this.ground5 = this.game.input.keyboard.addKey(Phaser.Keyboard.FIVE)
     this.tree = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
   }
 
@@ -93,6 +99,12 @@ export default class extends Phaser.State {
       ground = "grass"
     } else if(this.ground2.isDown) {
       ground = "mud"
+    } else if(this.ground3.isDown) {
+      ground = "sand"
+    } else if(this.ground4.isDown) {
+      ground = "moss"
+    } else if(this.ground5.isDown) {
+      ground = "water"
     }
 
     if(ground) {
@@ -100,24 +112,24 @@ export default class extends Phaser.State {
       this.blocks.set(ground, gx, gy, 0)
       for(let xx = -1; xx <= 1; xx++) {
         for(let yy = -1; yy <= 1; yy++) {
-          this.drawGroundEdges(gx + xx * gw, gy + yy * gh)
+          this.drawGroundEdges(gx + xx * gw, gy + yy * gh, ground)
         }
       }
     }
   }
 
-  drawGroundEdges(gx, gy) {
-    if(!this.blocks.isGrass(gx, gy)) {
+  drawGroundEdges(gx, gy, ground) {
+    if(!this.blocks.isGrass(gx, gy) && this.blocks.isInBounds(gx, gy)) {
       let gw = Config.BLOCKS['grass'].size[0]
       let gh = Config.BLOCKS['grass'].size[1]
       let n = this.blocks.isGrass(gx, gy - gh)
       let s = this.blocks.isGrass(gx, gy + gh)
       let w = this.blocks.isGrass(gx - gw, gy)
       let e = this.blocks.isGrass(gx + gw, gy)
-      let index = 1 + ((Math.random() * 2)|0)
 
-      console.log("n=" + n + " s=" + s + " w=" + w + " e=" + e)
+      //console.log("n=" + n + " s=" + s + " w=" + w + " e=" + e)
 
+      let index = ground == 'water' ? 3 : 1 + ((Math.random() * 2)|0)
       this.blocks.clear("grass.edge1.n", gx - 1, gy - 3, 0)
       if (n) this.blocks.set("grass.edge" + index + ".n", gx - 1, gy - 3, 0)
       this.blocks.clear("grass.edge1.n", gx - 1, gy + 1, 0)
@@ -133,7 +145,7 @@ export default class extends Phaser.State {
     if(this.tree.isDown && this.blocks.isFree(x, y, 0, 4, 4, 8)) {
       this.blocks.clear("trunk", x, y, 0)
       this.blocks.set("trunk", x, y, 0)
-      let name = getRandom(["oak", "pine", "brown"])
+      let name = getRandom([...Array(4).fill("oak"), ...Array(3).fill("pine"), "brown"])
       this.blocks.clear(name, x, y, 4)
       this.blocks.set(name, x, y, 4)
       this.blocks.sort()
