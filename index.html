@@ -53,10 +53,66 @@
         #palette .block:hover {
             border: #ccc 3px solid;
         }
+
+        .dialog {
+            display: none;
+            position: fixed;
+            left: 50%; top: 50%;
+            width: 500px;
+            height: 200px;
+            margin-left: -250px;
+            margin-top: -100px;
+            z-index: 100;
+            border: 3px solid #444;
+            background: #eee;
+        }
+
+        .dialog .title {
+            font-weight: bold;
+            background: #66CCFF;
+            border-bottom: 1px solid #44aadd;
+            padding: 5px;
+            height: 30px;
+        }
+
+        .dialog .body {
+            padding: 5px;
+            height: 108px;
+        }
+
+        .dialog .footer {
+            padding: 5px;
+            background: #66CCFF;
+            border-top: 1px solid #44aadd;
+            height: 30px;
+        }
+
+        .dialog label {
+            display: block;
+            padding: 2px;
+        }
     </style>
 </head>
 
 <body>
+    <div id="new-map-dialog" class="dialog">
+        <div class="title">New map</div>
+        <div class="body">
+            <label>Name: <input id="new-map-name"></label>
+            <label>Width: <input id="new-map-width"></label>
+            <label>Height: <input id="new-map-height"></label>
+            <label>Type: <select id="new-map-type">
+                <option value="empty">Empty</option>
+                <option value="grass">Grass</option>
+                <option value="dungeon">Dungeon</option>
+            </select></label>
+        </div>
+        <div class="footer">
+            <button id="new-map-ok">Ok</button>
+            <button id="new-map-cancel">Cancel</button>
+        </div>
+    </div>
+
     <div class="clearfix">
         <div id="content"></div>
         <div id="right-menu">

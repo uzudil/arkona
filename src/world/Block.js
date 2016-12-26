@@ -181,6 +181,11 @@ class Layer {
 		this.group.y += dy
 	}
 
+	moveTo(x, y) {
+		this.group.x = x
+		this.group.y = y
+	}
+
 	save() {
 		return {
 			name: this.name,
@@ -224,21 +229,46 @@ export default class {
 		]
 		this.layersByName = {}
 		for(let layer of this.layers) this.layersByName[layer.name] = layer
+
+		// cursor
+		this.anchorDebug = this.game.add.graphics(0, 0)
+		this.anchorDebug.anchor.setTo(0.5, 0.5)
+		this.anchorDebug.beginFill(0xFF33ff)
+		this.anchorDebug.drawRect(0, 0, Config.GRID_SIZE, Config.GRID_SIZE)
+		this.anchorDebug.endFill()
+		this.groundDebug = this.game.add.graphics(0, 0)
+		this.groundDebug.lineStyle(1, 0xFFFF33, 1);
+		this.groundDebug.drawRect(0, 0, Config.GRID_SIZE * 6, Config.GRID_SIZE * 6)
+		this.groundDebug.angle = 45
 	}
 
-	newMap(name, w, h, emptyMap) {
+	newMap(name, w, h, type) {
 		this.name = name
 		this.w = w
 		this.h = h
 		for(let layer of this.layers) layer.reset()
 
-		if(!emptyMap) {
+		if(type == 'grass') {
 			for (let x = 0; x < w; x += 4) {
 				for (let y = 0; y < h; y += 4) {
 					this.set('grass', x, y, 0)
 				}
 			}
 		}
+
+		for(let layer of this.layers) layer.moveTo(0, 0)
+	}
+
+	drawCursor(x, y, z) {
+		let gx = (((x / 4)|0) - 1) * 4
+		let gy = (((y / 4)|0) - 1) * 4
+		let [gsx, gsy] = this.toScreenCoords(gx, gy, 0)
+		this.groundDebug.x = gsx + this.floorLayer.group.x
+		this.groundDebug.y = gsy + this.floorLayer.group.y
+
+		let [sx, sy] = this.toScreenCoords(x, y, 0)
+		this.anchorDebug.x = sx + this.floorLayer.group.x
+		this.anchorDebug.y = sy + this.floorLayer.group.y
 	}
 
 	isInBounds(x, y) {
@@ -299,12 +329,6 @@ export default class {
 		sprite.y = screenY
 
 		this._getLayer(sprite.name).set(sprite.name, x, y, z, sprite, skipInfo)
-
-		if(!skipInfo) {
-			// todo: remove data from previous place
-
-			this.updateInfo(sprite.name, x, y, z, sprite)
-		}
 	}
 
 	_saveInSprite(sprite, name, x, y, z) {
@@ -331,7 +355,7 @@ export default class {
 	}
 
 	sort() {
-		this.objectLayer.sort()
+		for(let layer of this.layers) layer.sort()
 	}
 
 	toScreenCoords(worldX, worldY, worldZ) {
@@ -353,10 +377,6 @@ export default class {
 		]
 	}
 
-	toScreenCoordsFloor(worldX, worldY) {
-		return this.toScreenCoords(worldX, worldY, 0)
-	}
-
 	move(dx, dy) {
 		for(let layer of this.layers) layer.move(dx, dy)
 	}
@@ -376,7 +396,7 @@ export default class {
 			url: "/assets/maps/" + this.name + ".json",
 			dataType: "json",
 			success: (data) => {
-				this.newMap(this.name, data.width, data.height, true)
+				this.newMap(this.name, data.width, data.height, "empty")
 				for(let layerInfo of data.layers) {
 					this.layersByName[layerInfo.name].load(layerInfo, this)
 				}

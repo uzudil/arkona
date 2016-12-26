@@ -10,13 +10,21 @@ export default class extends Phaser.State {
   init () {}
   preload () {
     document.getElementById("new-map").onclick = () => {
-      this.blocks.name = prompt("Map name:", this.blocks.name)
-      let [w, h] = prompt("New map size:", "40x40").split("x").map(s => parseInt(s, 10))
+      $("#new-map-dialog").show()
+      $("#new-map-name").focus()
+    }
+    $("#new-map-cancel").click(() => $("#new-map-dialog").hide())
+    $("#new-map-ok").click(() => {
+      $("#new-map-dialog").hide()
+      this.blocks.name = $("#new-map-name").val()
+      let w = parseInt($("#new-map-width").val(), 10)
+      let h = parseInt($("#new-map-height").val(), 10)
       // ensure they're multiples of Config.GRID_SIZE
       w = w % Config.GRID_SIZE == 0 ? w : (((w / Config.GRID_SIZE)|0) + 1) * Config.GRID_SIZE
       h = h % Config.GRID_SIZE == 0 ? h : (((h / Config.GRID_SIZE)|0) + 1) * Config.GRID_SIZE
-      this.startNewMap(this.blocks.name, w, h)
-    }
+      this.startNewMap(this.blocks.name, w, h, $("#new-map-type").val())
+    })
+
     document.getElementById("save-map").onclick = () => {
       this.blocks.name = prompt("Map name:", this.blocks.name)
       let save = $("#save-map")
@@ -34,7 +42,7 @@ export default class extends Phaser.State {
 
   create () {
     this.blocks = new Block(this)
-    this.blocks.newMap("demo", 40, 40)
+    this.blocks.newMap("demo", 40, 40, "grass")
 
     this.activeBlock = null
     this.palette = new Palette(this)
@@ -45,14 +53,6 @@ export default class extends Phaser.State {
     this.posLabel = game.add.text(0, 0, "Pos: ", style);
     this.posLabel.setShadow(1, 1, 'rgba(0,0,0,1)', 2);
     this.posLabel.setTextBounds(0, 0, 800, 20);
-
-    if(Config.DEBUG_COORDS) {
-      this.anchorDebug = this.game.add.graphics(0, 0)
-      this.anchorDebug.anchor.setTo(0.5, 0.5)
-      this.anchorDebug.beginFill(0xFF33ff)
-      this.anchorDebug.drawRect(0, 0, Config.GRID_SIZE, Config.GRID_SIZE)
-      this.anchorDebug.endFill()
-    }
 
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.ground1 = this.game.input.keyboard.addKey(Phaser.Keyboard.ONE)
@@ -153,6 +153,13 @@ export default class extends Phaser.State {
   }
 
   update () {
+    if ($(".dialog").is(":visible")) {
+      game.input.enabled = false;
+      return
+    } else {
+      game.input.enabled = true;
+    }
+
     this.moveCamera()
 
     // find new top z
@@ -164,13 +171,9 @@ export default class extends Phaser.State {
       this.drawObject(x, y, z)
     }
 
-    if(this.activeBlock) {
+    this.blocks.drawCursor(x, y, z)
 
-      if(Config.DEBUG_COORDS) {
-        let [sx, sy] = this.blocks.toScreenCoords(x, y, 0)
-        this.anchorDebug.x = sx
-        this.anchorDebug.y = sy
-      }
+    if(this.activeBlock) {
 
       // handle click
       if(this.game.input.activePointer.isDown && this.addNew && this.blocks.isInBounds(x, y)) {
@@ -194,7 +197,7 @@ export default class extends Phaser.State {
     this.posLabel.text = "Pos: " + x + "," + y + "," + z
   }
 
-  startNewMap(name, w, h) {
-    this.blocks.newMap(name, w, h)
+  startNewMap(name, w, h, type) {
+    this.blocks.newMap(name, w, h, type)
   }
 }
