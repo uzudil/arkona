@@ -60,6 +60,7 @@ export default class extends Phaser.State {
     this.ground3 = this.game.input.keyboard.addKey(Phaser.Keyboard.THREE)
     this.ground4 = this.game.input.keyboard.addKey(Phaser.Keyboard.FOUR)
     this.ground5 = this.game.input.keyboard.addKey(Phaser.Keyboard.FIVE)
+    this.ground6 = this.game.input.keyboard.addKey(Phaser.Keyboard.SIX)
     this.tree = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
   }
 
@@ -105,6 +106,8 @@ export default class extends Phaser.State {
       ground = "moss"
     } else if(this.ground5.isDown) {
       ground = "water"
+    } else if(this.ground6.isDown) {
+      ground = "road"
     }
 
     if(ground) {

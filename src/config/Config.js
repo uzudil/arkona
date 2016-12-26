@@ -11,6 +11,7 @@ export const BLOCKS = {
 	"sand": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64] },
 	"moss": { size: [4, 4, 0], pos: [336, 128], dim: [64, 64] },
 	"water": { size: [4, 4, 0], pos: [416, 128], dim: [64, 64] },
+	"road": { size: [4, 4, 0], pos: [368, 208], dim: [64, 64] },
 
 	"grass.edge1.w": { size: [2, 2, 0], pos: [176, 128], dim: [32, 32] },
 	"grass.edge1.n": { size: [2, 2, 0], pos: [208, 128], dim: [32, 32] },
