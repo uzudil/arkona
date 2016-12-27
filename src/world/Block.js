@@ -96,14 +96,34 @@ class Layer {
 				let key = _key(xx, yy, zz)
 				let info = this.infos[key]
 				if (info) {
-					for (let imageInfo of info.imageInfos) imageInfo.image.destroy()
 					delete this.infos[key]
 				}
-
-				if (x == xx && y == yy && z == zz) {
-					delete this.world[key]
-				}
 			})
+		}
+	}
+
+	clearAll(x, y, z) {
+		let key = _key(x, y, z)
+		let info = this.infos[key]
+		if (info) {
+			// remove images and update the world
+			let keyWorld = _key(info.x, info.y, info.z)
+			let infoWorld = this.world[keyWorld]
+			if (infoWorld) {
+				for (let imageInfo of infoWorld.imageInfos) imageInfo.image.destroy()
+				delete this.world[keyWorld]
+			}
+
+			// update infos
+			for (let imageInfo of info.imageInfos) {
+				_visit3(imageInfo.name, info.x, info.y, info.z, (xx, yy, zz) => {
+					let keyInfo = _key(xx, yy, zz)
+					let infoInfo = this.infos[keyInfo]
+					if (infoInfo) {
+						delete this.infos[keyInfo]
+					}
+				})
+			}
 		}
 	}
 
@@ -300,6 +320,14 @@ export default class {
 
 	clear(name, x, y, z) {
 		this._getLayer(name).clear(name, x, y, z)
+	}
+
+	clearAll(x, y) {
+		for(let z = 0; z < 16; z++){
+			for(let layer of this.layers) {
+				layer.clearAll(x, y, z)
+			}
+		}
 	}
 
 	set(name, x, y, z, skipInfo) {

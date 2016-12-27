@@ -62,6 +62,7 @@ export default class extends Phaser.State {
     this.ground5 = this.game.input.keyboard.addKey(Phaser.Keyboard.FIVE)
     this.ground6 = this.game.input.keyboard.addKey(Phaser.Keyboard.SIX)
     this.tree = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
+    this.delete = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
   }
 
   render () {
@@ -172,12 +173,14 @@ export default class extends Phaser.State {
     if(this.blocks.isInBounds(x, y)) {
       this.drawGround(x, y)
       this.drawObject(x, y, z)
+      if(this.delete.justDown) {
+        this.blocks.clearAll(x - 1, y - 1)
+      }
     }
 
     this.blocks.drawCursor(x, y, z)
 
     if(this.activeBlock) {
-
       // handle click
       if(this.game.input.activePointer.isDown && this.addNew && this.blocks.isInBounds(x, y)) {
         let newSprite
