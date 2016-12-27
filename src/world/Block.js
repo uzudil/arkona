@@ -331,6 +331,12 @@ export default class {
 	}
 
 	set(name, x, y, z, skipInfo) {
+		let layer = this._getLayer(name)
+		if(z == 0 && layer == this.floorLayer) {
+			x = ((x / 4)|0) * 4
+			y = ((y / 4)|0) * 4
+		}
+
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x, y, z)
 
@@ -342,11 +348,17 @@ export default class {
 		let baseHeight = size[1] * Config.GRID_SIZE
 		sprite.anchor.setTo(1 - baseHeight / sprite._frame.width, 1)
 
-		this._getLayer(name).set(name, x, y, z, sprite, skipInfo)
+		layer.set(name, x, y, z, sprite, skipInfo)
 		return sprite
 	}
 
 	moveTo(sprite, x, y, z, skipInfo) {
+		let layer = this._getLayer(sprite.name)
+		if(z == 0 && layer == this.floorLayer) {
+			x = ((x / 4)|0) * 4
+			y = ((y / 4)|0) * 4
+		}
+
 		// move to new position
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x, y, z)
@@ -356,7 +368,7 @@ export default class {
 		sprite.x = screenX
 		sprite.y = screenY
 
-		this._getLayer(sprite.name).set(sprite.name, x, y, z, sprite, skipInfo)
+		layer.set(sprite.name, x, y, z, sprite, skipInfo)
 	}
 
 	_saveInSprite(sprite, name, x, y, z) {

@@ -34,6 +34,7 @@ export const BLOCKS = {
 
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },
 	"roof.ew": { size: [10, 10, 6], pos: [688, 0], dim: [164, 172] },
+	"roof.ns.brown": { size: [10, 10, 3], pos: [448, 192], dim: [164, 164] },
 
 	"room.floor.stone": { size: [4, 4, 0], pos: [288, 208], dim: [64, 64] },
 }
