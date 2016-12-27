@@ -40,7 +40,6 @@ export const BLOCKS = {
 }
 
 export const GRID_SIZE = 8
-export const DEBUG_COORDS = false
 export const MAP_VERSION = 1
 
 export function toCss(name) {
@@ -56,7 +55,7 @@ export function toCss(name) {
  * @returns a json structure describing our blocks
  */
 export function toJson() {
-	let d = {
+	return {
 		frames: Object.keys(BLOCKS).map(key => {
 			let obj = BLOCKS[key]
 			return {
@@ -78,5 +77,4 @@ export function toJson() {
 			size: {"h": 1600, "w": 1200}
 		}
 	}
-	return d;
 }
