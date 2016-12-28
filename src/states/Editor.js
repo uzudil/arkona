@@ -29,9 +29,10 @@ export default class extends Phaser.State {
 
 		document.getElementById("save-map").onclick = () => {
 			this.blocks.name = prompt("Map name:", this.blocks.name)
-			let save = $("#save-map")
-			save.attr("download", this.blocks.name + ".json")
-			save.attr("href", "data:text/json;charset=utf-8," + encodeURIComponent(this.blocks.save()))
+			this.blocks.save()
+			//let save = $("#save-map")
+			//save.attr("download", this.blocks.name + ".json")
+			//save.attr("href", "data:text/json;charset=utf-8," + encodeURIComponent(this.blocks.save()))
 		}
 		document.getElementById("load-map").onclick = () => {
 			this.blocks.name = prompt("Map name:", this.blocks.name)
@@ -39,6 +40,9 @@ export default class extends Phaser.State {
 		}
 		document.getElementById("toggle-roof").onclick = () => {
 			this.blocks.toggleRoof()
+		}
+		document.getElementById("fix-edges").onclick = () => {
+			this.blocks.fixEdges()
 		}
 	}
 
@@ -64,6 +68,7 @@ export default class extends Phaser.State {
 		this.ground5 = this.game.input.keyboard.addKey(Phaser.Keyboard.FIVE)
 		this.ground6 = this.game.input.keyboard.addKey(Phaser.Keyboard.SIX)
 		this.tree = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
+		this.mountain = this.game.input.keyboard.addKey(Phaser.Keyboard.M)
 		this.delete = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
 	}
 
@@ -114,25 +119,6 @@ export default class extends Phaser.State {
 		if (ground) {
 			this.blocks.clear("grass", gx, gy, 0)
 			this.blocks.set(ground, gx, gy, 0)
-			for (let xx = -1; xx <= 1; xx++) {
-				for (let yy = -1; yy <= 1; yy++) {
-					this.drawGroundEdges(gx + xx * Config.GROUND_TILE_W, gy + yy * Config.GROUND_TILE_H, ground)
-				}
-			}
-		}
-	}
-
-	drawGroundEdges(gx, gy, ground) {
-		if(this.blocks.isInBounds(gx, gy)) {
-			if (this.blocks.isGrass(gx, gy)) {
-				this.blocks.clearEdge(gx, gy)
-			} else {
-				let n = this.blocks.isGrass(gx, gy - Config.GROUND_TILE_H)
-				let s = this.blocks.isGrass(gx, gy + Config.GROUND_TILE_H)
-				let w = this.blocks.isGrass(gx - Config.GROUND_TILE_W, gy)
-				let e = this.blocks.isGrass(gx + Config.GROUND_TILE_W, gy)
-				this.blocks.setEdge(gx, gy, ground, { n: n, s: s, e: e, w: w })
-			}
 		}
 	}
 
@@ -143,6 +129,11 @@ export default class extends Phaser.State {
 			let name = getRandom([...Array(4).fill("oak"), ...Array(3).fill("pine"), "brown"])
 			this.blocks.clear(name, x, y, 4)
 			this.blocks.set(name, x, y, 4)
+			this.blocks.sort()
+		} else if (this.mountain.isDown && this.blocks.isFree(x, y, 0, 4, 4, 8)) {
+			let name = getRandom([...Array(3).fill("mountain1"), ...Array(3).fill("mountain3"), "mountain2"])
+			this.blocks.clear(name, x, y, 0)
+			this.blocks.set(name, x, y, 0)
 			this.blocks.sort()
 		}
 	}

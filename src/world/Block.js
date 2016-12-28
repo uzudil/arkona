@@ -187,6 +187,11 @@ class Layer {
 		return true
 	}
 
+	getFloorAt(worldX, worldY) {
+		let info = this.world[_key(worldX, worldY, 0)]
+		return info && info.imageInfos.length > 0 ? info.imageInfos[0].name : null
+	}
+
 	sort() {
 		if(this.sorted) {
 			// from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
@@ -332,7 +337,12 @@ export default class {
 			x = ((x / Config.GROUND_TILE_W)|0) * Config.GROUND_TILE_W
 			y = ((y / Config.GROUND_TILE_H)|0) * Config.GROUND_TILE_H
 		}
-		return [layer, x, y, z]
+		let offsX = 0
+		let offsY = 0
+		if(layer == this.edgeLayer) {
+			[offsX, offsY] = EDGE_OFFSET[name.substring(name.length - 1)]
+		}
+		return [layer, x, y, z, offsX, offsY]
 	}
 
 	clear(name, rx, ry, rz) {
@@ -348,12 +358,8 @@ export default class {
 		}
 	}
 
-	set(name, rx, ry, rz, skipInfo, offsX, offsY) {
-		let [layer, x, y, z] = this._getLayerAndXYZ(name, rx, ry, rz)
-
-		// default to 0 if unknown
-		offsX = offsX || 0
-		offsY = offsY || 0
+	set(name, rx, ry, rz, skipInfo) {
+		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(name, rx, ry, rz)
 
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x + offsX, y + offsY, z)
@@ -367,15 +373,12 @@ export default class {
 		sprite.anchor.setTo(1 - baseHeight / sprite._frame.width, 1)
 
 		layer.set(name, x, y, z, sprite, skipInfo)
+		this.drawEdges(layer, name, x, y)
 		return sprite
 	}
 
-	moveTo(sprite, rx, ry, rz, skipInfo, offsX, offsY) {
-		let [layer, x, y, z] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
-
-		// default to 0 if unknown
-		offsX = offsX || 0
-		offsY = offsY || 0
+	moveTo(sprite, rx, ry, rz, skipInfo) {
+		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
 
 		// move to new position
 		let screenX, screenY
@@ -387,6 +390,31 @@ export default class {
 		sprite.y = screenY
 
 		layer.set(sprite.name, x, y, z, sprite, skipInfo)
+		this.drawEdges(layer, sprite.name, x, y)
+	}
+
+	drawEdges(layer, name, x, y) {
+		if(layer == this.floorLayer) {
+			for (let xx = -1; xx <= 1; xx++) {
+				for (let yy = -1; yy <= 1; yy++) {
+					this.drawGroundEdges(x + xx * Config.GROUND_TILE_W, y + yy * Config.GROUND_TILE_H, name)
+				}
+			}
+		}
+	}
+
+	drawGroundEdges(gx, gy, ground) {
+		if(this.isInBounds(gx, gy)) {
+			if (this.isGrass(gx, gy)) {
+				this.clearEdge(gx, gy)
+			} else {
+				let n = this.isGrass(gx, gy - Config.GROUND_TILE_H)
+				let s = this.isGrass(gx, gy + Config.GROUND_TILE_H)
+				let w = this.isGrass(gx - Config.GROUND_TILE_W, gy)
+				let e = this.isGrass(gx + Config.GROUND_TILE_W, gy)
+				this.setEdge(gx, gy, ground, { n: n, s: s, e: e, w: w })
+			}
+		}
 	}
 
 	clearEdge(gx, gy) {
@@ -394,16 +422,22 @@ export default class {
 	}
 
 	setEdge(gx, gy, ground, edges) {
-		let index = ground == 'water' ? 3 : 1 + ((Math.random() * 2) | 0)
+		let index = ground && ground.indexOf('water') >= 0 ? 3 : 1 + ((Math.random() * 2) | 0)
 
 		this.clearEdge(gx, gy)
 
 		for(let dir in EDGE_OFFSET) {
 			if(edges[dir]) {
-				this.set("grass.edge" + index + "." + dir, gx, gy, 0,
-					false,
-					EDGE_OFFSET[dir][0],
-					EDGE_OFFSET[dir][1])
+				this.set("grass.edge" + index + "." + dir, gx, gy, 0)
+			}
+		}
+	}
+
+	fixEdges() {
+		this.edgeLayer.reset()
+		for (let xx = 0; xx < this.w; xx += Config.GROUND_TILE_W) {
+			for (let yy = 0; yy < this.h; yy += Config.GROUND_TILE_H) {
+				this.drawGroundEdges(xx, yy, this.floorLayer.getFloorAt(xx, yy))
 			}
 		}
 	}
@@ -459,13 +493,21 @@ export default class {
 	}
 
 	save() {
-		return JSON.stringify({
+		let data = JSON.stringify({
 			version: Config.MAP_VERSION,
 			name: this.name,
 			width: this.w,
 			height: this.h,
 			layers: this.layers.map(layer => layer.save())
 		})
+		$.ajax({
+			type: 'POST',
+			url: "http://localhost:9090/cgi-bin/upload.py",
+			data: "name=" + this.name + "&file=" + data,
+			//success: ()=>{alert("Success!");},
+			//error: (error)=>{console.log("Error:", error); alert("error: " + error);},
+			dataType: "text/json"
+		});
 	}
 
 	load() {

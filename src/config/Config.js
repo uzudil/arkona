@@ -37,6 +37,10 @@ export const BLOCKS = {
 	"roof.ns.brown": { size: [10, 10, 3], pos: [448, 192], dim: [164, 164] },
 
 	"room.floor.stone": { size: [4, 4, 0], pos: [288, 208], dim: [64, 64] },
+
+	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
+	"mountain2": { size: [4, 4, 8], pos: [64, 256], dim: [64, 96] },
+	"mountain3": { size: [4, 4, 4], pos: [128, 272], dim: [64, 64] },
 }
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]
