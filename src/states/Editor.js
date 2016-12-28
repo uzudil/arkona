@@ -93,10 +93,8 @@ export default class extends Phaser.State {
 	}
 
 	drawGround(x, y) {
-		let gw = Config.BLOCKS['grass'].size[0]
-		let gh = Config.BLOCKS['grass'].size[1]
-		let gx = ((x / gw) | 0) * gw
-		let gy = ((y / gh) | 0) * gh
+		let gx = ((x / Config.GROUND_TILE_W) | 0) * Config.GROUND_TILE_W
+		let gy = ((y / Config.GROUND_TILE_H) | 0) * Config.GROUND_TILE_H
 
 		let ground = null
 		if (this.ground1.isDown) {
@@ -118,32 +116,23 @@ export default class extends Phaser.State {
 			this.blocks.set(ground, gx, gy, 0)
 			for (let xx = -1; xx <= 1; xx++) {
 				for (let yy = -1; yy <= 1; yy++) {
-					this.drawGroundEdges(gx + xx * gw, gy + yy * gh, ground)
+					this.drawGroundEdges(gx + xx * Config.GROUND_TILE_W, gy + yy * Config.GROUND_TILE_H, ground)
 				}
 			}
 		}
 	}
 
 	drawGroundEdges(gx, gy, ground) {
-		if (!this.blocks.isGrass(gx, gy) && this.blocks.isInBounds(gx, gy)) {
-			let gw = Config.BLOCKS['grass'].size[0]
-			let gh = Config.BLOCKS['grass'].size[1]
-			let n = this.blocks.isGrass(gx, gy - gh)
-			let s = this.blocks.isGrass(gx, gy + gh)
-			let w = this.blocks.isGrass(gx - gw, gy)
-			let e = this.blocks.isGrass(gx + gw, gy)
-
-			//console.log("n=" + n + " s=" + s + " w=" + w + " e=" + e)
-
-			let index = ground == 'water' ? 3 : 1 + ((Math.random() * 2) | 0)
-			this.blocks.clear("grass.edge1.n", gx - 1, gy - 3, 0)
-			if (n) this.blocks.set("grass.edge" + index + ".n", gx - 1, gy - 3, 0)
-			this.blocks.clear("grass.edge1.n", gx - 1, gy + 1, 0)
-			if (s) this.blocks.set("grass.edge" + index + ".s", gx - 1, gy + 1, 0)
-			this.blocks.clear("grass.edge1.n", gx + 1, gy - 1, 0)
-			if (e) this.blocks.set("grass.edge" + index + ".e", gx + 1, gy - 1, 0)
-			this.blocks.clear("grass.edge1.n", gx - 3, gy - 1, 0)
-			if (w) this.blocks.set("grass.edge" + index + ".w", gx - 3, gy - 1, 0)
+		if(this.blocks.isInBounds(gx, gy)) {
+			if (this.blocks.isGrass(gx, gy)) {
+				this.blocks.clearEdge(gx, gy)
+			} else {
+				let n = this.blocks.isGrass(gx, gy - Config.GROUND_TILE_H)
+				let s = this.blocks.isGrass(gx, gy + Config.GROUND_TILE_H)
+				let w = this.blocks.isGrass(gx - Config.GROUND_TILE_W, gy)
+				let e = this.blocks.isGrass(gx + Config.GROUND_TILE_W, gy)
+				this.blocks.setEdge(gx, gy, ground, { n: n, s: s, e: e, w: w })
+			}
 		}
 	}
 

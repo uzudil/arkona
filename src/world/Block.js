@@ -231,6 +231,14 @@ class Layer {
 	}
 }
 
+
+const EDGE_OFFSET = {
+	n: [ -1, -3 ],
+	s: [ -1, 1 ],
+	e: [ 1, -1 ],
+	w: [ -3, -1]
+}
+
 /**
  * A map section made of blocks.
  *
@@ -318,8 +326,18 @@ export default class {
 		return layer
 	}
 
-	clear(name, x, y, z) {
-		this._getLayer(name).clear(name, x, y, z)
+	_getLayerAndXYZ(name, x, y, z) {
+		let layer = this._getLayer(name)
+		if(z == 0 && layer == this.floorLayer) {
+			x = ((x / Config.GROUND_TILE_W)|0) * Config.GROUND_TILE_W
+			y = ((y / Config.GROUND_TILE_H)|0) * Config.GROUND_TILE_H
+		}
+		return [layer, x, y, z]
+	}
+
+	clear(name, rx, ry, rz) {
+		let [layer, x, y, z] = this._getLayerAndXYZ(name, rx, ry, rz)
+		layer.clear(name, x, y, z)
 	}
 
 	clearAll(x, y) {
@@ -330,15 +348,15 @@ export default class {
 		}
 	}
 
-	set(name, x, y, z, skipInfo) {
-		let layer = this._getLayer(name)
-		if(z == 0 && layer == this.floorLayer) {
-			x = ((x / 4)|0) * 4
-			y = ((y / 4)|0) * 4
-		}
+	set(name, rx, ry, rz, skipInfo, offsX, offsY) {
+		let [layer, x, y, z] = this._getLayerAndXYZ(name, rx, ry, rz)
+
+		// default to 0 if unknown
+		offsX = offsX || 0
+		offsY = offsY || 0
 
 		let screenX, screenY
-		[ screenX, screenY ] = this.toScreenCoords(x, y, z)
+		[ screenX, screenY ] = this.toScreenCoords(x + offsX, y + offsY, z)
 
 		let sprite = this.game.add.image(screenX, screenY, 'sprites', name)
 		let size = Config.BLOCKS[name].size
@@ -352,16 +370,16 @@ export default class {
 		return sprite
 	}
 
-	moveTo(sprite, x, y, z, skipInfo) {
-		let layer = this._getLayer(sprite.name)
-		if(z == 0 && layer == this.floorLayer) {
-			x = ((x / 4)|0) * 4
-			y = ((y / 4)|0) * 4
-		}
+	moveTo(sprite, rx, ry, rz, skipInfo, offsX, offsY) {
+		let [layer, x, y, z] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
+
+		// default to 0 if unknown
+		offsX = offsX || 0
+		offsY = offsY || 0
 
 		// move to new position
 		let screenX, screenY
-		[ screenX, screenY ] = this.toScreenCoords(x, y, z)
+		[ screenX, screenY ] = this.toScreenCoords(x + offsX, y + offsY, z)
 
 		this._saveInSprite(sprite, null, x, y, z)
 
@@ -369,6 +387,25 @@ export default class {
 		sprite.y = screenY
 
 		layer.set(sprite.name, x, y, z, sprite, skipInfo)
+	}
+
+	clearEdge(gx, gy) {
+		this.clear("grass.edge1.n", gx, gy, 0)
+	}
+
+	setEdge(gx, gy, ground, edges) {
+		let index = ground == 'water' ? 3 : 1 + ((Math.random() * 2) | 0)
+
+		this.clearEdge(gx, gy)
+
+		for(let dir in EDGE_OFFSET) {
+			if(edges[dir]) {
+				this.set("grass.edge" + index + "." + dir, gx, gy, 0,
+					false,
+					EDGE_OFFSET[dir][0],
+					EDGE_OFFSET[dir][1])
+			}
+		}
 	}
 
 	_saveInSprite(sprite, name, x, y, z) {

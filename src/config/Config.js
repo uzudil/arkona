@@ -38,7 +38,8 @@ export const BLOCKS = {
 
 	"room.floor.stone": { size: [4, 4, 0], pos: [288, 208], dim: [64, 64] },
 }
-
+export const GROUND_TILE_W = BLOCKS['grass'].size[0]
+export const GROUND_TILE_H = BLOCKS['grass'].size[1]
 export const GRID_SIZE = 8
 export const MAP_VERSION = 1
 
