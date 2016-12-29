@@ -35,12 +35,21 @@ export const BLOCKS = {
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },
 	"roof.ew": { size: [10, 10, 6], pos: [688, 0], dim: [164, 172] },
 	"roof.ns.brown": { size: [10, 10, 3], pos: [448, 192], dim: [164, 164] },
+	"roof.ew.brown": { size: [10, 10, 3], pos: [640, 192], dim: [176, 180] },
 
 	"room.floor.stone": { size: [4, 4, 0], pos: [288, 208], dim: [64, 64] },
 
 	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
 	"mountain2": { size: [4, 4, 8], pos: [64, 256], dim: [64, 96] },
 	"mountain3": { size: [4, 4, 4], pos: [128, 272], dim: [64, 64] },
+
+	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
+	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },
+	"fence.ns": { size: [1, 4, 4], pos: [112, 384], dim: [40, 64] },
+	"chair.w": { size: [2, 2, 4], pos: [160, 384], dim: [28, 56] },
+
+
+	"person.n": { size: [2, 2, 4], pos: [400, 0], dim: [20, 52] },
 }
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]

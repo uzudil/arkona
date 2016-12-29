@@ -422,12 +422,11 @@ export default class {
 	}
 
 	setEdge(gx, gy, ground, edges) {
-		let index = ground && ground.indexOf('water') >= 0 ? 3 : 1 + ((Math.random() * 2) | 0)
-
 		this.clearEdge(gx, gy)
 
 		for(let dir in EDGE_OFFSET) {
 			if(edges[dir]) {
+				let index = ground && ground.indexOf('water') >= 0 ? 3 : 1 + ((Math.random() * 2) | 0)
 				this.set("grass.edge" + index + "." + dir, gx, gy, 0)
 			}
 		}
