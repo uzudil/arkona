@@ -61,7 +61,7 @@ export const BLOCKS = {
 	"chair.w": { size: [2, 2, 4], pos: [160, 384], dim: [28, 56] },
 
 
-	"person.n": { size: [2, 2, 4], pos: [400, 0], dim: [20, 52] },
+	"person.n": { size: [2, 2, 4], pos: [400, 0], dim: [32, 64] },
 }
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]

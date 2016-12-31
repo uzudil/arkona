@@ -83,7 +83,7 @@ export default class extends Phaser.State {
 				if(this.tryStepTo(this.px, this.py, this.pz) ||
 					this.tryStepTo(this.px, oy, this.pz) ||
 					this.tryStepTo(ox, this.py, this.pz)) {
-					this.blocks.checkRoof(this.px, this.py)
+					this.blocks.checkRoof(this.px - 1, this.py - 1)
 				} else {
 					this.px = ox; this.py = oy
 				}
