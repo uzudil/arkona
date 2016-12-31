@@ -32,8 +32,17 @@ export const BLOCKS = {
 	"wood.column": { size: [1, 1, 6], pos: [176, 0], dim: [16, 64] },
 	"stone.wall.x": { size: [4, 1, 6], pos: [216, 0], dim: [40, 96] },
 	"stone.wall.y": { size: [1, 4, 6], pos: [280, 0], dim: [40, 96] },
+
+	// deprecated
 	"wood.door.y": { size: [1, 2, 6], pos: [336, 0], dim: [24, 68] },
 	"wood.door.x": { size: [2, 1, 6], pos: [368, 0], dim: [24, 68] },
+
+	// new doors
+	"regular.door.x": { size: [1, 3, 6], pos: [192, 306], dim: [32, 80] },
+	"regular.door.y": { size: [3, 1, 6], pos: [224, 306], dim: [32, 80] },
+
+
+
 
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },
 	"roof.ew": { size: [10, 10, 6], pos: [688, 0], dim: [164, 172] },

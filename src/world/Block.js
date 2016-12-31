@@ -394,6 +394,11 @@ export default class {
 		this.roofLayer.group.visible = !this.roofLayer.group.visible
 	}
 
+	checkRoof(worldX, worldY) {
+		let under = this.roofLayer.infos[_key(worldX, worldY, 6)] != null
+		if(under == this.roofLayer.group.visible) this.toggleRoof()
+	}
+
 	_getLayer(name) {
 		let size = Config.BLOCKS[name].size
 		let layer
