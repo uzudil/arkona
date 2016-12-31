@@ -74,8 +74,10 @@ export default class extends Phaser.State {
 				this.state.start('Editor')
 			} else if(this.menuIndex == 1) {
 				// new game
+				this.state.start('Arkona')
 			} else if(this.menuIndex == 2) {
 				// load game
+				this.state.start('Arkona', true, false, { loadGame: true })
 			}
 		}
 	}

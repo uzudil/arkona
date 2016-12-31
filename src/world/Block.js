@@ -28,6 +28,17 @@ function _visit3(name, worldX, worldY, worldZ, fx) {
 	})
 }
 
+function _visit3d(worldX, worldY, worldZ, w, h, d, fx) {
+	for(let xx = worldX - w; xx < worldX; xx++) {
+		for (let yy = worldY - h; yy < worldY; yy++) {
+			for (let zz = worldZ; zz < worldZ + d; zz++) {
+				if(!fx(xx, yy, zz)) return false
+			}
+		}
+	}
+	return true
+}
+
 export function isFlat(sprite) {
 	return sprite && isFlatByName(sprite.name)
 }
@@ -50,6 +61,18 @@ class BlockInfo {
 		this.z = z
 		this.imageInfos = [ imageInfo ]
 	}
+
+	removeImage(image, destroyImage) {
+		for (let i = 0; i < this.imageInfos.length; i++) {
+			if (this.imageInfos[i].image == image) {
+				this.imageInfos.splice(i, 1)
+				if(destroyImage) image.destroy()
+				break
+			}
+		}
+		return this.imageInfos.length == 0
+	}
+
 }
 
 class Layer {
@@ -75,11 +98,14 @@ class Layer {
 	}
 
 	set(name, x, y, z, sprite, skipInfo) {
-		this.group.add(sprite)
+		this.group.add(sprite) // ok to do even if already in group
 		if(!skipInfo) {
-			// todo: remove data from previous place
 			this.updateInfo(name, x, y, z, sprite)
 		}
+	}
+
+	remove(image) {
+		this._removeFromInfo(image, true)
 	}
 
 	clear(name, x, y, z) {
@@ -128,6 +154,28 @@ class Layer {
 	}
 
 	updateInfo(name, x, y, z, image) {
+		this._removeFromInfo(image)
+		this._addToInfo(name, x, y, z, image)
+	}
+
+	_removeFromInfo(image, destroyImage) {
+		if(image && image.gamePos) {
+			let key = _key(image.gamePos[0], image.gamePos[1], image.gamePos[2])
+			let info = this.world[key]
+			if (info && info.removeImage(image, destroyImage)) delete this.world[key]
+
+			let block = Config.BLOCKS[image.name]
+			if(block.size[2] > 0) {
+				_visit3(image.name, image.gamePos[0], image.gamePos[1], image.gamePos[2], (xx, yy, zz) => {
+					let key = _key(xx, yy, zz)
+					let info = this.infos[key]
+					if(info && info.removeImage(image)) delete this.infos[key]
+				})
+			}
+		}
+	}
+
+	_addToInfo(name, x, y, z, image) {
 		let key = _key(x, y, z)
 		let info = this.world[key]
 		if (info == null) {
@@ -175,15 +223,25 @@ class Layer {
 		return maxZ
 	}
 
-	isFree(worldX, worldY, worldZ, w, h, d) {
-		for(let xx = worldX - w; xx < worldX; xx++) {
-			for (let yy = worldY - h; yy < worldY; yy++) {
-				for (let zz = worldZ; zz < worldZ + d; zz++) {
-					let info = this.infos[_key(xx, yy, zz)]
-					if (info) return false
+	canMoveTo(sprite, x, y, z) {
+		let fits = true
+		_visit3(sprite.name, x, y, z, (xx, yy, zz) => {
+			if(fits) {
+				let info = this.infos[_key(xx, yy, zz)]
+				if (info && info.imageInfos.find((ii) => ii.image != sprite)) {
+					fits = false
+					// todo: implement short-circuit, or reduce?
 				}
 			}
-		}
+		})
+		return fits
+	}
+
+	isFree(worldX, worldY, worldZ, w, h, d) {
+		_visit3d(worldX, worldY, worldZ, w, h, d, (xx, yy, zz) => {
+			let info = this.infos[_key(xx, yy, zz)]
+			return info == null
+		})
 		return true
 	}
 
@@ -209,6 +267,24 @@ class Layer {
 	moveTo(x, y) {
 		this.group.x = x
 		this.group.y = y
+	}
+
+	findFirstAround(image, names, range) {
+		let found = null
+		if(image && image.gamePos) {
+			_visit3d(image.gamePos[0], image.gamePos[1], image.gamePos[2], range, range, range, (xx, yy, zz) => {
+				let info = this.infos[_key(xx, yy, zz)]
+				if (info) {
+					let imageInfo = info.imageInfos.find(ii => names.indexOf(ii.name) >= 0);
+					if (imageInfo) {
+						found = imageInfo.image
+						return false
+					}
+				}
+				return true
+			})
+		}
+		return found
 	}
 
 	save() {
@@ -251,7 +327,7 @@ const EDGE_OFFSET = {
  */
 export default class {
 
-	constructor(game) {
+	constructor(game, editorMode) {
 		this.game = game
 		this.floorLayer = new Layer(game, "floor")
 		this.edgeLayer = new Layer(game, "edge")
@@ -264,15 +340,17 @@ export default class {
 		for(let layer of this.layers) this.layersByName[layer.name] = layer
 
 		// cursor
-		this.anchorDebug = this.game.add.graphics(0, 0)
-		this.anchorDebug.anchor.setTo(0.5, 0.5)
-		this.anchorDebug.beginFill(0xFF33ff)
-		this.anchorDebug.drawRect(0, 0, Config.GRID_SIZE, Config.GRID_SIZE)
-		this.anchorDebug.endFill()
-		this.groundDebug = this.game.add.graphics(0, 0)
-		this.groundDebug.lineStyle(1, 0xFFFF33, 1);
-		this.groundDebug.drawRect(0, 0, Config.GRID_SIZE * 6, Config.GRID_SIZE * 6)
-		this.groundDebug.angle = 45
+		if(editorMode) {
+			this.anchorDebug = this.game.add.graphics(0, 0)
+			this.anchorDebug.anchor.setTo(0.5, 0.5)
+			this.anchorDebug.beginFill(0xFF33ff)
+			this.anchorDebug.drawRect(0, 0, Config.GRID_SIZE, Config.GRID_SIZE)
+			this.anchorDebug.endFill()
+			this.groundDebug = this.game.add.graphics(0, 0)
+			this.groundDebug.lineStyle(1, 0xFFFF33, 1);
+			this.groundDebug.drawRect(0, 0, Config.GRID_SIZE * 6, Config.GRID_SIZE * 6)
+			this.groundDebug.angle = 45
+		}
 	}
 
 	newMap(name, w, h, type) {
@@ -358,6 +436,14 @@ export default class {
 		}
 	}
 
+	// todo: figure out zoom from game.scale
+	centerOn(image, zoom) {
+		let [ screenX, screenY ] = this.toScreenCoords(image.gamePos[0], image.gamePos[1], image.gamePos[2])
+		screenX = -(screenX - Config.WIDTH / zoom / 2)
+		screenY = -(screenY - Config.HEIGHT / zoom / 2)
+		for(let layer of this.layers) layer.moveTo(screenX, screenY)
+	}
+
 	set(name, rx, ry, rz, skipInfo) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(name, rx, ry, rz)
 
@@ -379,18 +465,30 @@ export default class {
 
 	moveTo(sprite, rx, ry, rz, skipInfo) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
+		if(layer.canMoveTo(sprite, x, y, z)) {
 
-		// move to new position
-		let screenX, screenY
-		[ screenX, screenY ] = this.toScreenCoords(x + offsX, y + offsY, z)
+			// move to new position
+			let screenX, screenY
+			[screenX, screenY] = this.toScreenCoords(x + offsX, y + offsY, z)
 
-		this._saveInSprite(sprite, null, x, y, z)
+			this._saveInSprite(sprite, null, x, y, z)
 
-		sprite.x = screenX
-		sprite.y = screenY
+			sprite.x = screenX
+			sprite.y = screenY
 
-		layer.set(sprite.name, x, y, z, sprite, skipInfo)
-		this.drawEdges(layer, sprite.name, x, y)
+			layer.set(sprite.name, x, y, z, sprite, skipInfo)
+			this.drawEdges(layer, sprite.name, x, y)
+			return true
+		} else {
+			return false
+		}
+	}
+
+	replace(sprite, name) {
+		let layer = this._getLayer(sprite.name)
+		layer.remove(sprite)
+		this.set(name, sprite.gamePos[0], sprite.gamePos[1], sprite.gamePos[2])
+		this.sort()
 	}
 
 	drawEdges(layer, name, x, y) {
@@ -470,7 +568,7 @@ export default class {
 
 	toScreenCoords(worldX, worldY, worldZ) {
 		return [
-			(worldX - worldY) * Config.GRID_SIZE + this.game.world.centerX,
+			((worldX - worldY) * Config.GRID_SIZE + this.game.world.centerX),
 			((worldY + worldX - worldZ) + 10) * Config.GRID_SIZE
 		]
 	}
@@ -491,6 +589,10 @@ export default class {
 		for(let layer of this.layers) layer.move(dx, dy)
 	}
 
+	findFirstAround(image, names, range) {
+		return this._getLayer(names[0]).findFirstAround(image, names, range)
+	}
+
 	save() {
 		let data = JSON.stringify({
 			version: Config.MAP_VERSION,
@@ -509,7 +611,8 @@ export default class {
 		});
 	}
 
-	load() {
+	load(name, onLoad) {
+		this.name = name
 		$.ajax({
 			url: "/assets/maps/" + this.name + ".json",
 			dataType: "json",
@@ -518,6 +621,7 @@ export default class {
 				for(let layerInfo of data.layers) {
 					this.layersByName[layerInfo.name].load(layerInfo, this)
 				}
+				if(onLoad) onLoad()
 			}
 		})
 	}

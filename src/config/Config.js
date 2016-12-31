@@ -1,3 +1,6 @@
+export const WIDTH = 1024
+export const HEIGHT = 768
+
 // don't chane the names
 export const BLOCKS = {
 	"trunk": { size: [2, 2, 4], pos: [0, 0], dim: [32, 48] },
@@ -55,6 +58,13 @@ export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]
 export const GRID_SIZE = 8
 export const MAP_VERSION = 1
+export const SPEED = 100
+export const DOORS = Object.keys(BLOCKS).filter(name => name.indexOf(".door.") >= 0)
+
+export function getOppositeDoor(name) {
+	let dir = name.substring(name.length - 1)
+	return name.substring(0, name.length - 1) + (dir == 'x' ? 'y' : 'x')
+}
 
 export function toCss(name) {
 	return "" +

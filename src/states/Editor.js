@@ -35,8 +35,7 @@ export default class extends Phaser.State {
 			//save.attr("href", "data:text/json;charset=utf-8," + encodeURIComponent(this.blocks.save()))
 		}
 		document.getElementById("load-map").onclick = () => {
-			this.blocks.name = prompt("Map name:", this.blocks.name)
-			this.blocks.load()
+			this.blocks.load(prompt("Map name:", this.blocks.name))
 		}
 		document.getElementById("toggle-roof").onclick = () => {
 			this.blocks.toggleRoof()
@@ -47,7 +46,7 @@ export default class extends Phaser.State {
 	}
 
 	create() {
-		this.blocks = new Block(this)
+		this.blocks = new Block(this, true)
 		this.blocks.newMap("demo", 40, 40, "grass")
 
 		this.activeBlock = null
