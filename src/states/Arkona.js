@@ -15,6 +15,7 @@ export default class extends Phaser.State {
 	}
 
 	preload() {
+		this.game.load.spritesheet("player", 'assets/creatures/man.png?cb=' + Date.now(), 32, 64)
 	}
 
 	create() {
@@ -27,7 +28,14 @@ export default class extends Phaser.State {
 
 		this.blocks = new Block(this)
 		this.blocks.load(this.mapName, () => {
-			this.player = this.blocks.set("person.n", this.px, this.py, this.pz)
+			this.player = this.blocks.set("person.n", this.px, this.py, this.pz, false, (screenX, screenY) => {
+				let sprite = this.game.add.sprite(screenX, screenY, "player")
+				sprite.animations.add("walk.e", [0,1,2,3])
+				sprite.animations.add("walk.n", [4,5,6,7])
+				sprite.animations.add("walk.w", [8,9,10,11])
+				sprite.animations.add("walk.s", [12,13,14,15])
+				return sprite
+			})
 			this.blocks.sort()
 			this.blocks.centerOn(this.player, ZOOM)
 		})
@@ -48,9 +56,9 @@ export default class extends Phaser.State {
 	}
 
 	movePlayer() {
+		let cursorKeyDown = this.cursors.up.isDown || this.cursors.left.isDown || this.cursors.down.isDown || this.cursors.right.isDown
 		let now = Date.now()
-		if(now - this.lastTime > Config.SPEED &&
-			(this.cursors.up.isDown || this.cursors.left.isDown || this.cursors.down.isDown || this.cursors.right.isDown)) {
+		if(now - this.lastTime > Config.SPEED && cursorKeyDown) {
 			this.lastTime = now
 
 			let [ox, oy] = [this.px, this.py]
@@ -84,9 +92,24 @@ export default class extends Phaser.State {
 					this.tryStepTo(this.px, oy, this.pz) ||
 					this.tryStepTo(ox, this.py, this.pz)) {
 					this.blocks.checkRoof(this.px - 1, this.py - 1)
+					if(ox < this.px) {
+						this.player.animations.play('walk.e', Config.ANIMATION_SPEED, true);
+					} else if(ox > this.px) {
+						this.player.animations.play('walk.w', Config.ANIMATION_SPEED, true);
+					} else if(oy < this.py) {
+						this.player.animations.play('walk.s', Config.ANIMATION_SPEED, true);
+					} else if(oy > this.py) {
+						this.player.animations.play('walk.n', Config.ANIMATION_SPEED, true);
+					}
 				} else {
 					this.px = ox; this.py = oy
 				}
+			}
+		}
+
+		if(!cursorKeyDown) {
+			if(this.player) {
+				this.player.animations.stop()
 			}
 		}
 	}

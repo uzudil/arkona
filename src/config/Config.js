@@ -61,6 +61,7 @@ export const BLOCKS = {
 	"chair.w": { size: [2, 2, 4], pos: [160, 384], dim: [28, 56] },
 
 
+	// placeholder for creatures
 	"person.n": { size: [2, 2, 4], pos: [400, 0], dim: [32, 64] },
 }
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
@@ -70,6 +71,7 @@ export const MAP_VERSION = 1
 export const SPEED = 100
 export const DOORS = Object.keys(BLOCKS).filter(name => name.indexOf(".door.") >= 0)
 export const UNSTABLE_FLOORS = [ "water" ]
+export const ANIMATION_SPEED = 8
 
 export function getOppositeDoor(name) {
 	let dir = name.substring(name.length - 1)

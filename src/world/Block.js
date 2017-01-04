@@ -451,13 +451,18 @@ export default class {
 		for(let layer of this.layers) layer.moveTo(screenX, screenY)
 	}
 
-	set(name, rx, ry, rz, skipInfo) {
+	set(name, rx, ry, rz, skipInfo, loaderFx) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(name, rx, ry, rz)
 
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x + offsX, y + offsY, z)
 
-		let sprite = this.game.add.image(screenX, screenY, 'sprites', name)
+		let sprite
+		if(loaderFx) {
+			sprite = loaderFx(screenX, screenY)
+		} else {
+			sprite = this.game.add.image(screenX, screenY, 'sprites', name)
+		}
 		let size = Config.BLOCKS[name].size
 
 		this._saveInSprite(sprite, name, x, y, z)
