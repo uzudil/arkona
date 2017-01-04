@@ -60,6 +60,7 @@ class BlockInfo {
 		this.y = y
 		this.z = z
 		this.imageInfos = [ imageInfo ]
+		this.unstableFloor = false // computed
 	}
 
 	removeImage(image, destroyImage) {
@@ -184,6 +185,7 @@ class Layer {
 		} else {
 			info.imageInfos.push(new ImageInfo(name, image))
 		}
+		info.unstableFloor = info.imageInfos.find(ii => Config.UNSTABLE_FLOORS.indexOf(ii.name) >= 0)
 
 		let block = Config.BLOCKS[name]
 		if(block.size[2] > 0) {
@@ -470,7 +472,7 @@ export default class {
 
 	moveTo(sprite, rx, ry, rz, skipInfo) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
-		if(layer.canMoveTo(sprite, x, y, z)) {
+		if(layer.canMoveTo(sprite, x, y, z) && (skipInfo || this.isFloorSafe(x, y))) {
 
 			// move to new position
 			let screenX, screenY
@@ -487,6 +489,13 @@ export default class {
 		} else {
 			return false
 		}
+	}
+
+	isFloorSafe(x, y) {
+		let fx = (((x + 2) / Config.GROUND_TILE_W)|0) * Config.GROUND_TILE_W
+		let fy = (((y + 2) / Config.GROUND_TILE_H)|0) * Config.GROUND_TILE_H
+		let info = this.floorLayer.world[_key(fx, fy, 0)]
+		return info && !info.unstableFloor
 	}
 
 	replace(sprite, name) {
