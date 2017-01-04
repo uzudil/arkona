@@ -1,7 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import Block, { isFlat } from '../world/Block'
-import {getRandom} from '../utils'
+import {getRandom, range} from '../utils'
 import * as Config from '../config/Config'
 import Palette from '../editor/Palette'
 import $ from 'jquery'
@@ -30,10 +30,12 @@ export default class extends Phaser.State {
 		this.blocks.load(this.mapName, () => {
 			this.player = this.blocks.set("person.n", this.px, this.py, this.pz, false, (screenX, screenY) => {
 				let sprite = this.game.add.sprite(screenX, screenY, "player")
-				sprite.animations.add("walk.e", [0,1,2,3])
-				sprite.animations.add("walk.n", [4,5,6,7])
-				sprite.animations.add("walk.w", [8,9,10,11])
-				sprite.animations.add("walk.s", [12,13,14,15])
+				let index = 0
+				for(let dir of ['e', 'ne', 'n', 'nw', 'w', 'sw', 's', 'se']) {
+					console.log("dir=", range(index, index + 4))
+					sprite.animations.add("walk." + dir, range(index, index + 4))
+					index += 4
+				}
 				return sprite
 			})
 			this.blocks.sort()
@@ -42,6 +44,12 @@ export default class extends Phaser.State {
 
 		this.cursors = this.game.input.keyboard.createCursorKeys()
 		this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+
+		let style = {font: "bold 14px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "top"}
+		this.debug = game.add.text(0, 0, "Pos: ", style)
+		this.debug.setShadow(1, 1, 'rgba(0,0,0,1)', 2)
+		this.debug.setTextBounds(0, 0, 800, 20)
+
 	}
 
 	update() {
@@ -62,28 +70,36 @@ export default class extends Phaser.State {
 			this.lastTime = now
 
 			let [ox, oy] = [this.px, this.py]
+			let dir = null
 			if (this.cursors.up.isDown && this.cursors.left.isDown) {
 				this.px--
+				dir = 'w'
 			} else if (this.cursors.up.isDown && this.cursors.right.isDown) {
 				this.py--
+				dir = 'n'
 			} else if (this.cursors.down.isDown && this.cursors.right.isDown) {
 				this.px++
+				dir = 'e'
 			} else if (this.cursors.down.isDown && this.cursors.left.isDown) {
 				this.py++
+				dir = 's'
 			} else {
 				if (this.cursors.up.isDown) {
 					this.py--;
 					this.px--
+					dir = 'nw'
 				} else if (this.cursors.down.isDown) {
 					this.py++;
 					this.px++
-				}
-				if (this.cursors.left.isDown) {
+					dir = 'se'
+				} else if (this.cursors.left.isDown) {
 					this.px--;
 					this.py++
+					dir = 'sw'
 				} else if (this.cursors.right.isDown) {
 					this.px++;
 					this.py--
+					dir = 'ne'
 				}
 			}
 
@@ -92,14 +108,9 @@ export default class extends Phaser.State {
 					this.tryStepTo(this.px, oy, this.pz) ||
 					this.tryStepTo(ox, this.py, this.pz)) {
 					this.blocks.checkRoof(this.px - 1, this.py - 1)
-					if(ox < this.px) {
-						this.player.animations.play('walk.e', Config.ANIMATION_SPEED, true);
-					} else if(ox > this.px) {
-						this.player.animations.play('walk.w', Config.ANIMATION_SPEED, true);
-					} else if(oy < this.py) {
-						this.player.animations.play('walk.s', Config.ANIMATION_SPEED, true);
-					} else if(oy > this.py) {
-						this.player.animations.play('walk.n', Config.ANIMATION_SPEED, true);
+					if(dir) {
+						this.debug.text = dir
+						this.player.animations.play('walk.' + dir, Config.ANIMATION_SPEED, true);
 					}
 				} else {
 					this.px = ox; this.py = oy
