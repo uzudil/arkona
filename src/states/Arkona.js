@@ -25,6 +25,7 @@ export default class extends Phaser.State {
 		this.pz = 0
 
 		this.lastTime = 0
+		this.lastDir = null
 
 		this.blocks = new Block(this)
 		this.blocks.load(this.mapName, () => {
@@ -32,9 +33,11 @@ export default class extends Phaser.State {
 				let sprite = this.game.add.sprite(screenX, screenY, "player")
 				let index = 0
 				for(let dir of ['e', 'ne', 'n', 'nw', 'w', 'sw', 's', 'se']) {
-					console.log("dir=", range(index, index + 4))
 					sprite.animations.add("walk." + dir, range(index, index + 4))
 					index += 4
+				}
+				for(let dir of ['se', 'e', 'ne', 'n', 'nw', 'w', 'sw', 's']) {
+					sprite.animations.add("stand." + dir, [index++])
 				}
 				return sprite
 			})
@@ -110,6 +113,7 @@ export default class extends Phaser.State {
 					this.blocks.checkRoof(this.px - 1, this.py - 1)
 					if(dir) {
 						this.debug.text = dir
+						this.lastDir = dir
 						this.player.animations.play('walk.' + dir, Config.ANIMATION_SPEED, true);
 					}
 				} else {
@@ -120,7 +124,11 @@ export default class extends Phaser.State {
 
 		if(!cursorKeyDown) {
 			if(this.player) {
-				this.player.animations.stop()
+				if(this.lastDir) {
+					this.player.animations.play('stand.' + this.lastDir);
+				} else {
+					this.player.animations.stop()
+				}
 			}
 		}
 	}
