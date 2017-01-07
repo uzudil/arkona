@@ -15,7 +15,7 @@ export default class extends Phaser.State {
 	}
 
 	preload() {
-		this.game.load.spritesheet("player", 'assets/creatures/man.png?cb=' + Date.now(), 32, 64)
+		this.game.load.spritesheet("player", 'assets/creatures/woman.png?cb=' + Date.now(), 32, 64)
 	}
 
 	create() {
