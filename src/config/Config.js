@@ -75,6 +75,20 @@ export const SPEED = 100
 export const DOORS = Object.keys(BLOCKS).filter(name => name.indexOf(".door.") >= 0)
 export const UNSTABLE_FLOORS = [ "water" ]
 export const ANIMATION_SPEED = 8
+export const GAME_ZOOM = 2
+export const DIR_N = 'n'
+export const DIR_NE = 'ne'
+export const DIR_E = 'e'
+export const DIR_SE = 'se'
+export const DIR_S = 's'
+export const DIR_SW = 'sw'
+export const DIR_W = 'w'
+export const DIR_NW = 'nw'
+export const DIRS = [DIR_N, DIR_NE, DIR_E, DIR_SE, DIR_S, DIR_SW, DIR_W, DIR_NW]
+
+export function getRandomDir() {
+	return DIRS[(Math.random() * DIRS.length)|0]
+}
 
 export function getOppositeDoor(name) {
 	let dir = name.substring(name.length - 1)

@@ -105,10 +105,6 @@ class Layer {
 		}
 	}
 
-	remove(image) {
-		this._removeFromInfo(image, true)
-	}
-
 	clear(name, x, y, z) {
 		let key = _key(x, y, z)
 		let info = this.world[key]
@@ -155,28 +151,6 @@ class Layer {
 	}
 
 	updateInfo(name, x, y, z, image) {
-		this._removeFromInfo(image)
-		this._addToInfo(name, x, y, z, image)
-	}
-
-	_removeFromInfo(image, destroyImage) {
-		if(image && image.gamePos) {
-			let key = _key(image.gamePos[0], image.gamePos[1], image.gamePos[2])
-			let info = this.world[key]
-			if (info && info.removeImage(image, destroyImage)) delete this.world[key]
-
-			let block = Config.BLOCKS[image.name]
-			if(block.size[2] > 0) {
-				_visit3(image.name, image.gamePos[0], image.gamePos[1], image.gamePos[2], (xx, yy, zz) => {
-					let key = _key(xx, yy, zz)
-					let info = this.infos[key]
-					if(info && info.removeImage(image)) delete this.infos[key]
-				})
-			}
-		}
-	}
-
-	_addToInfo(name, x, y, z, image) {
 		let key = _key(x, y, z)
 		let info = this.world[key]
 		if (info == null) {
@@ -199,6 +173,23 @@ class Layer {
 					info.imageInfos.push(new ImageInfo(name, image))
 				}
 			})
+		}
+	}
+
+	removeFromCurrentPos(image, destroyImage) {
+		if(image && image.gamePos) {
+			let key = _key(image.gamePos[0], image.gamePos[1], image.gamePos[2])
+			let info = this.world[key]
+			if (info && info.removeImage(image, destroyImage)) delete this.world[key]
+
+			let block = Config.BLOCKS[image.name]
+			if(block.size[2] > 0) {
+				_visit3(image.name, image.gamePos[0], image.gamePos[1], image.gamePos[2], (xx, yy, zz) => {
+					let key = _key(xx, yy, zz)
+					let info = this.infos[key]
+					if(info && info.removeImage(image)) delete this.infos[key]
+				})
+			}
 		}
 	}
 
@@ -479,6 +470,8 @@ export default class {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
 		if(layer.canMoveTo(sprite, x, y, z) && (skipInfo || this.isFloorSafe(x, y))) {
 
+			layer.removeFromCurrentPos(sprite)
+
 			// move to new position
 			let screenX, screenY
 			[screenX, screenY] = this.toScreenCoords(x + offsX, y + offsY, z)
@@ -505,9 +498,8 @@ export default class {
 
 	replace(sprite, name) {
 		let layer = this._getLayer(sprite.name)
-		layer.remove(sprite)
+		layer.removeFromCurrentPos(sprite, true)
 		this.set(name, sprite.gamePos[0], sprite.gamePos[1], sprite.gamePos[2])
-		this.sort()
 	}
 
 	drawEdges(layer, name, x, y) {

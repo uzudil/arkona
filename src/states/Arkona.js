@@ -5,13 +5,12 @@ import {getRandom, range} from '../utils'
 import * as Config from '../config/Config'
 import $ from 'jquery'
 import Creature from '../config/Creatures'
-
-const ZOOM = 2
+import Level from '../config/Level'
 
 export default class extends Phaser.State {
 	init(context) {
 		console.log("context=", context)
-		this.game.world.scale.set(ZOOM);
+		this.game.world.scale.set(Config.GAME_ZOOM);
 	}
 
 	preload() {
@@ -19,38 +18,36 @@ export default class extends Phaser.State {
 	}
 
 	create() {
-		this.mapName = "farm"
-		this.px = 66
-		this.py = 63
-		this.pz = 0
-
 		this.lastTime = 0
 		this.lastDir = null
-
-		this.blocks = new Block(this)
-		this.blocks.load(this.mapName, () => {
-			this.player = new Creature(this.game, "man", this.blocks, ZOOM, this.px, this.py, this.pz)
-		})
 
 		this.cursors = this.game.input.keyboard.createCursorKeys()
 		this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
 
-		let style = {font: "bold 14px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "top"}
-		this.debug = game.add.text(0, 0, "Pos: ", style)
-		this.debug.setShadow(1, 1, 'rgba(0,0,0,1)', 2)
-		this.debug.setTextBounds(0, 0, 800, 20)
-
+		this.blocks = new Block(this)
+		this.level = new Level("farm")
+		this.level.start(this.game, this.blocks, () => {
+			this.px = this.level.info.startPos[0]
+			this.py= this.level.info.startPos[1]
+			this.pz= this.level.info.startPos[2]
+			this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
+		})
 	}
 
 	update() {
-		this.movePlayer()
+		let updated = this.level.moveNpcs()
+		let b = this.movePlayer()
+		if(!updated) updated = b
 
 		if(this.space.justDown) {
 			this.door = this.blocks.findFirstAround(this.player.sprite, Config.DOORS, 12)
 			if(this.door) {
 				this.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
+				updated = true
 			}
 		}
+
+		if(updated) this.blocks.sort()
 	}
 
 	movePlayer() {
@@ -99,9 +96,8 @@ export default class extends Phaser.State {
 					this.tryStepTo(ox, this.py, this.pz)) {
 					this.blocks.checkRoof(this.px - 1, this.py - 1)
 					if(dir) {
-						this.debug.text = dir
 						this.lastDir = dir
-						this.player.sprite.animations.play('walk.' + dir, Config.ANIMATION_SPEED, true);
+						this.player.walk(dir)
 					}
 				} else {
 					this.px = ox; this.py = oy
@@ -111,11 +107,7 @@ export default class extends Phaser.State {
 
 		if(!cursorKeyDown) {
 			if(this.player) {
-				if(this.lastDir) {
-					this.player.sprite.animations.play('stand.' + this.lastDir);
-				} else {
-					this.player.sprite.animations.stop()
-				}
+				this.player.stand(this.lastDir)
 			}
 		}
 	}
@@ -125,8 +117,7 @@ export default class extends Phaser.State {
 			this.px = nx
 			this.py = ny
 			this.pz = nz
-			this.blocks.sort()
-			this.blocks.centerOn(this.player.sprite, ZOOM)
+			this.blocks.centerOn(this.player.sprite, Config.GAME_ZOOM)
 			return true
 		} else {
 			return false

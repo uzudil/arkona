@@ -1,4 +1,5 @@
 import {range} from '../utils'
+import * as Config from '../config/Config'
 
 const DEFAULT_DIRS = {
 	walk: ['e', 'ne', 'n', 'nw', 'w', 'sw', 's', 'se'],
@@ -13,19 +14,22 @@ export const CREATURES = {
 		dirs: {
 			walk: ['s', 'se', 'e', 'ne', 'n', 'nw', 'w', 'sw'],
 			stand: ['sw', 's', 'se', 'e', 'ne', 'n', 'nw', 'w']
-		}
+		},
+		speed: 250
 	},
 	man: {
 		src: 'assets/creatures/man.png',
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
-		dirs: DEFAULT_DIRS
+		dirs: DEFAULT_DIRS,
+		speed: 100
 	},
 	woman: {
 		src: 'assets/creatures/woman.png',
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
-		dirs: DEFAULT_DIRS
+		dirs: DEFAULT_DIRS,
+		speed: 100
 	}
 }
 
@@ -38,11 +42,10 @@ export default class {
 		}
 	}
 
-	constructor(game, name, blocks, zoom, x, y, z) {
+	constructor(game, name, blocks, x, y, z) {
 		this.game = game
 		this.name = name
 		this.blocks = blocks
-		this.zoom = zoom
 		this.info = CREATURES[this.name]
 
 		this.sprite = this.blocks.set(this.info.blockName, x, y, z, false, (screenX, screenY) => {
@@ -58,6 +61,22 @@ export default class {
 			return sprite
 		})
 		this.blocks.sort()
-		this.blocks.centerOn(this.sprite, this.zoom)
+		this.blocks.centerOn(this.sprite, Config.GAME_ZOOM)
+	}
+
+	moveTo(nx, ny, nz) {
+		return this.blocks.moveTo(this.sprite, nx, ny, nz)
+	}
+
+	walk(dir) {
+		this.sprite.animations.play('walk.' + dir, Config.ANIMATION_SPEED, true)
+	}
+
+	stand(dir) {
+		if(dir) {
+			this.sprite.animations.play('stand.' + dir)
+		} else {
+			this.sprite.animations.stop()
+		}
 	}
 }
