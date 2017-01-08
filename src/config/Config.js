@@ -8,9 +8,10 @@ export const BLOCKS = {
 	"oak": { size: [4, 4, 4], pos: [64, 64], dim: [64, 64] },
 	"pine": { size: [4, 4, 4], pos: [128, 64], dim: [64, 64] },
 
-	"grass": { size: [4, 4, 0], pos: [96, 0], dim: [64, 64] },
+	"grass": { size: [4, 4, 0], pos: [96, 0], dim: [64, 64], options: { noEdge: true } },
 	"mud.puddle": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32] },
 	"mud": { size: [4, 4, 0], pos: [96, 128], dim: [64, 64] },
+	"straw": { size: [4, 4, 0], pos: [0, 176], dim: [64, 64], options: { noEdge: true }  },
 	"sand": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64] },
 	"moss": { size: [4, 4, 0], pos: [336, 128], dim: [64, 64] },
 	"water": { size: [4, 4, 0], pos: [416, 128], dim: [64, 64] },
@@ -35,23 +36,16 @@ export const BLOCKS = {
 	"wood.wall.x": { size: [4, 1, 6], pos: [896, 0], dim: [40, 96] },
 	"wood.wall.y": { size: [1, 4, 6], pos: [960, 0], dim: [40, 96] },
 
-	// deprecated
-	"wood.door.y": { size: [1, 2, 6], pos: [336, 0], dim: [24, 68] },
-	"wood.door.x": { size: [2, 1, 6], pos: [368, 0], dim: [24, 68] },
-
 	// new doors
 	"regular.door.x": { size: [1, 3, 6], pos: [192, 306], dim: [32, 80] },
 	"regular.door.y": { size: [3, 1, 6], pos: [224, 306], dim: [32, 80] },
-
-
-
 
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },
 	"roof.ew": { size: [10, 10, 6], pos: [688, 0], dim: [164, 172] },
 	"roof.ns.brown": { size: [10, 10, 3], pos: [448, 192], dim: [164, 164] },
 	"roof.ew.brown": { size: [10, 10, 3], pos: [640, 192], dim: [176, 180] },
 
-	"room.floor.stone": { size: [4, 4, 0], pos: [288, 208], dim: [64, 64] },
+	"room.floor.stone": { size: [4, 4, 0], pos: [288, 208], dim: [64, 64], options: { noEdge: true } },
 
 	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
 	"mountain2": { size: [4, 4, 8], pos: [64, 256], dim: [64, 96] },

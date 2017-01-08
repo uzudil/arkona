@@ -98,6 +98,15 @@ class Layer {
 		return info && info.imageInfos.find(i => i.name == name)
 	}
 
+	noEdge(x, y) {
+		let key = _key(x, y, 0)
+		let info = this.world[key]
+		return info && info.imageInfos.find(i => {
+				let block = Config.BLOCKS[i.name]
+				return block.options && block.options.noEdge
+			})
+	}
+
 	set(name, x, y, z, sprite, skipInfo) {
 		this.group.add(sprite) // ok to do even if already in group
 		if(!skipInfo) {
@@ -381,6 +390,10 @@ export default class {
 		return this.isInBounds(x, y) && this.floorLayer.hasImage("grass", x, y)
 	}
 
+	noEdge(x, y) {
+		return this.isInBounds(x, y) && this.floorLayer.noEdge(x, y)
+	}
+
 	toggleRoof() {
 		this.roofLayer.group.visible = !this.roofLayer.group.visible
 	}
@@ -460,7 +473,7 @@ export default class {
 		sprite.anchor.setTo(1 - baseHeight / sprite._frame.width, 1)
 
 		layer.set(name, x, y, z, sprite, skipInfo)
-		this.drawEdges(layer, name, x, y)
+		if(!skipInfo) this.drawEdges(layer, name, x, y)
 		return sprite
 	}
 
@@ -480,7 +493,7 @@ export default class {
 			sprite.y = screenY
 
 			layer.set(sprite.name, x, y, z, sprite, skipInfo)
-			this.drawEdges(layer, sprite.name, x, y)
+			if(!skipInfo) this.drawEdges(layer, sprite.name, x, y)
 			return true
 		} else {
 			return false
@@ -502,9 +515,14 @@ export default class {
 
 	drawEdges(layer, name, x, y) {
 		if(layer == this.floorLayer) {
-			for (let xx = -1; xx <= 1; xx++) {
-				for (let yy = -1; yy <= 1; yy++) {
-					this.drawGroundEdges(x + xx * Config.GROUND_TILE_W, y + yy * Config.GROUND_TILE_H, name)
+			let block = Config.BLOCKS[name]
+			if(block.options && block.options.noEdge) {
+				this.clearEdge(x, y)
+			} else {
+				for (let xx = -1; xx <= 1; xx++) {
+					for (let yy = -1; yy <= 1; yy++) {
+						this.drawGroundEdges(x + xx * Config.GROUND_TILE_W, y + yy * Config.GROUND_TILE_H, name)
+					}
 				}
 			}
 		}
@@ -512,13 +530,13 @@ export default class {
 
 	drawGroundEdges(gx, gy, ground) {
 		if(this.isInBounds(gx, gy)) {
-			if (this.isGrass(gx, gy)) {
+			if (this.noEdge(gx, gy)) {
 				this.clearEdge(gx, gy)
 			} else {
-				let n = this.isGrass(gx, gy - Config.GROUND_TILE_H)
-				let s = this.isGrass(gx, gy + Config.GROUND_TILE_H)
-				let w = this.isGrass(gx - Config.GROUND_TILE_W, gy)
-				let e = this.isGrass(gx + Config.GROUND_TILE_W, gy)
+				let n = this.noEdge(gx, gy - Config.GROUND_TILE_H)
+				let s = this.noEdge(gx, gy + Config.GROUND_TILE_H)
+				let w = this.noEdge(gx - Config.GROUND_TILE_W, gy)
+				let e = this.noEdge(gx + Config.GROUND_TILE_W, gy)
 				this.setEdge(gx, gy, ground, { n: n, s: s, e: e, w: w })
 			}
 		}
