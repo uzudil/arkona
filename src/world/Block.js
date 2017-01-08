@@ -231,11 +231,9 @@ class Layer {
 	}
 
 	isFree(worldX, worldY, worldZ, w, h, d) {
-		_visit3d(worldX, worldY, worldZ, w, h, d, (xx, yy, zz) => {
-			let info = this.infos[_key(xx, yy, zz)]
-			return info == null
+		return _visit3d(worldX, worldY, worldZ, w, h, d, (xx, yy, zz) => {
+			return !(this.infos[_key(xx, yy, zz)])
 		})
-		return true
 	}
 
 	getFloorAt(worldX, worldY) {
