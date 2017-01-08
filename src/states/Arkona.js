@@ -3,8 +3,8 @@ import Phaser from 'phaser'
 import Block, { isFlat } from '../world/Block'
 import {getRandom, range} from '../utils'
 import * as Config from '../config/Config'
-import Palette from '../editor/Palette'
 import $ from 'jquery'
+import Creature from '../config/Creatures'
 
 const ZOOM = 2
 
@@ -15,13 +15,13 @@ export default class extends Phaser.State {
 	}
 
 	preload() {
-		this.game.load.spritesheet("player", 'assets/creatures/woman.png?cb=' + Date.now(), 32, 64)
+		Creature.preload(this.game)
 	}
 
 	create() {
-		this.mapName = "village"
-		this.px = 190
-		this.py = 89
+		this.mapName = "farm"
+		this.px = 66
+		this.py = 63
 		this.pz = 0
 
 		this.lastTime = 0
@@ -29,20 +29,7 @@ export default class extends Phaser.State {
 
 		this.blocks = new Block(this)
 		this.blocks.load(this.mapName, () => {
-			this.player = this.blocks.set("person.n", this.px, this.py, this.pz, false, (screenX, screenY) => {
-				let sprite = this.game.add.sprite(screenX, screenY, "player")
-				let index = 0
-				for(let dir of ['e', 'ne', 'n', 'nw', 'w', 'sw', 's', 'se']) {
-					sprite.animations.add("walk." + dir, range(index, index + 4))
-					index += 4
-				}
-				for(let dir of ['se', 'e', 'ne', 'n', 'nw', 'w', 'sw', 's']) {
-					sprite.animations.add("stand." + dir, [index++])
-				}
-				return sprite
-			})
-			this.blocks.sort()
-			this.blocks.centerOn(this.player, ZOOM)
+			this.player = new Creature(this.game, "man", this.blocks, ZOOM, this.px, this.py, this.pz)
 		})
 
 		this.cursors = this.game.input.keyboard.createCursorKeys()
@@ -59,7 +46,7 @@ export default class extends Phaser.State {
 		this.movePlayer()
 
 		if(this.space.justDown) {
-			this.door = this.blocks.findFirstAround(this.player, Config.DOORS, 12)
+			this.door = this.blocks.findFirstAround(this.player.sprite, Config.DOORS, 12)
 			if(this.door) {
 				this.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
 			}
@@ -114,7 +101,7 @@ export default class extends Phaser.State {
 					if(dir) {
 						this.debug.text = dir
 						this.lastDir = dir
-						this.player.animations.play('walk.' + dir, Config.ANIMATION_SPEED, true);
+						this.player.sprite.animations.play('walk.' + dir, Config.ANIMATION_SPEED, true);
 					}
 				} else {
 					this.px = ox; this.py = oy
@@ -125,21 +112,21 @@ export default class extends Phaser.State {
 		if(!cursorKeyDown) {
 			if(this.player) {
 				if(this.lastDir) {
-					this.player.animations.play('stand.' + this.lastDir);
+					this.player.sprite.animations.play('stand.' + this.lastDir);
 				} else {
-					this.player.animations.stop()
+					this.player.sprite.animations.stop()
 				}
 			}
 		}
 	}
 
 	tryStepTo(nx, ny, nz) {
-		if(this.blocks.moveTo(this.player, nx, ny, nz)) {
+		if(this.blocks.moveTo(this.player.sprite, nx, ny, nz)) {
 			this.px = nx
 			this.py = ny
 			this.pz = nz
 			this.blocks.sort()
-			this.blocks.centerOn(this.player, ZOOM)
+			this.blocks.centerOn(this.player.sprite, ZOOM)
 			return true
 		} else {
 			return false

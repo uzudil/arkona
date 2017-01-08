@@ -32,6 +32,8 @@ export const BLOCKS = {
 	"wood.column": { size: [1, 1, 6], pos: [176, 0], dim: [16, 64] },
 	"stone.wall.x": { size: [4, 1, 6], pos: [216, 0], dim: [40, 96] },
 	"stone.wall.y": { size: [1, 4, 6], pos: [280, 0], dim: [40, 96] },
+	"wood.wall.x": { size: [4, 1, 6], pos: [896, 0], dim: [40, 96] },
+	"wood.wall.y": { size: [1, 4, 6], pos: [960, 0], dim: [40, 96] },
 
 	// deprecated
 	"wood.door.y": { size: [1, 2, 6], pos: [336, 0], dim: [24, 68] },
@@ -62,7 +64,8 @@ export const BLOCKS = {
 
 
 	// placeholder for creatures
-	"person.n": { size: [2, 2, 4], pos: [400, 0], dim: [32, 64] },
+	"2x2x4.placeholder": { size: [2, 2, 4], pos: [400, 0], dim: [32, 64] },
+	"4x4x4.placeholder": { size: [4, 4, 4], pos: [400, 0], dim: [64, 64] },
 }
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]

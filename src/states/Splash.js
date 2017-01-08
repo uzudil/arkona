@@ -39,7 +39,7 @@ export default class extends Phaser.State {
 			y += 50
 		}
 		style = {font: "bold 20px Nunito", fill: "#555"};
-		this.copyright = this.game.add.text(this.game.world.centerX, 720, "MMXVI (c) Gabor Torok", style);
+		this.copyright = this.game.add.text(this.game.world.centerX, 720, "MMXVII \u00A9 Gabor Torok", style);
 		this.copyright.anchor.setTo(0.5, 0.5)
 
 		this.menuIndex = 0
