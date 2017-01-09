@@ -26,7 +26,7 @@ export default class extends Phaser.State {
 
 		this.blocks = new Block(this)
 		this.level = new Level("farm")
-		this.level.start(this.game, this.blocks, () => {
+		this.level.start(this, this.blocks, () => {
 			this.px = this.level.info.startPos[0]
 			this.py= this.level.info.startPos[1]
 			this.pz= this.level.info.startPos[2]

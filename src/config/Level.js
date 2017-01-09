@@ -21,10 +21,10 @@ export default class {
 		this.info = LEVELS[levelName]
 	}
 
-	start(game, blocks, onLoad) {
+	start(arkona, blocks, onLoad) {
 		blocks.load(this.info.map, () => {
 			for(let npc of this.info.npcs) {
-				npc.init(new Creature(game, npc.creatureName, blocks, npc.x, npc.y, npc.z))
+				npc.init(arkona, new Creature(arkona.game, npc.creatureName, blocks, npc.x, npc.y, npc.z))
 			}
 			onLoad()
 		})

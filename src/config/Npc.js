@@ -17,12 +17,14 @@ export default class {
 		this.initialized = false
 	}
 
-	init(creature) {
+	init(arkona, creature) {
 		this.initialized = true
+		this.arkona = arkona
 		this.creature = creature
 	}
 
 	destroy() {
+		this.arkona = null
 		this.creature = null
 		this.initialized = false
 	}
@@ -34,7 +36,7 @@ export default class {
 		if(now - this.lastTime > this.creature.info.speed) {
 			this.lastTime = now
 
-			if (this._isStopping()) {
+			if (this._willStop()) {
 				this._stop()
 			} else if(this._isStopped()) {
 				// hang out
@@ -53,12 +55,16 @@ export default class {
 		return this.stopClock != null && Date.now() - this.stopClock < Config.STOP_TIME
 	}
 
-	_isStopping() {
-		return !this._isStopped() && Math.random() * 10 >= 9
+	_willStop() {
+		let probability = 9
+		if(this.arkona.player && this.options.movement == Config.MOVE_ANCHOR) {
+			let distanceToPlayer = dist3d(this.x, this.y, this.z, ...this.arkona.player.sprite.gamePos)
+			if(distanceToPlayer <= 4) probability = 1
+		}
+		return !this._isStopped() && Math.random() * 10 >= probability
 	}
 
 	_stop() {
-		console.log("Stopping")
 		this.stopClock = Date.now()
 		this.creature.stand(this.dir)
 	}
