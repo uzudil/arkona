@@ -30,6 +30,13 @@ export const CREATURES = {
 		blockName: "2x2x4.placeholder",
 		dirs: DEFAULT_DIRS,
 		speed: 200
+	},
+	woman_brown: {
+		src: 'assets/creatures/woman.brown.png',
+		dim: [32, 64],
+		blockName: "2x2x4.placeholder",
+		dirs: DEFAULT_DIRS,
+		speed: 200
 	}
 }
 

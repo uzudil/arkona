@@ -7,7 +7,7 @@ export const LEVELS = {
 		map: "farm",
 		startPos: [66, 63, 0],
 		npcs: [
-			new Npc('woman', 55, 66, 0, {
+			new Npc('woman_brown', 55, 66, 0, {
 				movement: Config.MOVE_ANCHOR
 			}),
 			new Npc('cow', 37, 97, 0),
