@@ -54,12 +54,21 @@ export const BLOCKS = {
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
 	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },
 	"fence.ns": { size: [1, 4, 4], pos: [112, 384], dim: [40, 64] },
-	"chair.w": { size: [2, 2, 4], pos: [160, 384], dim: [28, 56] },
-
 
 	// placeholder for creatures
 	"2x2x4.placeholder": { size: [2, 2, 4], pos: [400, 0], dim: [32, 64] },
 	"4x4x4.placeholder": { size: [4, 4, 4], pos: [400, 0], dim: [64, 64] },
+
+
+
+	// arkona 2
+	"chair.w": { size: [2, 2, 4], pos: [0, 0], dim: [28, 56], options: { sprites: 2 } },
+	"chair.n": { size: [2, 2, 4], pos: [100, 0], dim: [28, 56], options: { sprites: 2 } },
+	"bed.ns": { size: [3, 6, 2], pos: [32, 0], dim: [64, 72], options: { sprites: 2 } },
+	"chest.ns": { size: [2, 2, 2], pos: [132, 0], dim: [20, 32], options: { sprites: 2 } },
+	"chest.ew": { size: [2, 2, 2], pos: [156, 0], dim: [20, 32], options: { sprites: 2 } },
+	"table": { size: [3, 2, 3], pos: [192, 0], dim: [48, 64], options: { sprites: 2 } },
+	"straw-bale": { size: [2, 6, 2], pos: [0, 80], dim: [64, 64], options: { sprites: 2 } },
 }
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]
@@ -94,7 +103,9 @@ export function getOppositeDoor(name) {
 }
 
 export function toCss(name) {
+	let suffix = BLOCKS[name].options && BLOCKS[name].options["sprites"] ? BLOCKS[name].options.sprites : ""
 	return "" +
+		"background-image: url(\"/assets/images/arkona" + suffix + ".png\"); " +
 		"background-position: -" + BLOCKS[name].pos[0] + "px -" + BLOCKS[name].pos[1] + "px; " +
 		"width: " + BLOCKS[name].dim[0] + "px; " +
 		"height: " + BLOCKS[name].dim[1] + "px; ";
@@ -105,9 +116,9 @@ export function toCss(name) {
  *
  * @returns a json structure describing our blocks
  */
-export function toJson() {
+export function toJson(sprites) {
 	return {
-		frames: Object.keys(BLOCKS).map(key => {
+		frames: Object.keys(BLOCKS).filter(key => _isOfSprite(sprites, key)).map(key => {
 			let obj = BLOCKS[key]
 			return {
 				filename: key,
@@ -125,7 +136,13 @@ export function toJson() {
 			version: "1.0",
 			smartupdate: "$TexturePacker:SmartUpdate:b6887183d8c9d806808577d524d4a2b9:1e240ffed241fc58aca26b0e5d350d80:71eda69c52f7d9873cb6f00d13e1e2f8$",
 			image: "arkona.png",
-			size: {"h": 1600, "w": 1200}
+			size: {"h": 1024, "w": 1200}
 		}
 	}
+}
+
+function _isOfSprite(sprites, key) {
+	let b = BLOCKS[key]
+	return (sprites == null && (b.options == null || b.options.sprites == null)) ||
+		(b.options && b.options.sprites == sprites)
 }

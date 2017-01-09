@@ -17,6 +17,7 @@ export default class extends Phaser.State {
 		// load your assets
 		//
 		this.load.atlas('sprites', 'assets/images/arkona.png?cb=' + Date.now(), null, Config.toJson(), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+		this.load.atlas('sprites2', 'assets/images/arkona2.png?cb=' + Date.now(), null, Config.toJson(2), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 
 		this.load.image('logo', './assets/images/logo.png')
 

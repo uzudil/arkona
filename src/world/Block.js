@@ -453,6 +453,11 @@ export default class {
 		for(let layer of this.layers) layer.moveTo(screenX, screenY)
 	}
 
+	_getSprites(name) {
+		let b = Config.BLOCKS[name]
+		return b.options == null || b.options["sprites"] == null ? "sprites" : "sprites" + b.options.sprites
+	}
+
 	set(name, rx, ry, rz, skipInfo, loaderFx) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(name, rx, ry, rz)
 
@@ -463,7 +468,7 @@ export default class {
 		if(loaderFx) {
 			sprite = loaderFx(screenX, screenY)
 		} else {
-			sprite = this.game.add.image(screenX, screenY, 'sprites', name)
+			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name)
 		}
 		let size = Config.BLOCKS[name].size
 
