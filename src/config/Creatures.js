@@ -22,14 +22,14 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: DEFAULT_DIRS,
-		speed: 100
+		speed: 200
 	},
 	woman: {
 		src: 'assets/creatures/woman.png',
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: DEFAULT_DIRS,
-		speed: 100
+		speed: 200
 	}
 }
 

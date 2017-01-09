@@ -13,3 +13,10 @@ export const setResponsiveWidth = (sprite, percent, parent) => {
 export const getRandom = (list) => list[(Math.random() * list.length) | 0]
 
 export const range = (start, end) => { return [...Array(end-start).keys()].map(v => start+v) }
+
+export const dist3d = (ax, ay, az, bx, by, bz) => {
+	let dx = ax - bx
+	let dy = ay - by
+	let dz = az - bz
+	return Math.sqrt(dx * dx + dy * dy + dz * dz)
+}

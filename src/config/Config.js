@@ -78,7 +78,11 @@ export const DIR_S = 's'
 export const DIR_SW = 'sw'
 export const DIR_W = 'w'
 export const DIR_NW = 'nw'
+export const DIR_NONE = 'none'
 export const DIRS = [DIR_N, DIR_NE, DIR_E, DIR_SE, DIR_S, DIR_SW, DIR_W, DIR_NW]
+export const MOVE_RANDOM = "random"
+export const MOVE_ANCHOR = "anchor"
+export const STOP_TIME = 3000
 
 export function getRandomDir() {
 	return DIRS[(Math.random() * DIRS.length)|0]
