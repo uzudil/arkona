@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import * as Config from '../config/Config'
+import {BLOCKS} from '../config/Blocks'
 import $ from 'jquery'
 
 function _key(x, y, z) {
@@ -7,7 +8,7 @@ function _key(x, y, z) {
 }
 
 function _visit(name, worldX, worldY, fx) {
-	let block = Config.BLOCKS[name]
+	let block = BLOCKS[name]
 	for(let xx = worldX - block.size[0]; xx < worldX; xx++) {
 		for (let yy = worldY - block.size[1]; yy < worldY; yy++) {
 			fx(xx, yy)
@@ -16,7 +17,7 @@ function _visit(name, worldX, worldY, fx) {
 }
 
 function _visit3(name, worldX, worldY, worldZ, fx) {
-	let block = Config.BLOCKS[name]
+	let block = BLOCKS[name]
 	_visit(name, worldX, worldY, (xx, yy) => {
 		if(block.size[2] == 0) {
 			fx(xx, yy, 0)
@@ -44,7 +45,7 @@ export function isFlat(sprite) {
 }
 
 function isFlatByName(name) {
-	return Config.BLOCKS[name].size[2] == 0
+	return BLOCKS[name].size[2] == 0
 }
 
 class ImageInfo {
@@ -102,7 +103,7 @@ class Layer {
 		let key = _key(x, y, 0)
 		let info = this.world[key]
 		return info && info.imageInfos.find(i => {
-				let block = Config.BLOCKS[i.name]
+				let block = BLOCKS[i.name]
 				return block.options && block.options.noEdge
 			})
 	}
@@ -122,7 +123,7 @@ class Layer {
 			delete this.world[key]
 		}
 
-		let block = Config.BLOCKS[name]
+		let block = BLOCKS[name]
 		if(block.size[2] > 0) {
 			_visit3(name, x, y, z, (xx, yy, zz) => {
 				let key = _key(xx, yy, zz)
@@ -170,7 +171,7 @@ class Layer {
 		}
 		info.unstableFloor = info.imageInfos.find(ii => Config.UNSTABLE_FLOORS.indexOf(ii.name) >= 0)
 
-		let block = Config.BLOCKS[name]
+		let block = BLOCKS[name]
 		if(block.size[2] > 0) {
 			_visit3(name, x, y, z, (xx, yy, zz) => {
 				let key = _key(xx, yy, zz)
@@ -191,7 +192,7 @@ class Layer {
 			let info = this.world[key]
 			if (info && info.removeImage(image, destroyImage)) delete this.world[key]
 
-			let block = Config.BLOCKS[image.name]
+			let block = BLOCKS[image.name]
 			if(block.size[2] > 0) {
 				_visit3(image.name, image.gamePos[0], image.gamePos[1], image.gamePos[2], (xx, yy, zz) => {
 					let key = _key(xx, yy, zz)
@@ -405,7 +406,7 @@ export default class {
 	}
 
 	_getLayer(name) {
-		let block = Config.BLOCKS[name]
+		let block = BLOCKS[name]
 		let size = block.size
 		let layer
 		if(this.isStamp(name)) {
@@ -458,7 +459,7 @@ export default class {
 	}
 
 	_getSprites(name) {
-		let b = Config.BLOCKS[name]
+		let b = BLOCKS[name]
 		return b.options == null || b.options["sprites"] == null ? "sprites" : "sprites" + b.options.sprites
 	}
 
@@ -474,7 +475,7 @@ export default class {
 		} else {
 			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name, layer.group)
 		}
-		let block = Config.BLOCKS[name]
+		let block = BLOCKS[name]
 		let size = block.size
 
 		this._saveInSprite(sprite, name, x, y, z)
@@ -540,7 +541,7 @@ export default class {
 
 	drawEdges(layer, name, x, y) {
 		if(layer == this.floorLayer) {
-			let block = Config.BLOCKS[name]
+			let block = BLOCKS[name]
 			if(block.options && block.options.noEdge) {
 				this.clearEdge(x, y)
 			} else {
@@ -583,7 +584,7 @@ export default class {
 	}
 
 	isStamp(name) {
-		let block = Config.BLOCKS[name]
+		let block = BLOCKS[name]
 		return block.options && block.options["stamp"]
 	}
 

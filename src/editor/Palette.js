@@ -1,5 +1,6 @@
 import $ from 'jquery'
-import { BLOCKS, toCss } from '../config/Config'
+import { toCss } from '../config/Config'
+import { BLOCKS } from '../config/Blocks'
 
 export default class {
 	constructor(editor) {

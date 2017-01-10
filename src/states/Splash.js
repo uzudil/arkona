@@ -1,6 +1,7 @@
 import Phaser from 'phaser'
 import { centerGameObjects } from '../utils'
 import * as Config from '../config/Config'
+import Creature from '../models/Creature'
 import $ from 'jquery'
 
 export default class extends Phaser.State {
@@ -21,6 +22,7 @@ export default class extends Phaser.State {
 
 		this.load.image('logo', './assets/images/logo.png')
 
+		Creature.preload(this.game)
 	}
 
 	create() {

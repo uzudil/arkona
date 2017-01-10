@@ -4,17 +4,13 @@ import Block, { isFlat } from '../world/Block'
 import {getRandom, range} from '../utils'
 import * as Config from '../config/Config'
 import $ from 'jquery'
-import Creature from '../config/Creatures'
-import Level from '../config/Level'
+import Creature from '../models/Creature'
+import Level from '../models/Level'
 
 export default class extends Phaser.State {
 	init(context) {
 		console.log("context=", context)
 		this.game.world.scale.set(Config.GAME_ZOOM);
-	}
-
-	preload() {
-		Creature.preload(this.game)
 	}
 
 	create() {
@@ -51,6 +47,7 @@ export default class extends Phaser.State {
 		if(updated) this.blocks.sort()
 	}
 
+	// todo: smooth/vector movement
 	movePlayer() {
 		let cursorKeyDown = this.cursors.up.isDown || this.cursors.left.isDown || this.cursors.down.isDown || this.cursors.right.isDown
 		let now = Date.now()

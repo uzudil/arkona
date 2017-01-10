@@ -1,9 +1,9 @@
-import * as Config from './Config'
+import * as Config from './../config/Config'
 import { dist3d } from '../utils'
 
 export default class {
-	constructor(creatureName, x, y, z, options) {
-		this.creatureName = creatureName
+	constructor(arkona, x, y, z, options, creature) {
+		this.arkona = arkona
 		this.x = x
 		this.y = y
 		this.z = z
@@ -11,27 +11,13 @@ export default class {
 		this.anchorY = y
 		this.anchorZ = z
 		this.options = options || {}
+		this.creature = creature
 		this.dir = Config.DIR_N
 		this.lastTime = 0
 		this.stopClock = null
-		this.initialized = false
-	}
-
-	init(arkona, creature) {
-		this.initialized = true
-		this.arkona = arkona
-		this.creature = creature
-	}
-
-	destroy() {
-		this.arkona = null
-		this.creature = null
-		this.initialized = false
 	}
 
 	move() {
-		if(!this.initialized) return false
-
 		let now = Date.now()
 		if(now - this.lastTime > this.creature.info.speed) {
 			this.lastTime = now
