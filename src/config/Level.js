@@ -5,7 +5,7 @@ import * as Config from './Config'
 export const LEVELS = {
 	farm: {
 		map: "farm",
-		startPos: [66, 63, 0],
+		startPos: [102, 28, 0],
 		npcs: [
 			new Npc('woman_brown', 55, 66, 0, {
 				movement: Config.MOVE_ANCHOR

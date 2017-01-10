@@ -31,6 +31,7 @@ export default class extends Phaser.State {
 			this.py= this.level.info.startPos[1]
 			this.pz= this.level.info.startPos[2]
 			this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
+			this.player.stand(Config.DIR_E)
 		})
 	}
 

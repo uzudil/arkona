@@ -39,8 +39,7 @@ export default class {
 			if (this._willStop()) {
 				this._stop()
 			} else if(this._isStopped()) {
-				// hang out
-				return false
+				this._turnToPlayer()
 			} else if (!this._takeStep()) {
 				this._changeDir()
 			}
@@ -51,6 +50,14 @@ export default class {
 		}
 	}
 
+	_turnToPlayer() {
+		if(this.isNearPlayer()) {
+			let dir = this.getDirToPlayer()
+			if(dir != null) this.dir = dir
+		}
+		this.creature.stand(this.dir)
+	}
+
 	_isStopped() {
 		return this.stopClock != null && Date.now() - this.stopClock < Config.STOP_TIME
 	}
@@ -58,15 +65,41 @@ export default class {
 	_willStop() {
 		let probability = 9
 		if(this.arkona.player && this.options.movement == Config.MOVE_ANCHOR) {
-			let distanceToPlayer = dist3d(this.x, this.y, this.z, ...this.arkona.player.sprite.gamePos)
-			if(distanceToPlayer <= 4) probability = 1
+			if(this.isNearPlayer()) probability = 1
 		}
 		return !this._isStopped() && Math.random() * 10 >= probability
 	}
 
+	isNearPlayer() {
+		return this.isNearLocation(...this.arkona.player.sprite.gamePos)
+	}
+
+	isNearLocation(x, y, z) {
+		let distanceToPlayer = dist3d(this.x, this.y, this.z, x, y, z)
+		return distanceToPlayer <= Config.NEAR_DIST
+	}
+
+	getDirToPlayer() {
+		return this.getDirToLocation(...this.arkona.player.sprite.gamePos)
+	}
+
+	getDirToLocation(x, y, z) {
+		let dx = this.x - x
+		let dy = this.y - y
+		if(dx > 0 && dy > 0) return Config.DIR_NW
+		else if(dx > 0 && dy < 0) return Config.DIR_SW
+		else if(dx < 0 && dy > 0) return Config.DIR_NE
+		else if(dx < 0 && dy < 0) return Config.DIR_SE
+		else if(dx < 0) return Config.DIR_E
+		else if(dx > 0) return Config.DIR_W
+		else if(dy < 0) return Config.DIR_S
+		else if(dy > 0) return Config.DIR_N
+		else return null
+	}
+
 	_stop() {
 		this.stopClock = Date.now()
-		this.creature.stand(this.dir)
+		this._turnToPlayer()
 	}
 
 	_takeStep() {

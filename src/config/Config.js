@@ -3,13 +3,13 @@ export const HEIGHT = 768
 
 // don't chane the names
 export const BLOCKS = {
-	"trunk": { size: [2, 2, 4], pos: [0, 0], dim: [32, 48] },
+	"trunk": { size: [2, 2, 4], pos: [0, 0], dim: [31, 48] },
 	"brown": { size: [4, 4, 3], pos: [32, 0], dim: [64, 48] },
 	"oak": { size: [4, 4, 4], pos: [64, 64], dim: [64, 64] },
 	"pine": { size: [4, 4, 4], pos: [128, 64], dim: [64, 64] },
 
 	"grass": { size: [4, 4, 0], pos: [96, 0], dim: [64, 64], options: { noEdge: true } },
-	"mud.puddle": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32] },
+	"mud.puddle": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32], options: { noEdge: true, stamp: true } },
 	"mud": { size: [4, 4, 0], pos: [96, 128], dim: [64, 64] },
 	"straw": { size: [4, 4, 0], pos: [0, 176], dim: [64, 64], options: { noEdge: true }  },
 	"sand": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64] },
@@ -62,13 +62,17 @@ export const BLOCKS = {
 
 
 	// arkona 2
-	"chair.w": { size: [2, 2, 4], pos: [0, 0], dim: [28, 56], options: { sprites: 2 } },
-	"chair.n": { size: [2, 2, 4], pos: [100, 0], dim: [28, 56], options: { sprites: 2 } },
+	"chair.w": { size: [1, 1, 2], pos: [0, 0], dim: [16, 32], options: { sprites: 2 } },
+	"chair.n": { size: [1, 1, 2], pos: [100, 0], dim: [16, 32], options: { sprites: 2 } },
 	"bed.ns": { size: [3, 6, 2], pos: [32, 0], dim: [64, 72], options: { sprites: 2 } },
 	"chest.ns": { size: [2, 2, 2], pos: [132, 0], dim: [20, 32], options: { sprites: 2 } },
 	"chest.ew": { size: [2, 2, 2], pos: [156, 0], dim: [20, 32], options: { sprites: 2 } },
 	"table": { size: [3, 2, 3], pos: [192, 0], dim: [48, 64], options: { sprites: 2 } },
 	"straw-bale": { size: [2, 6, 2], pos: [0, 80], dim: [64, 64], options: { sprites: 2 } },
+	"chimney.ns": { size: [3, 1, 10], pos: [96, 48], dim: [32, 104], options: { sprites: 2 } },
+	"ashes": { size: [2, 2, 0], pos: [128, 48], dim: [32, 32], options: { sprites: 2, noEdge: true, stamp: true } },
+	"ashes.big": { size: [4, 4, 0], pos: [130, 80], dim: [60, 64], options: { sprites: 2, noEdge: true, stamp: true } },
+	"pod": { size: [8, 8, 8], pos: [192, 64], dim: [96, 96], options: { sprites: 2 } },
 }
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]
@@ -92,6 +96,7 @@ export const DIRS = [DIR_N, DIR_NE, DIR_E, DIR_SE, DIR_S, DIR_SW, DIR_W, DIR_NW]
 export const MOVE_RANDOM = "random"
 export const MOVE_ANCHOR = "anchor"
 export const STOP_TIME = 3000
+export const NEAR_DIST = 4
 
 export function getRandomDir() {
 	return DIRS[(Math.random() * DIRS.length)|0]

@@ -331,10 +331,11 @@ export default class {
 		this.game = game
 		this.floorLayer = new Layer(game, "floor")
 		this.edgeLayer = new Layer(game, "edge")
+		this.stampLayer = new Layer(game, "stamp")
 		this.objectLayer = new Layer(game, "object", true)
 		this.roofLayer = new Layer(game, "roof", true)
 		this.layers = [
-			this.floorLayer, this.edgeLayer, this.objectLayer, this.roofLayer
+			this.floorLayer, this.edgeLayer, this.stampLayer, this.objectLayer, this.roofLayer
 		]
 		this.layersByName = {}
 		for(let layer of this.layers) this.layersByName[layer.name] = layer
@@ -404,9 +405,12 @@ export default class {
 	}
 
 	_getLayer(name) {
-		let size = Config.BLOCKS[name].size
+		let block = Config.BLOCKS[name]
+		let size = block.size
 		let layer
-		if(name.indexOf(".edge") > 0) {
+		if(this.isStamp(name)) {
+			layer = this.stampLayer
+		} else if(name.indexOf(".edge") > 0) {
 			layer = this.edgeLayer
 		} else if(name.indexOf("roof.") >= 0) {
 			layer = this.roofLayer
@@ -560,6 +564,11 @@ export default class {
 				this.set("grass.edge" + index + "." + dir, gx, gy, 0)
 			}
 		}
+	}
+
+	isStamp(name) {
+		let block = Config.BLOCKS[name]
+		return block.options && block.options["stamp"]
 	}
 
 	fixEdges() {

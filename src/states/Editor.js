@@ -166,7 +166,9 @@ export default class extends Phaser.State {
 			if (this.game.input.activePointer.isDown && this.addNew && this.blocks.isInBounds(x, y)) {
 				let newSprite
 				if (isFlat(this.activeBlock)) {
-					this.blocks.clear("grass", x, y, 0)
+					if(!this.blocks.isStamp(this.activeBlock.name)) {
+						this.blocks.clear("grass", x, y, 0)
+					}
 					newSprite = this.blocks.set(this.activeBlock.name, x, y, 0)
 				} else {
 					newSprite = this.blocks.set(this.activeBlock.name, x, y, z)
