@@ -472,14 +472,25 @@ export default class {
 		if(loaderFx) {
 			sprite = loaderFx(screenX, screenY)
 		} else {
-			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name)
+			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name, layer.group)
 		}
-		let size = Config.BLOCKS[name].size
+		let block = Config.BLOCKS[name]
+		let size = block.size
 
 		this._saveInSprite(sprite, name, x, y, z)
 
 		let baseHeight = size[1] * Config.GRID_SIZE
-		sprite.anchor.setTo(1 - baseHeight / sprite._frame.width, 1)
+		let anchorX = 1 - baseHeight / sprite._frame.width
+		sprite.anchor.setTo(anchorX, 1)
+
+		if(Config.DEBUG_BLOCKS && layer == this.objectLayer) {
+			let gfx = this.game.add.graphics(screenX + block.dim[0] * anchorX, screenY - block.dim[1], layer.group)
+			gfx.lineStyle(1, 0xffffff, 1)
+			gfx.drawRect(0, 0, block.dim[0], block.dim[1])
+			sprite.debugGraphics = gfx
+		} else {
+			sprite.debugGraphics = null
+		}
 
 		layer.set(name, x, y, z, sprite, skipInfo)
 		if(!skipInfo) this.drawEdges(layer, name, x, y)
@@ -500,6 +511,11 @@ export default class {
 
 			sprite.x = screenX
 			sprite.y = screenY
+
+			if(sprite.debugGraphics) {
+				sprite.debugGraphics.x = screenX
+				sprite.debugGraphics.y = screenY
+			}
 
 			layer.set(sprite.name, x, y, z, sprite, skipInfo)
 			if(!skipInfo) this.drawEdges(layer, sprite.name, x, y)

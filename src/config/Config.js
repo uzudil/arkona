@@ -97,6 +97,7 @@ export const MOVE_RANDOM = "random"
 export const MOVE_ANCHOR = "anchor"
 export const STOP_TIME = 3000
 export const NEAR_DIST = 4
+export const DEBUG_BLOCKS = false
 
 export function getRandomDir() {
 	return DIRS[(Math.random() * DIRS.length)|0]
