@@ -1,6 +1,8 @@
 import Phaser from 'phaser'
 import * as Config from '../config/Config'
 import {BLOCKS} from '../config/Blocks'
+import ImpreciseSort from './ImpreciseSort'
+import DAGSort from './DAGSort'
 import $ from 'jquery'
 
 function _key(x, y, z) {
@@ -78,10 +80,12 @@ class BlockInfo {
 }
 
 class Layer {
-	constructor(game, name, sorted) {
+	constructor(game, name, sorted, sortingStrategy) {
 		this.game = game
 		this.name = name
 		this.sorted = sorted
+		this.sortingStrategy = sortingStrategy || new ImpreciseSort()
+
 		this.group = game.add.group()
 		this.infos = {} // 3d space
 		this.world = {} // origin space
@@ -253,10 +257,8 @@ class Layer {
 
 	sort() {
 		if(this.sorted) {
-			// from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
-			this.group.customSort((a, b) => {
-				return a.isoDepth > b.isoDepth ? 1 : (a.isoDepth < b.isoDepth ? -1 : 0);
-			})
+			this.sortingStrategy.prepareToSort(this.group.children)
+			this.group.customSort(this.sortingStrategy.compareSprites)
 		}
 	}
 
@@ -323,8 +325,6 @@ const EDGE_OFFSET = {
 
 /**
  * A map section made of blocks.
- *
- * Some ideas came from: https://mazebert.com/2013/04/18/isometric-depth-sorting/
  */
 export default class {
 
@@ -333,7 +333,7 @@ export default class {
 		this.floorLayer = new Layer(game, "floor")
 		this.edgeLayer = new Layer(game, "edge")
 		this.stampLayer = new Layer(game, "stamp")
-		this.objectLayer = new Layer(game, "object", true)
+		this.objectLayer = new Layer(game, "object", true, new DAGSort())
 		this.roofLayer = new Layer(game, "roof", true)
 		this.layers = [
 			this.floorLayer, this.edgeLayer, this.stampLayer, this.objectLayer, this.roofLayer
@@ -479,6 +479,7 @@ export default class {
 		let size = block.size
 
 		this._saveInSprite(sprite, name, x, y, z)
+		layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
 
 		let baseHeight = size[1] * Config.GRID_SIZE
 		let anchorX = 1 - baseHeight / sprite._frame.width
@@ -509,6 +510,7 @@ export default class {
 			[screenX, screenY] = this.toScreenCoords(x + offsX, y + offsY, z)
 
 			this._saveInSprite(sprite, null, x, y, z)
+			layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
 
 			sprite.x = screenX
 			sprite.y = screenY
@@ -600,8 +602,8 @@ export default class {
 	_saveInSprite(sprite, name, x, y, z) {
 		// set some calculated values
 		if(name) sprite.name = name
+		sprite.key = _key(x, y, z)
 		sprite.gamePos = [x, y, z]
-		sprite.isoDepth = x + y + 0.001 * z
 	}
 
 	/**
