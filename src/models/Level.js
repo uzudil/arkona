@@ -7,6 +7,7 @@ export default class {
 	constructor(levelName) {
 		this.info = Levels.LEVELS[levelName]
 		this.npcs = []
+		this.loaded = false
 	}
 
 	start(arkona, blocks, onLoad) {

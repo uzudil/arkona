@@ -47,6 +47,13 @@ export default class {
 		}
 	}
 
+	/**
+	 * Create the DAG. As an optimization, only store sprites that are currently
+	 * visible. Since each step requires a resort, we can get away with this.
+	 * @param sprites
+	 * @returns a map of key->[list of sprites] where the value is a list of sprites 'behind' the key
+	 * @private
+	 */
 	_createDAG(sprites) {
 		let behind = {}
 		for(let a of sprites) {

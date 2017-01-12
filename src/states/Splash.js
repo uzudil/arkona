@@ -32,7 +32,7 @@ export default class extends Phaser.State {
 		this.logo = this.add.image(this.game.world.centerX, 200, 'logo')
 		this.logo.anchor.setTo(0.5, 0.5)
 
-		var style = {font: "bold 36px Nunito", fill: "#888"};
+		var style = {font: "bold 36px " + Config.FONT_FAMILY, fill: "#888"};
 		this.menu = []
 		let y = 400
 		for(let s of ["Game Editor", "New Game", "Load Game"]) {
@@ -41,7 +41,7 @@ export default class extends Phaser.State {
 			this.menu.push(m)
 			y += 50
 		}
-		style = {font: "bold 20px Nunito", fill: "#555"};
+		style = {font: "bold 20px " + Config.FONT_FAMILY, fill: "#555"};
 		this.copyright = this.game.add.text(this.game.world.centerX, 720, "MMXVII \u00A9 Gabor Torok", style);
 		this.copyright.anchor.setTo(0.5, 0.5)
 
@@ -53,8 +53,8 @@ export default class extends Phaser.State {
 	}
 
 	updateMenu() {
-		var style = {font: "bold 36px Nunito", fill: "#888"};
-		var activeStyle = {font: "bold 42px Nunito", fill: "#c8c"};
+		var style = {font: "bold 36px " + Config.FONT_FAMILY, fill: "#888"};
+		var activeStyle = {font: "bold 42px " + Config.FONT_FAMILY, fill: "#c8c"};
 		for(let i = 0; i < this.menu.length; i++) {
 			this.menu[i].setStyle(i == this.menuIndex ? activeStyle : style)
 		}

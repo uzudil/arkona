@@ -2,7 +2,7 @@ import {BLOCKS} from './Blocks'
 
 export const WIDTH = 1024
 export const HEIGHT = 768
-
+export const NARRATE_HEIGHT = 100
 export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]
 export const GRID_SIZE = 8
@@ -27,6 +27,8 @@ export const MOVE_ANCHOR = "anchor"
 export const STOP_TIME = 3000
 export const NEAR_DIST = 4
 export const DEBUG_BLOCKS = false
+export const FONT_FAMILY = "Trade Winds"
+export const ARKONA_FONT_FAMILY = "Germania+One"
 
 export function getRandomDir() {
 	return DIRS[(Math.random() * DIRS.length)|0]

@@ -80,13 +80,13 @@ class BlockInfo {
 }
 
 class Layer {
-	constructor(game, name, sorted, sortingStrategy) {
+	constructor(game, parentGroup, name, sorted, sortingStrategy) {
 		this.game = game
 		this.name = name
 		this.sorted = sorted
 		this.sortingStrategy = sortingStrategy || new ImpreciseSort()
 
-		this.group = game.add.group()
+		this.group = game.add.group(parentGroup)
 		this.infos = {} // 3d space
 		this.world = {} // origin space
 	}
@@ -330,11 +330,13 @@ export default class {
 
 	constructor(game, editorMode) {
 		this.game = game
-		this.floorLayer = new Layer(game, "floor")
-		this.edgeLayer = new Layer(game, "edge")
-		this.stampLayer = new Layer(game, "stamp")
-		this.objectLayer = new Layer(game, "object", true, new DAGSort())
-		this.roofLayer = new Layer(game, "roof", true)
+		this.group = game.add.group()
+		this.group.scale.set(Config.GAME_ZOOM)
+		this.floorLayer = new Layer(game, this.group, "floor")
+		this.edgeLayer = new Layer(game, this.group, "edge")
+		this.stampLayer = new Layer(game, this.group, "stamp")
+		this.objectLayer = new Layer(game, this.group, "object", true, new DAGSort())
+		this.roofLayer = new Layer(game, this.group, "roof", true)
 		this.layers = [
 			this.floorLayer, this.edgeLayer, this.stampLayer, this.objectLayer, this.roofLayer
 		]
@@ -451,10 +453,10 @@ export default class {
 	}
 
 	// todo: figure out zoom from game.scale
-	centerOn(image, zoom) {
+	centerOn(image) {
 		let [ screenX, screenY ] = this.toScreenCoords(image.gamePos[0], image.gamePos[1], image.gamePos[2])
-		screenX = -(screenX - Config.WIDTH / zoom / 2)
-		screenY = -(screenY - Config.HEIGHT / zoom / 2)
+		screenX = -(screenX - Config.WIDTH / Config.GAME_ZOOM / 2)
+		screenY = -(screenY - Config.HEIGHT / Config.GAME_ZOOM / 2)
 		for(let layer of this.layers) layer.moveTo(screenX, screenY)
 	}
 

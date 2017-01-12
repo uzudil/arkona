@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import WebFont from 'webfontloader'
+import {FONT_FAMILY, ARKONA_FONT_FAMILY} from '../config/Config'
 
 export default class extends Phaser.State {
 	init() {
@@ -11,7 +12,7 @@ export default class extends Phaser.State {
 	preload() {
 		WebFont.load({
 			google: {
-				families: ['Nunito']
+				families: [FONT_FAMILY, ARKONA_FONT_FAMILY]
 			},
 			active: this.fontsLoaded
 		})

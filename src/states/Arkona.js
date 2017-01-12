@@ -6,11 +6,11 @@ import * as Config from '../config/Config'
 import $ from 'jquery'
 import Creature from '../models/Creature'
 import Level from '../models/Level'
+import Messages from '../ui/Messages'
 
 export default class extends Phaser.State {
 	init(context) {
 		console.log("context=", context)
-		this.game.world.scale.set(Config.GAME_ZOOM);
 	}
 
 	create() {
@@ -20,6 +20,8 @@ export default class extends Phaser.State {
 		this.cursors = this.game.input.keyboard.createCursorKeys()
 		this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
 
+		this.messages = new Messages(this)
+
 		this.blocks = new Block(this)
 		this.level = new Level("farm")
 		this.level.start(this, this.blocks, () => {
@@ -28,23 +30,36 @@ export default class extends Phaser.State {
 			this.pz= this.level.info.startPos[2]
 			this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
 			this.player.stand(Config.DIR_E)
+
+			this.world.bringToTop(this.messages.group)
 		})
 	}
 
 	update() {
-		let updated = this.level.moveNpcs()
-		let b = this.movePlayer()
-		if(!updated) updated = b
-
-		if(this.space.justDown) {
-			this.door = this.blocks.findFirstAround(this.player.sprite, Config.DOORS, 12)
-			if(this.door) {
-				this.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
-				updated = true
+		if(this.messages.group.visible) {
+			if(this.space.justDown) {
+				this.messages.showNextLine()
 			}
+		} else {
+			let updated = this.level.moveNpcs()
+			let b = this.movePlayer()
+			if (!updated) updated = b
+
+			if (this.space.justDown) {
+				this.door = this.blocks.findFirstAround(this.player.sprite, Config.DOORS, 12)
+				if (this.door) {
+					this.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
+					updated = true
+				}
+			}
+
+			if (updated) this.blocks.sort()
 		}
 
-		if(updated) this.blocks.sort()
+		if(this.level.loaded == false) {
+			this.level.info.onLoad(this)
+			this.level.loaded = true
+		}
 	}
 
 	// todo: smooth/vector movement
@@ -115,10 +130,14 @@ export default class extends Phaser.State {
 			this.px = nx
 			this.py = ny
 			this.pz = nz
-			this.blocks.centerOn(this.player.sprite, Config.GAME_ZOOM)
+			this.blocks.centerOn(this.player.sprite)
 			return true
 		} else {
 			return false
 		}
+	}
+
+	narrate(message) {
+		this.messages.showFirstLine(message)
 	}
 }
