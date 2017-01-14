@@ -10,7 +10,7 @@ export default class {
 		this.narratorTextBackground.endFill()
 
 		var style = {
-			font: "bold 32px " + Config.FONT_FAMILY,
+			font: "bold 32px " + Config.FONT_FAMILY_NAME,
 			fill: "#fff",
 			boundsAlignH: "left",
 			boundsAlignV: "top",

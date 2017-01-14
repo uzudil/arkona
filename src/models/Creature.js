@@ -27,6 +27,7 @@ export default class {
 			for(let dir of this.info.dirs.stand) {
 				sprite.animations.add("stand." + dir, [index++])
 			}
+			sprite.creature = this
 			return sprite
 		})
 		this.blocks.sort()

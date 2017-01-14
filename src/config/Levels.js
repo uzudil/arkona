@@ -1,4 +1,5 @@
 import {MOVE_ANCHOR} from './Config'
+import * as FARM_CONVO from '../convo/farm'
 
 export const LEVELS = {
 	farm: {
@@ -8,7 +9,11 @@ export const LEVELS = {
 			{
 				creature: 'woman_brown',
 				x: 55, y: 66,
-				options: { movement: MOVE_ANCHOR }
+				options: {
+					movement: MOVE_ANCHOR,
+					name: "Sharya",
+					convo: FARM_CONVO.CONVO.tag("sharya.start")
+				},
 			},
 			{ creature: 'cow', x: 37, y: 97 },
 			{ creature: 'cow', x: 42, y: 89 }

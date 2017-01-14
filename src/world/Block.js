@@ -272,6 +272,22 @@ class Layer {
 		this.group.y = y
 	}
 
+	findClosest(image, range, fx) {
+		let found = false
+		_visit3d(image.gamePos[0], image.gamePos[1], image.gamePos[2], range, range, range, (xx, yy, zz) => {
+			let info = this.infos[_key(xx, yy, zz)]
+			if (info && info.imageInfos) {
+				let imageInfo = info.imageInfos.find(ii => fx(ii.image))
+				if (imageInfo) {
+					found = imageInfo.image
+					return false
+				}
+			}
+			return true
+		})
+		return found
+	}
+
 	findFirstAround(image, names, range) {
 		let found = null
 		if(image && image.gamePos) {
@@ -331,7 +347,8 @@ export default class {
 	constructor(game, editorMode) {
 		this.game = game
 		this.group = game.add.group()
-		this.group.scale.set(Config.GAME_ZOOM)
+		this.zoom = editorMode ? 1 : Config.GAME_ZOOM
+		this.group.scale.set(this.zoom)
 		this.floorLayer = new Layer(game, this.group, "floor")
 		this.edgeLayer = new Layer(game, this.group, "edge")
 		this.stampLayer = new Layer(game, this.group, "stamp")
@@ -455,8 +472,8 @@ export default class {
 	// todo: figure out zoom from game.scale
 	centerOn(image) {
 		let [ screenX, screenY ] = this.toScreenCoords(image.gamePos[0], image.gamePos[1], image.gamePos[2])
-		screenX = -(screenX - Config.WIDTH / Config.GAME_ZOOM / 2)
-		screenY = -(screenY - Config.HEIGHT / Config.GAME_ZOOM / 2)
+		screenX = -(screenX - Config.WIDTH / this.zoom / 2)
+		screenY = -(screenY - Config.HEIGHT / this.zoom / 2)
 		for(let layer of this.layers) layer.moveTo(screenX, screenY)
 	}
 
@@ -649,6 +666,10 @@ export default class {
 
 	move(dx, dy) {
 		for(let layer of this.layers) layer.move(dx, dy)
+	}
+
+	findClosestObject(image, range, fx) {
+		return this.objectLayer.findClosest(image, range, fx)
 	}
 
 	findFirstAround(image, names, range) {

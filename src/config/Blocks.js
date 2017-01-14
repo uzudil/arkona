@@ -9,6 +9,7 @@ export const BLOCKS = {
 	"mud.puddle": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32], options: { noEdge: true, stamp: true } },
 	"mud": { size: [4, 4, 0], pos: [96, 128], dim: [64, 64] },
 	"straw": { size: [4, 4, 0], pos: [0, 176], dim: [64, 64], options: { noEdge: true }  },
+	"straw.stamp": { size: [4, 4, 0], pos: [64, 192], dim: [64, 64], options: { noEdge: true, stamp: true }  },
 	"sand": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64] },
 	"moss": { size: [4, 4, 0], pos: [336, 128], dim: [64, 64] },
 	"water": { size: [4, 4, 0], pos: [416, 128], dim: [64, 64] },

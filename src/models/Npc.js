@@ -12,6 +12,7 @@ export default class {
 		this.anchorZ = z
 		this.options = options || {}
 		this.creature = creature
+		this.creature.sprite.npc = this
 		this.dir = Config.DIR_N
 		this.lastTime = 0
 		this.stopClock = null

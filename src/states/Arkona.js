@@ -7,6 +7,7 @@ import $ from 'jquery'
 import Creature from '../models/Creature'
 import Level from '../models/Level'
 import Messages from '../ui/Messages'
+import ConvoUI from '../ui/ConvoUI'
 
 export default class extends Phaser.State {
 	init(context) {
@@ -19,8 +20,12 @@ export default class extends Phaser.State {
 
 		this.cursors = this.game.input.keyboard.createCursorKeys()
 		this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+		this.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
+		this.t_key = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
 
+		// ui
 		this.messages = new Messages(this)
+		this.convoUi = new ConvoUI(this)
 
 		this.blocks = new Block(this)
 		this.level = new Level("farm")
@@ -32,19 +37,36 @@ export default class extends Phaser.State {
 			this.player.stand(Config.DIR_E)
 
 			this.world.bringToTop(this.messages.group)
+			this.world.bringToTop(this.convoUi.group)
 		})
 	}
 
 	update() {
 		if(this.messages.group.visible) {
-			if(this.space.justDown) {
+			if (this.space.justDown) {
 				this.messages.showNextLine()
+			}
+		} else if(this.convoUi.group.visible) {
+			if (this.esc.justDown) {
+				this.convoUi.end()
+			} else if(this.space.justDown) {
+				this.convoUi.select()
+			} else if(this.cursors.up.justDown) {
+				this.convoUi.change(-1)
+			} else if(this.cursors.down.justDown) {
+				this.convoUi.change(1)
 			}
 		} else {
 			let updated = this.level.moveNpcs()
 			let b = this.movePlayer()
 			if (!updated) updated = b
 
+			if (this.t_key.justDown) {
+				let sprite = this.blocks.findClosestObject(this.player.sprite, 12, (sprite) => sprite.npc != null)
+				if(sprite) {
+					this.convoUi.start(sprite.npc)
+				}
+			}
 			if (this.space.justDown) {
 				this.door = this.blocks.findFirstAround(this.player.sprite, Config.DOORS, 12)
 				if (this.door) {
