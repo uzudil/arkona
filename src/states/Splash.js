@@ -3,6 +3,7 @@ import { centerGameObjects } from '../utils'
 import * as Config from '../config/Config'
 import Creature from '../models/Creature'
 import $ from 'jquery'
+import Transition from '../ui/Transition'
 
 export default class extends Phaser.State {
 	init() {
@@ -50,6 +51,8 @@ export default class extends Phaser.State {
 
 		this.cursors = this.game.input.keyboard.createCursorKeys()
 		this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
+
+		this.transition = new Transition()
 	}
 
 	updateMenu() {
@@ -77,10 +80,14 @@ export default class extends Phaser.State {
 				this.state.start('Editor')
 			} else if(this.menuIndex == 1) {
 				// new game
-				this.state.start('Arkona')
+				this.transition.fadeIn(() => {
+					this.state.start('Arkona')
+				})
 			} else if(this.menuIndex == 2) {
 				// load game
-				this.state.start('Arkona', true, false, { loadGame: true })
+				this.transition.fadeIn(() => {
+					this.state.start('Arkona', true, false, { loadGame: true })
+				})
 			}
 		}
 	}

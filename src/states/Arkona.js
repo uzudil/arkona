@@ -8,6 +8,7 @@ import Creature from '../models/Creature'
 import Level from '../models/Level'
 import Messages from '../ui/Messages'
 import ConvoUI from '../ui/ConvoUI'
+import Transition from '../ui/Transition'
 
 export default class extends Phaser.State {
 	init(context) {
@@ -17,31 +18,28 @@ export default class extends Phaser.State {
 	create() {
 		this.lastTime = 0
 		this.lastDir = null
+		this.gameState = {}
+		this.level = null
 
+		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys()
 		this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
 		this.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
 		this.t_key = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
 
-		// ui
+		// ui (order matters)
+		this.blocks = new Block(this)
 		this.messages = new Messages(this)
 		this.convoUi = new ConvoUI(this)
+		this.transition = new Transition()
 
-		this.blocks = new Block(this)
-		this.level = new Level("farm")
-		this.level.start(this, this.blocks, () => {
-			this.px = this.level.info.startPos[0]
-			this.py= this.level.info.startPos[1]
-			this.pz= this.level.info.startPos[2]
-			this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
-			this.player.stand(Config.DIR_E)
-
-			this.world.bringToTop(this.messages.group)
-			this.world.bringToTop(this.convoUi.group)
-		})
+		// start game
+		this.loadLevel("farm")
 	}
 
 	update() {
+		if(this.loading) return
+
 		if(this.messages.group.visible) {
 			if (this.space.justDown) {
 				this.messages.showNextLine()
@@ -64,11 +62,14 @@ export default class extends Phaser.State {
 			if (this.t_key.justDown) {
 				let sprite = this.blocks.findClosestObject(this.player.sprite, 12, (sprite) => sprite.npc != null)
 				if(sprite) {
+					this.level.npcs.forEach(npc => npc.creature.stand(npc.dir))
 					this.convoUi.start(sprite.npc)
 				}
 			}
 			if (this.space.justDown) {
-				this.door = this.blocks.findFirstAround(this.player.sprite, Config.DOORS, 12)
+				this.door = this.blocks.findClosestObject(this.player.sprite, 12, (sprite) => {
+					return Config.DOORS.indexOf(sprite.name) >= 0
+				})
 				if (this.door) {
 					this.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
 					updated = true
@@ -165,17 +166,27 @@ export default class extends Phaser.State {
 	playerMoved() {
 		let dst = this.level.checkBounds(this.px, this.py, this.blocks)
 		if(dst) {
+			this.transition.fadeIn(() => this.loadLevel(dst.map, dst.x, dst.y, true))
+		}
+	}
+
+	loadLevel(mapName, startX, startY) {
+		this.loading = true
+		if(this.level) {
 			this.blocks.destroy()
 			this.level.destroy()
-			this.level = new Level(dst.map)
-			this.level.start(this, this.blocks, () => {
-				this.px = dst.x
-				this.py = dst.y
-				this.pz= 0
-				this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
-				this.player.stand(this.lastDir)
-			})
 		}
+		this.level = new Level(mapName)
+		this.level.start(this, this.blocks, () => {
+			this.px = startX || this.level.info.startPos[0]
+			this.py = startY || this.level.info.startPos[1]
+			this.pz= 0
+			this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
+			this.player.stand(this.lastDir || Config.DIR_E)
+			this.transition.fadeOut(() => {
+				this.loading = false
+			})
+		})
 	}
 
 	narrate(message) {

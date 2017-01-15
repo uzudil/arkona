@@ -282,7 +282,8 @@ class Layer {
 
 	findClosest(image, range, fx) {
 		let found = false
-		_visit3d(image.gamePos[0], image.gamePos[1], image.gamePos[2], range, range, range, (xx, yy, zz) => {
+		// todo: instead of -2, it should be -width/2
+		_visit3d(image.gamePos[0] - 2 + (range/2)|0, image.gamePos[1] - 2 + (range/2)|0, image.gamePos[2], range, range, range, (xx, yy, zz) => {
 			let info = this.infos[_key(xx, yy, zz)]
 			if (info && info.imageInfos) {
 				let imageInfo = info.imageInfos.find(ii => fx(ii.image))
@@ -293,24 +294,6 @@ class Layer {
 			}
 			return true
 		})
-		return found
-	}
-
-	findFirstAround(image, names, range) {
-		let found = null
-		if(image && image.gamePos) {
-			_visit3d(image.gamePos[0], image.gamePos[1], image.gamePos[2], range, range, range, (xx, yy, zz) => {
-				let info = this.infos[_key(xx, yy, zz)]
-				if (info) {
-					let imageInfo = info.imageInfos.find(ii => names.indexOf(ii.name) >= 0);
-					if (imageInfo) {
-						found = imageInfo.image
-						return false
-					}
-				}
-				return true
-			})
-		}
 		return found
 	}
 
@@ -678,10 +661,6 @@ export default class {
 
 	findClosestObject(image, range, fx) {
 		return this.objectLayer.findClosest(image, range, fx)
-	}
-
-	findFirstAround(image, names, range) {
-		return this._getLayer(names[0]).findFirstAround(image, names, range)
 	}
 
 	destroy() {

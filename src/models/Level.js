@@ -45,11 +45,11 @@ export default class {
 	checkBounds(px, py, blocks) {
 		for(let conn of this.info.connect || []) {
 			let found = false
-			if(conn.src.dir == "w" && px <= 0) {
+			if(conn.src.dir == "w" && px <= -4) {
 				found = true
 			} else if(conn.src.dir == "e" && px >= blocks.w - 4) {
 				found = true
-			} else if(conn.src.dir == "n" && py <= 0) {
+			} else if(conn.src.dir == "n" && py <= -4) {
 				found = true
 			} else if(conn.src.dir == "s" && py >= blocks.h - 4) {
 				found = true
