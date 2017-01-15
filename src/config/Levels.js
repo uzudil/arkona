@@ -12,7 +12,7 @@ export const LEVELS = {
 				options: {
 					movement: MOVE_ANCHOR,
 					name: "Sharya",
-					convo: FARM_CONVO.CONVO.tag("sharya.start")
+					convo: FARM_CONVO.CONVO.ref("sharya.start")
 				},
 			},
 			{ creature: 'cow', x: 37, y: 97 },

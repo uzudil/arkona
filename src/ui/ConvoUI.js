@@ -66,7 +66,6 @@ export default class {
 			let y = 80
 			for (let i = 0; i < this.convo.answers.length; i++) {
 				this.pcAnswer[i].text = this.convo.answers[i].answer
-				this.pcAnswer[i].result = this.convo.answers[i].result
 				this.pcAnswer[i].visible = true
 				this.pcAnswer[i].y = y
 				y += 30
@@ -84,7 +83,7 @@ export default class {
 	}
 
 	select() {
-		this.show(this.convo.answers[this.activeIndex].result)
+		this.show(this.convo.answers[this.activeIndex].getResult())
 	}
 
 	showActiveAnswer() {

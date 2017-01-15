@@ -5,6 +5,14 @@ class Answer {
 		this.answer = answer
 		this.result = result
 	}
+
+	getResult() {
+		if(typeof this.result === "string") {
+			return CONVOS[this.result]
+		} else {
+			return this.result
+		}
+	}
 }
 
 /**
@@ -24,7 +32,7 @@ export default class {
 		return this
 	}
 
-	tag(tag) {
+	ref(tag) {
 		return CONVOS[tag]
 	}
 
