@@ -1,6 +1,7 @@
 import Convo from './Convo'
 
-export const CONVO = new Convo("Harm me not, mighty warrior, I beg thee!", "sharya.start")
+export const COW_CONVO = new Convo("Moo.").answer("Uh, thanks for that.")
+export const CONVO = new Convo("Harm me not, mighty warrior, I beg thee!")
 	.answer("I am not a warrior, but a spaceman, lost on this planet.",
 		new Convo("Didst thou not slay the metal demon I saw in the sky?", "R_DEMON")
 			.answer("You must be referring to my spaceship. It was damaged and I need tools to fix it.", "R_TOOLS")

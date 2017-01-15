@@ -12,17 +12,35 @@ export const LEVELS = {
 				options: {
 					movement: MOVE_ANCHOR,
 					name: "Sharya",
-					convo: FARM_CONVO.CONVO.ref("sharya.start")
+					convo: FARM_CONVO.CONVO
 				},
 			},
-			{ creature: 'cow', x: 37, y: 97 },
-			{ creature: 'cow', x: 42, y: 89 }
+			{ creature: 'cow', x: 37, y: 97, options: { convo: FARM_CONVO.COW_CONVO } },
+			{ creature: 'cow', x: 42, y: 89, options: { convo: FARM_CONVO.COW_CONVO } }
 		],
 		onLoad: function(arkona) {
 			arkona.narrate("After many adventures, you successfully escaped from the agents of Kronos. " +
 				"However, now you have crash landed on a strange planet and your ship is damaged. " +
 				"How will you get back home? " +
 				"Perhaps you should ask someone for help?")
-		}
+		},
+		connect: [
+			{
+				src: { dir: "w" },
+				dst: { map: "woods", x: 219, y: 89 }
+			}
+		]
+
+	},
+	woods: {
+		map: "woods",
+		startPos: [219, 89, 0],
+		connect: [
+			{
+				src: { dir: "e" },
+				dst: { map: "farm", x: 4, y: 20 }
+			}
+		]
+
 	}
 }

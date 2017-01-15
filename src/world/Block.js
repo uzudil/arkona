@@ -91,6 +91,14 @@ class Layer {
 		this.world = {} // origin space
 	}
 
+	destroy() {
+		this.infos = {} // 3d space
+		this.world = {} // origin space
+		for(let c of this.group.children) {
+			c.destroy()
+		}
+	}
+
 	reset() {
 		this.infos = {}
 		this.world = {}
@@ -674,6 +682,10 @@ export default class {
 
 	findFirstAround(image, names, range) {
 		return this._getLayer(names[0]).findFirstAround(image, names, range)
+	}
+
+	destroy() {
+		for(let layer of this.layers) layer.destroy()
 	}
 
 	save() {

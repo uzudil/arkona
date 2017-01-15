@@ -20,3 +20,7 @@ export const dist3d = (ax, ay, az, bx, by, bz) => {
 	let dz = az - bz
 	return Math.sqrt(dx * dx + dy * dy + dz * dz)
 }
+
+export const inRect = (x, y, rx, ry, rw, rh) => {
+	return x >= rx && x < rx + rw && y >= ry && y < ry + rh
+}

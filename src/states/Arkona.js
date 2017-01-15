@@ -1,7 +1,7 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
 import Block, { isFlat } from '../world/Block'
-import {getRandom, range} from '../utils'
+import {getRandom, range, inRect} from '../utils'
 import * as Config from '../config/Config'
 import $ from 'jquery'
 import Creature from '../models/Creature'
@@ -78,10 +78,7 @@ export default class extends Phaser.State {
 			if (updated) this.blocks.sort()
 		}
 
-		if(this.level.loaded == false) {
-			this.level.info.onLoad(this)
-			this.level.loaded = true
-		}
+		this.level.onLoad(this)
 	}
 
 	// todo: smooth/vector movement
@@ -138,6 +135,11 @@ export default class extends Phaser.State {
 					this.px = ox; this.py = oy
 				}
 			}
+
+			if (ox != this.px || oy != this.py) {
+				this.playerMoved()
+				return true
+			}
 		}
 
 		if(!cursorKeyDown) {
@@ -145,6 +147,7 @@ export default class extends Phaser.State {
 				this.player.stand(this.lastDir)
 			}
 		}
+		return false
 	}
 
 	tryStepTo(nx, ny, nz) {
@@ -156,6 +159,22 @@ export default class extends Phaser.State {
 			return true
 		} else {
 			return false
+		}
+	}
+
+	playerMoved() {
+		let dst = this.level.checkBounds(this.px, this.py, this.blocks)
+		if(dst) {
+			this.blocks.destroy()
+			this.level.destroy()
+			this.level = new Level(dst.map)
+			this.level.start(this, this.blocks, () => {
+				this.px = dst.x
+				this.py = dst.y
+				this.pz= 0
+				this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
+				this.player.stand(this.lastDir)
+			})
 		}
 	}
 
