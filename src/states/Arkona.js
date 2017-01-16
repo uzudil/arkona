@@ -181,7 +181,7 @@ export default class extends Phaser.State {
 			this.px = startX || this.level.info.startPos[0]
 			this.py = startY || this.level.info.startPos[1]
 			this.pz= 0
-			this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
+			this.player = new Creature(this.game, "monk", this.blocks, this.px, this.py, this.pz)
 			this.player.stand(this.lastDir || Config.DIR_E)
 			this.transition.fadeOut(() => {
 				this.loading = false
