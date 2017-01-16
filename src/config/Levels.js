@@ -55,9 +55,9 @@ export const LEVELS = {
 		map: "median",
 		startPos: [72, 66, 0],
 		npcs: [
-			{ creature: "monk", x: 9, y: 7, options: { movement: MOVE_ANCHOR, name: "Brother Xan" } },
-			{ creature: "monk", x: 31, y: 5, options: { movement: MOVE_ANCHOR, name: "Brother Fran" } },
-			{ creature: "monk", x: 45, y: 26, options: { movement: MOVE_ANCHOR, name: "Brother Smen" } },
+			{ creature: "monk", x: 9, y: 7, options: { movement: MOVE_ANCHOR, name: "Brother Xan", convo: MEDIAN_CONVO.XAN } },
+			{ creature: "monk", x: 31, y: 5, options: { movement: MOVE_ANCHOR, name: "Brother Fran", convo: MEDIAN_CONVO.FRAN } },
+			{ creature: "monk", x: 45, y: 26, options: { movement: MOVE_ANCHOR, name: "Brother Smen", convo: MEDIAN_CONVO.SMEN } },
 			{ creature: "monk", x: 52, y: 65, options: { movement: MOVE_ANCHOR, name: "Brother Aradun", convo: MEDIAN_CONVO.ARADUN } },
 		],
 		connect: [
@@ -65,6 +65,13 @@ export const LEVELS = {
 				src: { dir: "e" },
 				dst: { map: "woods", x: 1, y: 37 }
 			}
-		]
+		],
+		onLoad: function(arkona) {
+			if(!arkona.gameState["median_visited"]) {
+				arkona.gameState["median_visited"] = true
+				arkona.narrate("In the distance you see crumbling stone huts surrounded by a few fruit trees and a small vegetable garden. " +
+					"A robed figure in black paces back and forth in the court yard, his face lined with worry.")
+			}
+		},
 	}
 }

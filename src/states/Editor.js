@@ -156,6 +156,12 @@ export default class extends Phaser.State {
 			this.drawObject(x, y, z)
 			if (this.delete.justDown) {
 				this.blocks.clearAll(x - 1, y - 1)
+				// stamps are hard to clean...
+				for(let xx = -4; xx < 4; xx++) {
+					for(let yy = -4; yy < 4; yy++) {
+						this.blocks.clear("ashes.big", x - 1 + xx, y - 1 + xx, 0)
+					}
+				}
 			}
 		}
 

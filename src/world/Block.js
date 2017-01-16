@@ -150,6 +150,7 @@ class Layer {
 	clearAll(x, y, z) {
 		let key = _key(x, y, z)
 		let info = this.infos[key]
+		if(!info) info = this.world[key]
 		if (info) {
 			// remove images and update the world
 			let keyWorld = _key(info.x, info.y, info.z)
@@ -455,7 +456,7 @@ export default class {
 	clearAll(x, y) {
 		for(let z = 0; z < 16; z++){
 			for(let layer of this.layers) {
-				layer.clearAll(x, y, z)
+				if(layer != this.floorLayer) layer.clearAll(x, y, z)
 			}
 		}
 	}

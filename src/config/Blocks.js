@@ -70,5 +70,9 @@ export const BLOCKS = {
 	"chimney.ns": { size: [3, 1, 10], pos: [96, 48], dim: [32, 104], options: { sprites: 2 } },
 	"ashes": { size: [2, 2, 0], pos: [128, 48], dim: [32, 32], options: { sprites: 2, noEdge: true, stamp: true } },
 	"ashes.big": { size: [4, 4, 0], pos: [130, 80], dim: [60, 64], options: { sprites: 2, noEdge: true, stamp: true } },
+	"blood.big": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64], options: { sprites: 2, noEdge: true, stamp: true } },
+	"blood.small": { size: [4, 4, 0], pos: [128, 256], dim: [32, 32], options: { sprites: 2, noEdge: true, stamp: true } },
+	"corpse": { size: [4, 4, 1], pos: [192, 192], dim: [56, 56], options: { sprites: 2 } },
 	"pod": { size: [8, 8, 8], pos: [192, 64], dim: [96, 96], options: { sprites: 2 } },
+	"well": { size: [5, 5, 6], pos: [312, 0], dim: [80, 112], options: { sprites: 2 } },
 }
