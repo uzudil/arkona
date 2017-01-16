@@ -1,5 +1,6 @@
 import {MOVE_ANCHOR} from './Config'
 import * as FARM_CONVO from '../convo/farm'
+import * as MEDIAN_CONVO from '../convo/median'
 
 export const LEVELS = {
 	farm: {
@@ -37,13 +38,33 @@ export const LEVELS = {
 	},
 	woods: {
 		map: "woods",
-		startPos: [219, 89, 0],
+		startPos: [1, 37, 0],
 		connect: [
 			{
 				src: { dir: "e" },
 				dst: { map: "farm", x: 4, y: 20 }
+			},
+			{
+				src: { dir: "w" },
+				dst: { map: "median", x: 72, y: 66 }
 			}
 		]
 
+	},
+	median: {
+		map: "median",
+		startPos: [72, 66, 0],
+		npcs: [
+			{ creature: "monk", x: 9, y: 7, options: { movement: MOVE_ANCHOR, name: "Brother Xan" } },
+			{ creature: "monk", x: 31, y: 5, options: { movement: MOVE_ANCHOR, name: "Brother Fran" } },
+			{ creature: "monk", x: 45, y: 26, options: { movement: MOVE_ANCHOR, name: "Brother Smen" } },
+			{ creature: "monk", x: 52, y: 65, options: { movement: MOVE_ANCHOR, name: "Brother Aradun", convo: MEDIAN_CONVO.ARADUN } },
+		],
+		connect: [
+			{
+				src: { dir: "e" },
+				dst: { map: "woods", x: 1, y: 37 }
+			}
+		]
 	}
 }

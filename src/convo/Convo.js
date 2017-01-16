@@ -32,14 +32,6 @@ export default class {
 		return this
 	}
 
-	ref(tag) {
-		return CONVOS[tag]
-	}
-
-	static ref(tag) {
-		return CONVOS[tag]
-	}
-
 	isComplete() {
 		return this.question && this.answers.length > 0
 	}
