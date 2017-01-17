@@ -61,7 +61,7 @@ export default class {
 		else {
 			this.convo = convo
 			this.activeIndex = 0
-			this.npcMessage.text = this.convo.question
+			this.npcMessage.text = this.convo.getQuestion(this.arkona)
 			for(let a of this.pcAnswer) a.visible = false
 			let y = 80
 			for (let i = 0; i < this.convo.answers.length; i++) {

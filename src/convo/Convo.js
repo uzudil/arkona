@@ -19,12 +19,20 @@ class Answer {
  * A basic conversation tree
  */
 export default class {
-	constructor(question, tag) {
+	constructor(question, tag, onDisplay) {
 		this.question = question
 		this.answers = []
+		this.onDisplay = onDisplay
 		if(tag) {
 			CONVOS[tag] = this
 		}
+	}
+
+	getQuestion(arkona) {
+		if(this.onDisplay) {
+			this.onDisplay(arkona)
+		}
+		return this.question
 	}
 
 	answer(answer, result) {
