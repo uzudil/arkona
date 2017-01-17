@@ -35,18 +35,18 @@ export const SMEN = new Convo("A visitor comes at this dark time? Art thou the p
 					.answer("I'll go and see what I can find out.")
 					.answer("Ok, but before I do that, could you help me research a way to get home?", "R_SMEN_ARCHIVES")
 			)
-			.answer("Would anyone else know what happend?",
+			.answer("Would anyone else know what happened?",
 				new Convo("Thou should converse with the other cenobites here. " +
 					"Perhaps thou can solve the riddle we could not.")
 					.answer("I'll go and talk to the other monks.")
-					.answer("Could you tell me again what happend?", "R_SMEN_MURDER")
+					.answer("Could you tell me again what happened?", "R_SMEN_MURDER")
 			)
 	)
 	.answer("I'm only looking for some information.",
 		new Convo("I'm sorry but I cannot aid thee until this investigation is concluded. " +
 			"Perhaps if thou could assist in resolving the matter, the archives would be reopened.", "R_SMEN_ARCHIVES")
 			.answer("If you won't help, I'll look for the answers myself.")
-			.answer("I'd like to help... Tell me what happend.", "R_SMEN_MURDER")
+			.answer("I'd like to help... Tell me what happened.", "R_SMEN_MURDER")
 	)
 
 export const FRAN = new Convo("Blessed Kada provideth! I saw everything!")
