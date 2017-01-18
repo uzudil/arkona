@@ -1,9 +1,14 @@
 const CONVOS = {}
 
 class Answer {
-	constructor(answer, result) {
+	constructor(condition, answer, result) {
+		this.cond = condition
 		this.answer = answer
 		this.result = result
+	}
+
+	eval(arkona) {
+		return this.cond == null || this.cond(arkona) ? this.answer : null
 	}
 
 	getResult() {
@@ -26,6 +31,9 @@ export default class {
 		if(tag) {
 			CONVOS[tag] = this
 		}
+		this.cond = null
+		this.pass = null
+		this.fail = null
 	}
 
 	getQuestion(arkona) {
@@ -36,11 +44,31 @@ export default class {
 	}
 
 	answer(answer, result) {
-		this.answers.push(new Answer(answer, result))
+		return this.answerIf(null, answer, result)
+	}
+
+	answerIf(condition, answer, result) {
+		this.answers.push(new Answer(condition, answer, result))
 		return this
 	}
 
 	isComplete() {
-		return this.question && this.answers.length > 0
+		return this.cond || (this.question && this.answers.length > 0)
+	}
+
+	static condition(fx, pass, fail) {
+		let c = new this()
+		c.cond = fx
+		c.pass = pass
+		c.fail = fail
+		return c
+	}
+
+	eval(arkona) {
+		if(this.cond) {
+			return this.cond(arkona) ? this.pass.eval(arkona) : this.fail.eval(arkona)
+		} else {
+			return this
+		}
 	}
 }

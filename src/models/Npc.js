@@ -132,4 +132,8 @@ export default class {
 	_changeDir() {
 		this.dir = Config.getRandomDir()
 	}
+
+	getName() {
+		return this.options.name || this.creature.name
+	}
 }
