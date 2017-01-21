@@ -34,6 +34,10 @@ export const FONT_FAMILY_NAME = "Trade Winds"
 export const ARKONA_FONT_FAMILY = "Old Standard TT"
 export const ARKONA_FONT_FAMILY_NAME = "Old Standard TT"
 
+export const NO_BLEND = 0
+export const BLENDS = 1
+export const BLEND_TO_BLEND = 2
+
 export function getRandomDir() {
 	return DIRS[(Math.random() * DIRS.length)|0]
 }

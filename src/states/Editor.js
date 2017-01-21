@@ -68,6 +68,7 @@ export default class extends Phaser.State {
 		this.ground6 = this.game.input.keyboard.addKey(Phaser.Keyboard.SIX)
 		this.ground7 = this.game.input.keyboard.addKey(Phaser.Keyboard.SEVEN)
 		this.ground8 = this.game.input.keyboard.addKey(Phaser.Keyboard.EIGHT)
+		this.ground9 = this.game.input.keyboard.addKey(Phaser.Keyboard.NINE)
 		this.tree = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
 		this.tree2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Y)
 		this.mountain = this.game.input.keyboard.addKey(Phaser.Keyboard.M)
@@ -120,6 +121,8 @@ export default class extends Phaser.State {
 			ground = "scree"
 		} else if (this.ground8.isDown) {
 			ground = "bramble"
+		} else if (this.ground9.isDown) {
+			ground = "lava"
 		}
 
 		if (ground) {

@@ -5,6 +5,10 @@ import ImpreciseSort from './ImpreciseSort'
 import DAGSort from './DAGSort'
 import $ from 'jquery'
 
+function getBlendLevel(block) {
+	return block && block.options && block.options["blendLevel"] ? block.options["blendLevel"] : Config.NO_BLEND
+}
+
 function _key(x, y, z) {
 	return x + "." + y + "." + z
 }
@@ -111,13 +115,12 @@ class Layer {
 		return info && info.imageInfos.find(i => i.name == name)
 	}
 
-	noEdge(x, y) {
+	getBlendLevel(x, y) {
 		let key = _key(x, y, 0)
 		let info = this.world[key]
-		return info && info.imageInfos.find(i => {
-				let block = BLOCKS[i.name]
-				return block.options && block.options.noEdge
-			})
+		return info && info.imageInfos && info.imageInfos.length > 0
+			? getBlendLevel(BLOCKS[info.imageInfos[0].name])
+			: Config.NO_BLEND
 	}
 
 	set(name, x, y, z, sprite, skipInfo) {
@@ -399,16 +402,16 @@ export default class {
 		return x >= 0 && x < this.w && y >= 0 && y < this.h
 	}
 
-	isGrass(x, y) {
-		return this.isInBounds(x, y) && this.floorLayer.hasImage("grass", x, y)
-	}
-
-	noEdge(x, y) {
-		return this.isInBounds(x, y) && this.floorLayer.noEdge(x, y)
+	getBlendLevel(x, y) {
+		return this.isInBounds(x, y) ? this.floorLayer.getBlendLevel(x, y) : Config.NO_BLEND
 	}
 
 	toggleRoof() {
 		this.roofLayer.group.visible = !this.roofLayer.group.visible
+	}
+
+	getFloor(x, y) {
+		return this.isInBounds(x, y) ? this.floorLayer.getFloorAt(x, y) : null
 	}
 
 	checkRoof(worldX, worldY) {
@@ -555,7 +558,7 @@ export default class {
 	drawEdges(layer, name, x, y) {
 		if(layer == this.floorLayer) {
 			let block = BLOCKS[name]
-			if(block.options && block.options.noEdge) {
+			if(getBlendLevel(block) == Config.NO_BLEND) {
 				this.clearEdge(x, y)
 			} else {
 				for (let xx = -1; xx <= 1; xx++) {
@@ -569,14 +572,15 @@ export default class {
 
 	drawGroundEdges(gx, gy, ground) {
 		if(this.isInBounds(gx, gy)) {
-			if (this.noEdge(gx, gy)) {
+			let blendLevel = this.getBlendLevel(gx, gy)
+			if (blendLevel == Config.NO_BLEND) {
 				this.clearEdge(gx, gy)
 			} else {
-				let n = this.noEdge(gx, gy - Config.GROUND_TILE_H)
-				let s = this.noEdge(gx, gy + Config.GROUND_TILE_H)
-				let w = this.noEdge(gx - Config.GROUND_TILE_W, gy)
-				let e = this.noEdge(gx + Config.GROUND_TILE_W, gy)
-				this.setEdge(gx, gy, ground, { n: n, s: s, e: e, w: w })
+				let n = blendLevel > this.getBlendLevel(gx, gy - Config.GROUND_TILE_H)
+				let s = blendLevel > this.getBlendLevel(gx, gy + Config.GROUND_TILE_H)
+				let w = blendLevel > this.getBlendLevel(gx - Config.GROUND_TILE_W, gy)
+				let e = blendLevel > this.getBlendLevel(gx + Config.GROUND_TILE_W, gy)
+				this.setEdge(gx, gy, { n: n, s: s, e: e, w: w })
 			}
 		}
 	}
@@ -585,13 +589,22 @@ export default class {
 		this.clear("grass.edge1.n", gx, gy, 0)
 	}
 
-	setEdge(gx, gy, ground, edges) {
+	setEdge(gx, gy, edges) {
 		this.clearEdge(gx, gy)
 
+		let ground = this.getFloor(gx, gy)
 		for(let dir in EDGE_OFFSET) {
 			if(edges[dir]) {
-				let index = ground && ground.indexOf('water') >= 0 ? 3 : 1 + ((Math.random() * 2) | 0)
-				this.set("grass.edge" + index + "." + dir, gx, gy, 0)
+				let name
+				if(ground && ground.indexOf("lava") >= 0) {
+					name = "scree.edge.bank"
+				} else if(ground && ground.indexOf("water") >= 0) {
+					name = "grass.edge.bank"
+				} else {
+					let index = 1 + ((Math.random() * 2) | 0)
+					name = "grass.edge" + index
+				}
+				this.set(name + "." + dir, gx, gy, 0)
 			}
 		}
 	}
