@@ -66,7 +66,10 @@ export default class extends Phaser.State {
 		this.ground4 = this.game.input.keyboard.addKey(Phaser.Keyboard.FOUR)
 		this.ground5 = this.game.input.keyboard.addKey(Phaser.Keyboard.FIVE)
 		this.ground6 = this.game.input.keyboard.addKey(Phaser.Keyboard.SIX)
+		this.ground7 = this.game.input.keyboard.addKey(Phaser.Keyboard.SEVEN)
+		this.ground8 = this.game.input.keyboard.addKey(Phaser.Keyboard.EIGHT)
 		this.tree = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
+		this.tree2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Y)
 		this.mountain = this.game.input.keyboard.addKey(Phaser.Keyboard.M)
 		this.delete = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
 	}
@@ -113,6 +116,10 @@ export default class extends Phaser.State {
 			ground = "water"
 		} else if (this.ground6.isDown) {
 			ground = "road"
+		} else if (this.ground7.isDown) {
+			ground = "scree"
+		} else if (this.ground8.isDown) {
+			ground = "bramble"
 		}
 
 		if (ground) {
@@ -122,9 +129,15 @@ export default class extends Phaser.State {
 	}
 
 	drawObject(x, y, z) {
-		if (this.tree.isDown && this.blocks.isFree(x, y, 0, 4, 4, 8)) {
-			this.blocks.clear("trunk", x, y, 0)
-			this.blocks.set("trunk", x, y, 0)
+		if ((this.tree.isDown || this.tree2.isDown) && this.blocks.isFree(x, y, 0, 4, 4, 8)) {
+			if(this.tree2.isDown) {
+				this.blocks.clear("trunk.wide", x, y, 0)
+				this.blocks.set("trunk.wide", x, y, 0)
+			} else {
+				this.blocks.clear("trunk", x, y, 0)
+				this.blocks.set("trunk", x, y, 0)
+			}
+
 			let name = getRandom([...Array(4).fill("oak"), ...Array(3).fill("pine"), "brown"])
 			this.blocks.clear(name, x, y, 4)
 			this.blocks.set(name, x, y, 4)

@@ -34,7 +34,7 @@ export default class extends Phaser.State {
 		this.transition = new Transition()
 
 		// start game
-		this.loadLevel("median")
+		this.loadLevel("farm")
 	}
 
 	update() {

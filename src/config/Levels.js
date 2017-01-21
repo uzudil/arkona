@@ -47,6 +47,10 @@ export const LEVELS = {
 			{
 				src: { dir: "w" },
 				dst: { map: "median", x: 72, y: 66 }
+			},
+			{
+				src: { dir: "n" },
+				dst: { map: "woods2", x: 52, y: 194 }
 			}
 		]
 
@@ -73,5 +77,29 @@ export const LEVELS = {
 					"A robed figure in black paces back and forth in the court yard, his face lined with worry.")
 			}
 		},
+	},
+	woods2: {
+		map: "woods2",
+		startPos: [52, 194, 0],
+		connect: [
+			{
+				src: { dir: "s" },
+				dst: { map: "woods", x: 92, y: 1 }
+			},
+			{
+				src: { dir: "n" },
+				dst: { map: "eldun", x: 135, y: 155 }
+			}
+		]
+	},
+	eldun: {
+		map: "eldun",
+		startPos: [135, 155, 0],
+		connect: [
+			{
+				src: { dir: "s" },
+				dst: { map: "woods2", x: 63, y: 0 }
+			}
+		]
 	}
 }

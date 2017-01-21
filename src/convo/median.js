@@ -165,7 +165,7 @@ export const XAN = new Convo("Brother Pazu did not deserve his fate.")
 	)
 	.answer("I really could not care less. Now, could you help me get back home?",
 		new Convo("Aye, I would help thee find thy answers, but brother Aradun locked the archives until the matter of Pazu's death is put to rest. " +
-			"Thou should help us solve the crime and I will find what info we have.")
+			"If thou can solve the crime I will find what info we have.")
 			.answer("I'm really not in the mood for this.")
 			.answer("How did Pazu die?", "R_XAN_MURDER")
 	)

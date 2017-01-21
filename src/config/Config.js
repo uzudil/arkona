@@ -10,7 +10,7 @@ export const GRID_SIZE = 8
 export const MAP_VERSION = 1
 export const SPEED = 100
 export const DOORS = Object.keys(BLOCKS).filter(name => name.indexOf(".door.") >= 0)
-export const UNSTABLE_FLOORS = [ "water" ]
+export const UNSTABLE_FLOORS = [ "water", "bramble" ]
 export const ANIMATION_SPEED = 8
 export const GAME_ZOOM = 2
 export const DIR_N = 'n'

@@ -1,6 +1,7 @@
 // don't chane the names
 export const BLOCKS = {
 	"trunk": { size: [2, 2, 4], pos: [0, 0], dim: [31, 48] },
+	"trunk.wide": { size: [4, 4, 4], pos: [192, 384], dim: [64, 56] },
 	"brown": { size: [4, 4, 3], pos: [32, 0], dim: [64, 48] },
 	"oak": { size: [4, 4, 4], pos: [64, 64], dim: [64, 64] },
 	"pine": { size: [4, 4, 4], pos: [128, 64], dim: [64, 64] },
@@ -12,8 +13,10 @@ export const BLOCKS = {
 	"straw.stamp": { size: [4, 4, 0], pos: [64, 192], dim: [64, 64], options: { noEdge: true, stamp: true }  },
 	"sand": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64] },
 	"moss": { size: [4, 4, 0], pos: [336, 128], dim: [64, 64] },
+	"bramble": { size: [4, 4, 0], pos: [336, 288], dim: [64, 64] },
 	"water": { size: [4, 4, 0], pos: [416, 128], dim: [64, 64] },
 	"road": { size: [4, 4, 0], pos: [368, 208], dim: [64, 64] },
+	"scree": { size: [4, 4, 0], pos: [448, 0], dim: [64, 64], options: { sprites: 2 } },
 
 	"grass.edge1.w": { size: [2, 2, 0], pos: [176, 128], dim: [32, 32] },
 	"grass.edge1.n": { size: [2, 2, 0], pos: [208, 128], dim: [32, 32] },
@@ -75,4 +78,10 @@ export const BLOCKS = {
 	"corpse": { size: [4, 4, 1], pos: [192, 192], dim: [56, 56], options: { sprites: 2 } },
 	"pod": { size: [8, 8, 8], pos: [192, 64], dim: [96, 96], options: { sprites: 2 } },
 	"well": { size: [5, 5, 6], pos: [312, 0], dim: [80, 112], options: { sprites: 2 } },
+	"flowers.yellow.big": { size: [2, 2, 2], pos: [528, 0], dim: [36, 40], options: { sprites: 2 } },
+	"flowers.yellow.small": { size: [1, 1, 2], pos: [576, 0], dim: [16, 20], options: { sprites: 2 } },
+	"flowers.red.big": { size: [2, 2, 2], pos: [528, 48], dim: [36, 40], options: { sprites: 2 } },
+	"flowers.red.small": { size: [1, 1, 2], pos: [576, 48], dim: [16, 20], options: { sprites: 2 } },
+	"flowers.green.big": { size: [2, 2, 2], pos: [528, 96], dim: [36, 40], options: { sprites: 2 } },
+	"flowers.green.small": { size: [1, 1, 2], pos: [576, 96], dim: [16, 20], options: { sprites: 2 } },
 }

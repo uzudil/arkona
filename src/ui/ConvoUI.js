@@ -17,7 +17,7 @@ export default class {
 
 		this.npcStyle = {
 			font: "bold 24px " + Config.ARKONA_FONT_FAMILY_NAME,
-			fill: "#888",
+			fill: "#ccc",
 			boundsAlignH: "left",
 			boundsAlignV: "top",
 			wordWrap: true,
@@ -29,7 +29,7 @@ export default class {
 
 		this.pcStyle = {
 			font: "bold 20px " + Config.FONT_FAMILY_NAME,
-			fill: "#fff",
+			fill: "#ccc",
 			boundsAlignH: "left",
 			boundsAlignV: "top",
 			wordWrap: true,

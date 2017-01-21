@@ -11,7 +11,7 @@ export default class {
 
 		var style = {
 			font: "bold 32px " + Config.FONT_FAMILY_NAME,
-			fill: "#fff",
+			fill: "#ccc",
 			boundsAlignH: "left",
 			boundsAlignV: "top",
 			wordWrap: true,
