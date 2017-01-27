@@ -22,7 +22,7 @@ void main( void ) {
 		if(dist > 0.0) {
 			vec3 pos = dir * dist + origin;
 			float c = pow(abs(sin(pos.x * 0.14 + float(i * i) + 0.6*sinx(pos.z / 3.0 * float(i + 3)))), 4.0) * 10.0 / dist / dist;
-			vec3 col = vec3(0.3, 0.0, 0.5) * c;
+			vec3 col = vec3(0.4, 0.4, 0.3) * c;
 			allcol += col;
 		}
 	}
