@@ -154,6 +154,8 @@ export default class extends Phaser.State {
 	}
 
 	update() {
+		this.blocks.update()
+
 		if ($(".dialog").is(":visible")) {
 			game.input.enabled = false;
 			return

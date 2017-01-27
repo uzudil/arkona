@@ -4,6 +4,7 @@ import {BLOCKS} from '../config/Blocks'
 import ImpreciseSort from './ImpreciseSort'
 import DAGSort from './DAGSort'
 import $ from 'jquery'
+import * as Filters from './Filters'
 
 function getBlendLevel(block) {
 	return block && block.options && block.options["blendLevel"] ? block.options["blendLevel"] : Config.NO_BLEND
@@ -90,6 +91,7 @@ class Layer {
 		this.sorted = sorted
 		this.sortingStrategy = sortingStrategy || new ImpreciseSort()
 
+		this.filterGroup = game.add.group(parentGroup)
 		this.group = game.add.group(parentGroup)
 		this.infos = {} // 3d space
 		this.world = {} // origin space
@@ -98,6 +100,9 @@ class Layer {
 	destroy() {
 		this.infos = {} // 3d space
 		this.world = {} // origin space
+		for(let c of this.filterGroup.children) {
+			c.destroy()
+		}
 		for(let c of this.group.children) {
 			c.destroy()
 		}
@@ -106,6 +111,7 @@ class Layer {
 	reset() {
 		this.infos = {}
 		this.world = {}
+		while(this.filterGroup.children.length > 0) this.filterGroup.children[0].destroy()
 		while(this.group.children.length > 0) this.group.children[0].destroy()
 	}
 
@@ -123,8 +129,13 @@ class Layer {
 			: Config.NO_BLEND
 	}
 
+	getGroup(name) {
+		let block = BLOCKS[name]
+		return block.options && block.options.filter ? this.filterGroup : this.group
+	}
+
 	set(name, x, y, z, sprite, skipInfo) {
-		this.group.add(sprite) // ok to do even if already in group
+		this.getGroup(name).add(sprite) // ok to do even if already in group
 		if(!skipInfo) {
 			this.updateInfo(name, x, y, z, sprite)
 		}
@@ -275,11 +286,15 @@ class Layer {
 	}
 
 	move(dx, dy) {
+		this.filterGroup.x += dx
+		this.filterGroup.y += dy
 		this.group.x += dx
 		this.group.y += dy
 	}
 
 	moveTo(x, y) {
+		this.filterGroup.x = x
+		this.filterGroup.y = y
 		this.group.x = x
 		this.group.y = y
 	}
@@ -354,6 +369,8 @@ export default class {
 		]
 		this.layersByName = {}
 		for(let layer of this.layers) this.layersByName[layer.name] = layer
+
+		Filters.create(game)
 
 		// cursor
 		if(editorMode) {
@@ -483,20 +500,26 @@ export default class {
 		let screenX, screenY
 		[ screenX, screenY ] = this.toScreenCoords(x + offsX, y + offsY, z)
 
+		let block = BLOCKS[name]
+
 		let sprite
 		if(loaderFx) {
 			sprite = loaderFx(screenX, screenY)
 		} else {
-			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name, layer.group)
+			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name, layer.getGroup(name))
+			if(block.options && block.options.filter && Filters.FILTERS[block.options.filter]) {
+				sprite.texture.isTiling = true
+				sprite.filters = [ Filters.FILTERS[block.options.filter] ]
+			}
 		}
-		let block = BLOCKS[name]
+
 		let size = block.size
 
 		this._saveInSprite(sprite, name, x, y, z)
 		layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
 
 		let baseHeight = size[1] * Config.GRID_SIZE
-		let anchorX = 1 - baseHeight / sprite._frame.width
+		let anchorX = 1 - baseHeight / sprite.texture.width
 		sprite.anchor.setTo(anchorX, 1)
 
 		if(Config.DEBUG_BLOCKS && layer == this.objectLayer) {
@@ -712,5 +735,9 @@ export default class {
 				if(onLoad) onLoad()
 			}
 		})
+	}
+
+	update() {
+		Filters.update()
 	}
 }

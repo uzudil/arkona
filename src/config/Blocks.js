@@ -14,10 +14,10 @@ export const BLOCKS = {
 	"sand": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64], options: { blendLevel: 1 } },
 	"moss": { size: [4, 4, 0], pos: [336, 128], dim: [64, 64], options: { blendLevel: 1 } },
 	"bramble": { size: [4, 4, 0], pos: [336, 288], dim: [64, 64], options: { blendLevel: 1 } },
-	"water": { size: [4, 4, 0], pos: [416, 128], dim: [64, 64], options: { blendLevel: 1 } },
+	"water": { size: [4, 4, 0], pos: [416, 128], dim: [64, 64], options: { blendLevel: 1, filter: "water" } },
 	"road": { size: [4, 4, 0], pos: [368, 208], dim: [64, 64], options: { blendLevel: 1 } },
 	"scree": { size: [4, 4, 0], pos: [448, 0], dim: [64, 64], options: { blendLevel: 1, sprites: 2 } },
-	"lava": { size: [4, 4, 0], pos: [416, 192], dim: [64, 64], options: { blendLevel: 2, sprites: 2 } },
+	"lava": { size: [4, 4, 0], pos: [416, 192], dim: [64, 64], options: { blendLevel: 2, sprites: 2, filter: "lava"  } },
 	"room.floor.stone": { size: [4, 4, 0], pos: [288, 208], dim: [64, 64], options: { blendLevel: 0 } },
 
 	// edges

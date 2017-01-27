@@ -40,6 +40,8 @@ export default class extends Phaser.State {
 	update() {
 		if(this.loading) return
 
+		this.blocks.update()
+
 		if(this.messages.group.visible) {
 			if (this.space.justDown) {
 				this.messages.showNextLine()
