@@ -508,7 +508,6 @@ export default class {
 		} else {
 			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name, layer.getGroup(name))
 			if(block.options && block.options.filter && Filters.FILTERS[block.options.filter]) {
-				sprite.texture.isTiling = true
 				sprite.filters = [ Filters.FILTERS[block.options.filter] ]
 			}
 		}
@@ -519,7 +518,8 @@ export default class {
 		layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
 
 		let baseHeight = size[1] * Config.GRID_SIZE
-		let anchorX = 1 - baseHeight / sprite.texture.width
+		// let anchorX = 1 - baseHeight / sprite.texture.width
+		let anchorX = 1 - baseHeight / block.dim[0]
 		sprite.anchor.setTo(anchorX, 1)
 
 		if(Config.DEBUG_BLOCKS && layer == this.objectLayer) {
