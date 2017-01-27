@@ -22,6 +22,7 @@ export default class extends Phaser.State {
 		this.load.atlas('sprites2', 'assets/images/arkona2.png?cb=' + Date.now(), null, Config.toJson(2), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 
 		this.load.image('logo', './assets/images/logo.png')
+		this.load.shader('shader', '/assets/shaders/logo.frag?cb=' + Date.now());
 
 		Creature.preload(this.game)
 	}
@@ -30,6 +31,10 @@ export default class extends Phaser.State {
 		this.loaderBg.kill()
 		this.loaderBar.kill()
 		this.game.stage.backgroundColor = "#222222";
+
+		this.filter = new Phaser.Filter(this.game, null, this.game.cache.getShader("shader"))
+		this.filter.addToWorld(0, 0, Config.WIDTH, Config.HEIGHT, 0, 0)
+
 		this.logo = this.add.image(this.game.world.centerX, 200, 'logo')
 		this.logo.anchor.setTo(0.5, 0.5)
 
@@ -64,6 +69,7 @@ export default class extends Phaser.State {
 	}
 
 	update() {
+		this.filter.update()
 		let oldMenu = this.menuIndex
 		if (this.cursors.up.justDown) {
 			this.menuIndex--
