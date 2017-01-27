@@ -1,21 +1,3 @@
-/*
-precision mediump float;
-
-uniform float     time;
-uniform vec2      resolution;
-uniform sampler2D iChannel0;
-
-void main( void ) {
-
-    vec2 uv = gl_FragCoord.xy / resolution.xy;
-    uv.y *= -1.0;
-    uv.y += (sin((uv.x + (time * 1.5)) * 3.5) * 0.1) + (sin((uv.x + (time * 2.0)) * 7.0) * 0.01);
-    vec4 texColor = texture2D(iChannel0, uv);
-    gl_FragColor = texColor;
-
-}
-*/
-
 // Source: https://www.shadertoy.com/view/Mt2SzR
 precision mediump float;
 

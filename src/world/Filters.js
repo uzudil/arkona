@@ -28,7 +28,7 @@ function _initSimpleWater() {
 	let filter = new Phaser.Filter(game, {
 		iChannel0: { type: 'sampler2D', value: sprite.texture, textureData: { repeat: true } }
 	}, game.cache.getShader("simpleWater"))
-	filter.setResolution(sprite.texture.width, sprite.texture.height)
+	filter.setResolution(sprite.texture.width * 2, sprite.texture.height * 2)
 	return filter
 }
 
