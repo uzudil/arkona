@@ -5,6 +5,7 @@ export const BLOCKS = {
 	"brown": { size: [4, 4, 3], pos: [32, 0], dim: [64, 48] },
 	"oak": { size: [4, 4, 4], pos: [64, 64], dim: [64, 64] },
 	"pine": { size: [4, 4, 4], pos: [128, 64], dim: [64, 64] },
+	"dead": { size: [4, 4, 4], pos: [256, 384], dim: [64, 64] },
 
 	// floors
 	// blendLevels: 0=no blend, 1=blends into 0, 2=blends into 0 & 1
@@ -90,6 +91,8 @@ export const BLOCKS = {
 	"flowers.red.small": { size: [1, 1, 2], pos: [576, 48], dim: [16, 20], options: { sprites: 2 } },
 	"flowers.green.big": { size: [2, 2, 2], pos: [528, 96], dim: [36, 40], options: { sprites: 2 } },
 	"flowers.green.small": { size: [1, 1, 2], pos: [576, 96], dim: [16, 20], options: { sprites: 2 } },
+	"stalagmite.big": { size: [2, 2, 4], pos: [448, 64], dim: [32, 64], options: { sprites: 2 } },
+	"stalagmite.small": { size: [1, 1, 3], pos: [496, 64], dim: [16, 40], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

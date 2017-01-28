@@ -36,7 +36,12 @@ export default class {
 		if(behind[sprite.key] && behind[sprite.key].length > 0) {
 			for (let spriteBehind of behind[sprite.key]) {
 				if (seen[spriteBehind.key] == null) {
-					this._visitSpritesBehind(behind, spriteBehind, seen, fx)
+					try {
+						this._visitSpritesBehind(behind, spriteBehind, seen, fx)
+					} catch(exc) {
+						// sometimes we get a max stacksize error here
+						console.log(exc)
+					}
 				}
 			}
 		}

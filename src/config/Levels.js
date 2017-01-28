@@ -94,7 +94,7 @@ export const LEVELS = {
 	},
 	eldun: {
 		map: "eldun",
-		startPos: [135, 155, 0],
+		startPos: [94, 73, 0],
 		connect: [
 			{
 				src: { dir: "s" },
