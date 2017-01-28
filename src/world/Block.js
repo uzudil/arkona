@@ -121,6 +121,16 @@ class Layer {
 		return info && info.imageInfos.find(i => i.name == name)
 	}
 
+	toggleHigherThan(z, visible) {
+		for(let k in this.world) {
+			for(let ii of this.world[k].imageInfos) {
+				if(ii.image.gamePos[2] >= z) {
+					ii.image.visible = visible;
+				}
+			}
+		}
+	}
+
 	getBlendLevel(x, y) {
 		let key = _key(x, y, 0)
 		let info = this.world[key]
@@ -363,12 +373,12 @@ export default class {
 		this.edgeLayer = new Layer(game, this.group, "edge")
 		this.stampLayer = new Layer(game, this.group, "stamp")
 		this.objectLayer = new Layer(game, this.group, "object", true, new DAGSort())
-		this.roofLayer = new Layer(game, this.group, "roof", true)
 		this.layers = [
-			this.floorLayer, this.edgeLayer, this.stampLayer, this.objectLayer, this.roofLayer
+			this.floorLayer, this.edgeLayer, this.stampLayer, this.objectLayer
 		]
 		this.layersByName = {}
 		for(let layer of this.layers) this.layersByName[layer.name] = layer
+		this.roofVisible = true;
 
 		Filters.create(game)
 
@@ -424,7 +434,8 @@ export default class {
 	}
 
 	toggleRoof() {
-		this.roofLayer.group.visible = !this.roofLayer.group.visible
+		this.roofVisible = !this.roofVisible;
+		this.objectLayer.toggleHigherThan(6, this.roofVisible);
 	}
 
 	getFloor(x, y) {
@@ -432,8 +443,8 @@ export default class {
 	}
 
 	checkRoof(worldX, worldY) {
-		let under = this.roofLayer.infos[_key(worldX, worldY, 6)] != null
-		if(under == this.roofLayer.group.visible) this.toggleRoof()
+		let under = this.objectLayer.infos[_key(worldX, worldY, 6)] != null
+		if(under == this.roofVisible) this.toggleRoof()
 	}
 
 	_getLayer(name) {
@@ -444,8 +455,6 @@ export default class {
 			layer = this.stampLayer
 		} else if(name.indexOf(".edge") > 0) {
 			layer = this.edgeLayer
-		} else if(name.indexOf("roof.") >= 0) {
-			layer = this.roofLayer
 		} else if(size[2] > 0) {
 			layer = this.objectLayer
 		} else {
@@ -730,6 +739,10 @@ export default class {
 			success: (data) => {
 				this.newMap(this.name, data.width, data.height, "empty")
 				for(let layerInfo of data.layers) {
+
+					// upgrade the old roof layer
+					if(layerInfo.name == "roof") layerInfo.name = "object";
+
 					this.layersByName[layerInfo.name].load(layerInfo, this)
 				}
 				if(onLoad) onLoad()
