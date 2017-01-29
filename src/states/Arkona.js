@@ -20,6 +20,7 @@ export default class extends Phaser.State {
 		this.lastDir = null
 		this.gameState = {}
 		this.level = null
+		this.newPos = { x: 0, y: 0, z: 0 }
 
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys()
@@ -129,7 +130,7 @@ export default class extends Phaser.State {
 				if(this.tryStepTo(this.px, this.py, this.pz) ||
 					this.tryStepTo(this.px, oy, this.pz) ||
 					this.tryStepTo(ox, this.py, this.pz)) {
-					this.blocks.checkRoof(this.px - 1, this.py - 1)
+					this.blocks.checkRoof(this.px - 1, this.py - 1, this.pz)
 					if(dir) {
 						this.lastDir = dir
 						this.player.walk(dir)
@@ -154,10 +155,10 @@ export default class extends Phaser.State {
 	}
 
 	tryStepTo(nx, ny, nz) {
-		if(this.blocks.moveTo(this.player.sprite, nx, ny, nz)) {
-			this.px = nx
-			this.py = ny
-			this.pz = nz
+		if(this.blocks.moveTo(this.player.sprite, nx, ny, nz, false, this.newPos)) {
+			this.px = this.newPos.x
+			this.py = this.newPos.y
+			this.pz = this.newPos.z
 			this.blocks.centerOn(this.player.sprite)
 			return true
 		} else {

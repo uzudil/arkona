@@ -23,6 +23,17 @@ function _visit(name, worldX, worldY, fx) {
 	}
 }
 
+// short-circuit version of _visit
+function _visitSS(name, worldX, worldY, fx) {
+	let block = BLOCKS[name]
+	for(let xx = worldX - block.size[0]; xx < worldX; xx++) {
+		for (let yy = worldY - block.size[1]; yy < worldY; yy++) {
+			if(!fx(xx, yy)) return false
+		}
+	}
+	return true
+}
+
 function _visit3(name, worldX, worldY, worldZ, fx) {
 	let block = BLOCKS[name]
 	_visit(name, worldX, worldY, (xx, yy) => {
@@ -34,6 +45,23 @@ function _visit3(name, worldX, worldY, worldZ, fx) {
 			}
 		}
 	})
+}
+
+// short-circuit version of _visit3
+function _visit3SS(name, worldX, worldY, worldZ, fx) {
+	let block = BLOCKS[name]
+	for(let xx = worldX - block.size[0]; xx < worldX; xx++) {
+		for (let yy = worldY - block.size[1]; yy < worldY; yy++) {
+			if (block.size[2] == 0) {
+				if (!fx(xx, yy, 0)) return false
+			} else {
+				for (let zz = worldZ; zz < worldZ + block.size[2]; zz++) {
+					if (!fx(xx, yy, zz)) return false
+				}
+			}
+		}
+	}
+	return true
 }
 
 function _visit3d(worldX, worldY, worldZ, w, h, d, fx) {
@@ -127,6 +155,13 @@ class Layer {
 				ii.image.visible = z > 0 && ii.image.gamePos[2] >= z ? visible : true
 			}
 		}
+	}
+
+	hasShapeAbove(worldX, worldY, worldZ) {
+		for(let z = worldZ; z < Config.MAX_Z; z++) {
+			if(this.infos[_key(worldX, worldY, z)] != null) return true
+		}
+		return false
 	}
 
 	getBlendLevel(x, y) {
@@ -253,7 +288,7 @@ class Layer {
 		let maxZ = 0
 		if(sprite && !isFlat(sprite)) {
 			_visit(sprite.name, worldX, worldY, (xx, yy) => {
-				let fromZ = visibleHeight > 0 ? visibleHeight - 1 : 15
+				let fromZ = visibleHeight > 0 ? visibleHeight - 1 : Config.MAX_Z
 				for (let z = fromZ; z >= 0; z--) {
 					let info = this.infos[_key(xx, yy, z)]
 					if (info) {
@@ -267,16 +302,23 @@ class Layer {
 	}
 
 	canMoveTo(sprite, x, y, z) {
-		let fits = true
-		_visit3(sprite.name, x, y, z, (xx, yy, zz) => {
-			if(fits) {
-				let info = this.infos[_key(xx, yy, zz)]
-				if (info && info.imageInfos.find((ii) => ii.image != sprite)) {
-					fits = false
-					// todo: implement short-circuit, or reduce?
-				}
-			}
+		let fits = _visit3SS(sprite.name, x, y, z, (xx, yy, zz) => {
+			let info = this.infos[_key(xx, yy, zz)]
+			return !(info && info.imageInfos.find((ii) => ii.image != sprite));
 		})
+		// if it fits, make sure we're standing on something
+		if(fits && z > 0) {
+			// tricky: we want to test that at least one shape below the player can be stood on
+			// in order to work with the short-circuit eval, we return  true if a space can be used.
+			// At the first such "false" the ss quits.
+			// Todo: make this code more readable while still performant...
+			let allNotFound = _visitSS(sprite.name, x, y, (xx, yy) => {
+				let info = this.infos[_key(xx, yy, z - 1)]
+				let canBeStoodOn = info && info.imageInfos.find((ii) => ii.image != sprite)
+				return !canBeStoodOn;
+			})
+			if(allNotFound) fits = false
+		}
 		return fits
 	}
 
@@ -451,9 +493,14 @@ export default class {
 		return this.isInBounds(x, y) ? this.floorLayer.getFloorAt(x, y) : null
 	}
 
-	checkRoof(worldX, worldY) {
-		let under = this.objectLayer.infos[_key(worldX, worldY, 6)] != null
-		if(under == this.roofVisible) this.toggleRoof(6)
+	checkRoof(worldX, worldY, worldZ) {
+		let roofHeight = worldZ < 6 ? 6 : 13
+		let under = this.objectLayer.hasShapeAbove(worldX, worldY, roofHeight)
+		if(under == this.roofVisible || roofHeight != this.visibleHeight) {
+			this.visibleHeight = roofHeight
+			this.roofVisible = !under
+			this.objectLayer.toggleHigherThan(this.visibleHeight, this.roofVisible)
+		}
 	}
 
 	_getLayer(name) {
@@ -492,7 +539,7 @@ export default class {
 	}
 
 	clearFirst(x, y) {
-		let fromZ = this.visibleHeight > 0 ? this.visibleHeight - 1 : 15
+		let fromZ = this.visibleHeight > 0 ? this.visibleHeight - 1 : Config.MAX_Z
 		for(let z = fromZ; z >= 0; z--){
 			for(let layer of this.layers) {
 				if(layer != this.floorLayer) {
@@ -558,9 +605,35 @@ export default class {
 		return sprite
 	}
 
-	moveTo(sprite, rx, ry, rz, skipInfo) {
+	moveTo(sprite, rx, ry, rz, skipInfo, newPos) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
-		if(layer.canMoveTo(sprite, x, y, z) && (skipInfo || this.isFloorSafe(x, y))) {
+		let ok = false
+		if(skipInfo) {
+			// editor mode
+			ok = layer.canMoveTo(sprite, x, y, z)
+		} else {
+			// game mode
+			if(z > 0 || this.isFloorSafe(x, y)) {
+				ok = layer.canMoveTo(sprite, x, y, z)
+				if(!ok) {
+					// check one step higher
+					[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz + 1)
+					ok = layer.canMoveTo(sprite, x, y, z)
+					if(!ok && rz > 0) {
+						// check one step lower
+						[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz - 1)
+						ok = layer.canMoveTo(sprite, x, y, z)
+					}
+				}
+			}
+		}
+
+		if(ok) {
+			if(newPos) {
+				newPos.x = x
+				newPos.y = y
+				newPos.z = z
+			}
 
 			layer.removeFromCurrentPos(sprite)
 
