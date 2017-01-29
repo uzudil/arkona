@@ -24,3 +24,14 @@ export const dist3d = (ax, ay, az, bx, by, bz) => {
 export const inRect = (x, y, rx, ry, rw, rh) => {
 	return x >= rx && x < rx + rw && y >= ry && y < ry + rh
 }
+
+
+export function loadSettings() {
+	let o = window.localStorage["arkona"]
+	if (o) return JSON.parse(o)
+	else return {}
+}
+
+export function saveSettings(o) {
+	window.localStorage["arkona"] = JSON.stringify(o)
+}

@@ -8,91 +8,7 @@
     <meta name="HandheldFriendly" content="True">
     <meta name="MobileOptimized" content="320">
     <meta http-equiv="cleartype" content="on">
-
-    <style>
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            background: #000;
-        }
-
-        .clearfix {
-            overflow: auto;
-            zoom: 1;
-        }
-
-        #content {
-            float: left;
-        }
-
-        #menu {
-            background: white;
-            border: 1px solid #ccc;
-            padding: 2px;
-        }
-
-        #right-menu {
-            float: left;
-            display: none;
-        }
-
-        #palette {
-            width: 300px;
-            background: #888;
-            padding: 10px;
-            border: 1px solid #444;
-            overflow: scroll;
-        }
-
-        #palette .block {
-            float: left;
-            border: #888 3px solid;
-            cursor: pointer;
-        }
-
-        #palette .block:hover {
-            border: #ccc 3px solid;
-        }
-
-        .dialog {
-            display: none;
-            position: fixed;
-            left: 50%; top: 50%;
-            width: 500px;
-            height: 200px;
-            margin-left: -250px;
-            margin-top: -100px;
-            z-index: 100;
-            border: 3px solid #444;
-            background: #eee;
-        }
-
-        .dialog .title {
-            font-weight: bold;
-            background: #66CCFF;
-            border-bottom: 1px solid #44aadd;
-            padding: 5px;
-            height: 30px;
-        }
-
-        .dialog .body {
-            padding: 5px;
-            height: 108px;
-        }
-
-        .dialog .footer {
-            padding: 5px;
-            background: #66CCFF;
-            border-top: 1px solid #44aadd;
-            height: 30px;
-        }
-
-        .dialog label {
-            display: block;
-            padding: 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/arkona.css" type="text/css" media="all" />
 </head>
 
 <body>
@@ -121,10 +37,21 @@
                 <a href="#" id="new-map">New</a>
                 <a href="#" id="save-map">Save</a>
                 <a href="#" id="load-map">Load</a>
-                <a href="#" id="toggle-roof">Roof</a>
+                <a href="#" class="toggle-roof" data-height="6">Lvl-1</a>
+                <a href="#" class="toggle-roof" data-height="13">Lvl-2</a>
                 <a href="#" id="fix-edges">Fix Edges</a>
             </div>
             <div id="palette" class="clearfix"></div>
+        </div>
+    </div>
+
+    <div id="options" class="dialog">
+        <div class="title">Options</div>
+        <div class="body">
+            <label><input type="checkbox" id="use-webgl"> Use WebGL renderer</label>
+        </div>
+        <div class="footer">
+            <button id="close-options">Close</button>
         </div>
     </div>
 

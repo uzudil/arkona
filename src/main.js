@@ -2,6 +2,7 @@ import 'pixi'
 import 'p2'
 import Phaser from 'phaser'
 import $ from 'jquery'
+import { loadSettings } from './utils'
 
 import BootState from './states/Boot'
 import SplashState from './states/Splash'
@@ -13,8 +14,9 @@ import * as Config from './config/Config'
 class Game extends Phaser.Game {
 
 	constructor() {
-		super(Config.WIDTH, Config.HEIGHT, Phaser.AUTO, 'content', null)
-		//this.scale.setMinMax(Config.WIDTH, Config.HEIGHT, Config.WIDTH, Config.HEIGHT)
+		let o = loadSettings()
+		// set to Phaser.AUTO for webgl (this will result in more fan noise)
+		super(Config.WIDTH, Config.HEIGHT, o["use_webgl"] ? Phaser.AUTO : Phaser.CANVAS, 'content', null)
 		$("#palette").height((Config.HEIGHT - 46) + "px")
 
 		this.state.add('Boot', BootState, false)

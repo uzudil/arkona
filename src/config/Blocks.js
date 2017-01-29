@@ -93,6 +93,11 @@ export const BLOCKS = {
 	"flowers.green.small": { size: [1, 1, 2], pos: [576, 96], dim: [16, 20], options: { sprites: 2 } },
 	"stalagmite.big": { size: [2, 2, 4], pos: [448, 64], dim: [32, 64], options: { sprites: 2 } },
 	"stalagmite.small": { size: [1, 1, 3], pos: [496, 64], dim: [16, 40], options: { sprites: 2 } },
+	"step": { size: [4, 2, 1], pos: [592, 0], dim: [48, 56], options: { sprites: 2 } },
+	"ceiling": { size: [9, 9, 1], pos: [640, 0], dim: [144, 152], options: { sprites: 2 } },
+	"ceiling.small": { size: [4, 9, 1], pos: [800, 0], dim: [104, 112], options: { sprites: 2 } },
+	"ceiling.long": { size: [1, 9, 1], pos: [912, 0], dim: [80, 88], options: { sprites: 2 } },
+	"ceiling.short": { size: [4, 1, 1], pos: [912, 96], dim: [40, 48], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

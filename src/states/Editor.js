@@ -37,9 +37,7 @@ export default class extends Phaser.State {
 		document.getElementById("load-map").onclick = () => {
 			this.blocks.load(prompt("Map name:", this.blocks.name))
 		}
-		document.getElementById("toggle-roof").onclick = () => {
-			this.blocks.toggleRoof()
-		}
+		$(".toggle-roof").click((event) => this.blocks.toggleRoof($(event.currentTarget).data("height")))
 		document.getElementById("fix-edges").onclick = () => {
 			this.blocks.fixEdges()
 		}
@@ -173,11 +171,12 @@ export default class extends Phaser.State {
 			this.drawGround(x, y)
 			this.drawObject(x, y, z)
 			if (this.delete.justDown) {
-				this.blocks.clearAll(x - 1, y - 1)
-				// stamps are hard to clean...
-				for(let xx = -4; xx < 4; xx++) {
-					for(let yy = -4; yy < 4; yy++) {
-						this.blocks.clear("ashes.big", x - 1 + xx, y - 1 + xx, 0)
+				if(!this.blocks.clearFirst(x - 1, y - 1)) {
+					// stamps are hard to clean...
+					for (let xx = -4; xx < 4; xx++) {
+						for (let yy = -4; yy < 4; yy++) {
+							this.blocks.clear("ashes.big", x - 1 + xx, y - 1 + xx, 0)
+						}
 					}
 				}
 			}

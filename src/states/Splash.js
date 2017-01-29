@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import { centerGameObjects } from '../utils'
+import { centerGameObjects, loadSettings, saveSettings } from '../utils'
 import * as Config from '../config/Config'
 import Creature from '../models/Creature'
 import $ from 'jquery'
@@ -29,6 +29,16 @@ export default class extends Phaser.State {
 	}
 
 	create() {
+		$("#close-options").click(()=>{
+			$(".dialog").hide()
+			window.location.reload()
+		});
+		$("#use-webgl").click(()=>{
+			let o = loadSettings()
+			o["use_webgl"] = $("#use-webgl").is(":checked")
+			saveSettings(o)
+		});
+
 		this.loaderBg.kill()
 		this.loaderBar.kill()
 		this.game.stage.backgroundColor = "#222222";
@@ -46,7 +56,7 @@ export default class extends Phaser.State {
 		var style = {font: "bold 36px " + Config.FONT_FAMILY_NAME, fill: "#888"};
 		this.menu = []
 		let y = 400
-		for(let s of ["Game Editor", "New Game", "Load Game"]) {
+		for(let s of ["Game Editor", "New Game", "Load Game", "Options"]) {
 			let m = this.game.add.text(this.game.world.centerX, y, s, style)
 			m.anchor.setTo(0.5, 0.5)
 			this.menu.push(m)
@@ -100,8 +110,11 @@ export default class extends Phaser.State {
 				this.transition.fadeIn(() => {
 					this.state.start('Arkona', true, false, { loadGame: true })
 				})
+			} else if(this.menuIndex == 3) {
+				let o = loadSettings()
+				$("#use-webgl").attr("checked", o["use_webgl"])
+				$("#options").show();
 			}
 		}
 	}
-
 }

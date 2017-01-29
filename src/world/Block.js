@@ -124,9 +124,7 @@ class Layer {
 	toggleHigherThan(z, visible) {
 		for(let k in this.world) {
 			for(let ii of this.world[k].imageInfos) {
-				if(ii.image.gamePos[2] >= z) {
-					ii.image.visible = visible;
-				}
+				ii.image.visible = z > 0 && ii.image.gamePos[2] >= z ? visible : true
 			}
 		}
 	}
@@ -171,7 +169,7 @@ class Layer {
 		}
 	}
 
-	clearAll(x, y, z) {
+	clearFirst(x, y, z) {
 		let key = _key(x, y, z)
 		let info = this.infos[key]
 		if(!info) info = this.world[key]
@@ -194,7 +192,10 @@ class Layer {
 					}
 				})
 			}
+
+			return true
 		}
+		return false
 	}
 
 	updateInfo(name, x, y, z, image) {
@@ -246,12 +247,14 @@ class Layer {
 	 * @param worldX
 	 * @param worldY
 	 * @param sprite
+	 * @param visibleHeight
 	 */
-	getTopAt(worldX, worldY, sprite) {
+	getTopAt(worldX, worldY, sprite, visibleHeight) {
 		let maxZ = 0
 		if(sprite && !isFlat(sprite)) {
 			_visit(sprite.name, worldX, worldY, (xx, yy) => {
-				for (let z = 15; z >= 0; z--) {
+				let fromZ = visibleHeight > 0 ? visibleHeight - 1 : 15
+				for (let z = fromZ; z >= 0; z--) {
 					let info = this.infos[_key(xx, yy, z)]
 					if (info) {
 						if (z + 1 > maxZ) maxZ = z + 1
@@ -379,6 +382,7 @@ export default class {
 		this.layersByName = {}
 		for(let layer of this.layers) this.layersByName[layer.name] = layer
 		this.roofVisible = true;
+		this.visibleHeight = 0
 
 		Filters.create(game)
 
@@ -433,9 +437,14 @@ export default class {
 		return this.isInBounds(x, y) ? this.floorLayer.getBlendLevel(x, y) : Config.NO_BLEND
 	}
 
-	toggleRoof() {
-		this.roofVisible = !this.roofVisible;
-		this.objectLayer.toggleHigherThan(6, this.roofVisible);
+	toggleRoof(height) {
+		if(height == this.visibleHeight) {
+			this.roofVisible = !this.roofVisible
+			if(this.roofVisible) this.visibleHeight = 0
+		} else {
+			this.visibleHeight = height
+		}
+		this.objectLayer.toggleHigherThan(this.visibleHeight, this.roofVisible)
 	}
 
 	getFloor(x, y) {
@@ -444,7 +453,7 @@ export default class {
 
 	checkRoof(worldX, worldY) {
 		let under = this.objectLayer.infos[_key(worldX, worldY, 6)] != null
-		if(under == this.roofVisible) this.toggleRoof()
+		if(under == this.roofVisible) this.toggleRoof(6)
 	}
 
 	_getLayer(name) {
@@ -482,12 +491,16 @@ export default class {
 		layer.clear(name, x, y, z)
 	}
 
-	clearAll(x, y) {
-		for(let z = 0; z < 16; z++){
+	clearFirst(x, y) {
+		let fromZ = this.visibleHeight > 0 ? this.visibleHeight - 1 : 15
+		for(let z = fromZ; z >= 0; z--){
 			for(let layer of this.layers) {
-				if(layer != this.floorLayer) layer.clearAll(x, y, z)
+				if(layer != this.floorLayer) {
+					if(layer.clearFirst(x, y, z)) return true
+				}
 			}
 		}
+		return false
 	}
 
 	// todo: figure out zoom from game.scale
@@ -670,7 +683,7 @@ export default class {
 	 * @param sprite
 	 */
 	getTopAt(worldX, worldY, sprite) {
-		return this.objectLayer.getTopAt(worldX, worldY, sprite)
+		return this.objectLayer.getTopAt(worldX, worldY, sprite, this.visibleHeight)
 	}
 
 
