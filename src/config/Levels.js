@@ -101,5 +101,10 @@ export const LEVELS = {
 				dst: { map: "woods2", x: 63, y: 0 }
 			}
 		]
+	},
+	demo: {
+		map: "demo",
+		startPos: [31, 16, 0],
+		connect: []
 	}
 }

@@ -301,13 +301,13 @@ class Layer {
 		return maxZ
 	}
 
-	canMoveTo(sprite, x, y, z) {
+	canMoveTo(sprite, x, y, z, skipSupportCheck) {
 		let fits = _visit3SS(sprite.name, x, y, z, (xx, yy, zz) => {
 			let info = this.infos[_key(xx, yy, zz)]
 			return !(info && info.imageInfos.find((ii) => ii.image != sprite));
 		})
 		// if it fits, make sure we're standing on something
-		if(fits && z > 0) {
+		if(fits && z > 0 && !skipSupportCheck) {
 			// tricky: we want to test that at least one shape below the player can be stood on
 			// in order to work with the short-circuit eval, we return  true if a space can be used.
 			// At the first such "false" the ss quits.
@@ -466,7 +466,7 @@ export default class {
 		this.groundDebug.x = gsx + this.floorLayer.group.x
 		this.groundDebug.y = gsy + this.floorLayer.group.y
 
-		let [sx, sy] = this.toScreenCoords(x, y, 0)
+		let [sx, sy] = this.toScreenCoords(x, y, z)
 		this.anchorDebug.x = sx + this.floorLayer.group.x
 		this.anchorDebug.y = sy + this.floorLayer.group.y
 	}
@@ -610,7 +610,7 @@ export default class {
 		let ok = false
 		if(skipInfo) {
 			// editor mode
-			ok = layer.canMoveTo(sprite, x, y, z)
+			ok = layer.canMoveTo(sprite, x, y, z, true)
 		} else {
 			// game mode
 			if(z > 0 || this.isFloorSafe(x, y)) {

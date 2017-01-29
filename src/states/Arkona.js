@@ -63,14 +63,14 @@ export default class extends Phaser.State {
 			if (!updated) updated = b
 
 			if (this.t_key.justDown) {
-				let sprite = this.blocks.findClosestObject(this.player.sprite, 12, (sprite) => sprite.npc != null)
+				let sprite = this.blocks.findClosestObject(this.player.sprite, 6, (sprite) => sprite.npc != null)
 				if(sprite) {
 					this.level.npcs.forEach(npc => npc.creature.stand(npc.dir))
 					this.convoUi.start(sprite.npc)
 				}
 			}
 			if (this.space.justDown) {
-				this.door = this.blocks.findClosestObject(this.player.sprite, 12, (sprite) => {
+				this.door = this.blocks.findClosestObject(this.player.sprite, 6, (sprite) => {
 					return Config.DOORS.indexOf(sprite.name) >= 0
 				})
 				if (this.door) {
@@ -92,7 +92,7 @@ export default class extends Phaser.State {
 		if(now - this.lastTime > Config.SPEED && cursorKeyDown) {
 			this.lastTime = now
 
-			let [ox, oy] = [this.px, this.py]
+			let [ox, oy, oz] = [this.px, this.py, this.pz]
 			let dir = null
 			if (this.cursors.up.isDown && this.cursors.left.isDown) {
 				this.px--
@@ -140,7 +140,7 @@ export default class extends Phaser.State {
 				}
 			}
 
-			if (ox != this.px || oy != this.py) {
+			if (ox != this.px || oy != this.py || oz != this.pz) {
 				this.playerMoved()
 				return true
 			}
