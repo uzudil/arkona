@@ -1,4 +1,16 @@
-export default class {
+import OpenDoor from './OpenDoor'
+import Talk from './Talk'
+
+const ACTIONS = [
+	new OpenDoor(),
+	new Talk(),
+]
+
+export const OPEN_DOOR = 0
+export const TALK = 1
+export const MOVE_PLAYER = 2
+
+export class Queue {
 	constructor(arkona) {
 		this.arkona = arkona
 		this.queue = []
@@ -12,13 +24,14 @@ export default class {
 		let updated = false
 		let idx = 0
 		while(idx < this.queue.length) {
-			let action = this.queue[idx]
-			if(action.isReady()) {
+			let action = ACTIONS[this.queue[idx]]
+			action.reset()
+			if(action.isReady(this.arkona)) {
 				console.log("Trying: " + action.getType())
-				if(action.check()) {
+				if(action.check(this.arkona)) {
 					console.log("Running: " + action.getType() + " at " + action.getPos())
 					if(this.arkona.level.isAllowed(action, this.arkona)) {
-						let b = action.run()
+						let b = action.run(this.arkona)
 						if (b) updated = b
 					} else {
 						console.log("NOT ALLOWED: " + action.getType() + " at " + action.getPos())

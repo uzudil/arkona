@@ -2,8 +2,7 @@ import * as Config from '../config/Config'
 
 export default class {
 
-	constructor(arkona) {
-		this.arkona = arkona
+	reset() {
 		this.door = null
 	}
 
@@ -15,19 +14,19 @@ export default class {
 		return this.door ? this.door.gamePos : null
 	}
 
-	isReady() {
+	isReady(arkona) {
 		return true
 	}
 
-	check() {
-		this.door = this.arkona.blocks.findClosestObject(this.arkona.player.sprite, 6, (sprite) => {
+	check(arkona) {
+		this.door = arkona.blocks.findClosestObject(arkona.player.sprite, 6, (sprite) => {
 			return Config.DOORS.indexOf(sprite.name) >= 0
 		})
 		return this.door
 	}
 
-	run() {
-		this.arkona.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
+	run(arkona) {
+		arkona.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
 		return true
 	}
 }

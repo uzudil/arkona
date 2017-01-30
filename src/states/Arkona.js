@@ -7,9 +7,7 @@ import Level from '../models/Level'
 import Messages from '../ui/Messages'
 import ConvoUI from '../ui/ConvoUI'
 import Transition from '../ui/Transition'
-import OpenDoor from '../actions/OpenDoor'
-import Talk from '../actions/Talk'
-import Queue from '../actions/Queue'
+import * as Queue from '../actions/Queue'
 
 export default class extends Phaser.State {
 	init(context) {
@@ -22,7 +20,7 @@ export default class extends Phaser.State {
 		this.gameState = {}
 		this.level = null
 		this.newPos = { x: 0, y: 0, z: 0 }
-		this.actionQueue = new Queue(this)
+		this.actionQueue = new Queue.Queue(this)
 
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys()
@@ -50,12 +48,8 @@ export default class extends Phaser.State {
 			let b = this.movePlayer()
 			if (!updated) updated = b
 
-			if (this.t_key.justDown) {
-				this.actionQueue.add(new Talk(this))
-			}
-			if (this.space.justDown) {
-				this.actionQueue.add(new OpenDoor(this))
-			}
+			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
+			if (this.space.justDown) this.actionQueue.add(Queue.OPEN_DOOR)
 
 			b = this.actionQueue.update()
 			if(b) updated = b
