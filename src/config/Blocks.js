@@ -51,6 +51,7 @@ export const BLOCKS = {
 	"blood.big": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64], options: { sprites: 2, stamp: true } },
 	"blood.small": { size: [4, 4, 0], pos: [128, 256], dim: [32, 32], options: { sprites: 2, stamp: true } },
 	"rug.bear": { size: [4, 4, 0], pos: [0, 256], dim: [64, 62], options: { sprites: 2, stamp: true } },
+	"rug.round": { size: [4, 4, 0], pos: [64, 256], dim: [64, 62], options: { sprites: 2, stamp: true } },
 
 	"wood.column": { size: [1, 1, 6], pos: [176, 0], dim: [16, 64] },
 	"stone.wall.x": { size: [4, 1, 6], pos: [216, 0], dim: [40, 96] },
@@ -101,6 +102,10 @@ export const BLOCKS = {
 	"ceiling.short": { size: [4, 1, 1], pos: [912, 96], dim: [40, 48], options: { sprites: 2 } },
 	"shelves.empty": { size: [1, 4, 5], pos: [0, 160], dim: [40, 80], options: { sprites: 2 } },
 	"shelves.books": { size: [1, 4, 5], pos: [48, 160], dim: [40, 80], options: { sprites: 2 } },
+	"shelves.empty.n": { size: [4, 1, 5], pos: [88, 320], dim: [40, 80], options: { sprites: 2 } },
+	"shelves.books.n": { size: [4, 1, 5], pos: [136, 320], dim: [40, 80], options: { sprites: 2 } },
+	"commode": { size: [2, 4, 4], pos: [192, 320], dim: [48, 80], options: { sprites: 2 } },
+	"table.round": { size: [2, 4, 2], pos: [256, 320], dim: [32, 48], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

@@ -1,6 +1,7 @@
 import {MOVE_ANCHOR} from './Config'
 import * as FARM_CONVO from '../convo/farm'
 import * as MEDIAN_CONVO from '../convo/median'
+import * as ELDUN_CONVO from '../convo/eldun'
 
 export const LEVELS = {
 	farm: {
@@ -100,6 +101,11 @@ export const LEVELS = {
 				src: { dir: "s" },
 				dst: { map: "woods2", x: 63, y: 0 }
 			}
+		],
+		npcs: [
+			{ creature: "man_blue", x: 80, y: 74, options: { movement: MOVE_ANCHOR, name: "Arton" } },
+			{ creature: "woman", x: 87, y: 84, options: { movement: MOVE_ANCHOR, name: "Sara" } },
+			{ creature: "monk_red", x: 131, y: 51, z: 7, options: { movement: MOVE_ANCHOR, name: "Marisan of Eldun", convo: ELDUN_CONVO.MARISAN } },
 		]
 	},
 	demo: {

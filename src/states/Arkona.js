@@ -74,6 +74,7 @@ export default class extends Phaser.State {
 					return Config.DOORS.indexOf(sprite.name) >= 0
 				})
 				if (this.door) {
+					console.log("Door open at " + this.door.gamePos)
 					this.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
 					updated = true
 				}

@@ -21,8 +21,42 @@ export const CREATURES = {
 		dirs: DEFAULT_DIRS,
 		speed: 200
 	},
+	man_blue: {
+		src: 'assets/creatures/man-blue.png',
+		dim: [32, 64],
+		blockName: "2x2x4.placeholder",
+		dirs: DEFAULT_DIRS,
+		speed: 200
+	},
+	man_yellow: {
+		src: 'assets/creatures/man-yellow.png',
+		dim: [32, 64],
+		blockName: "2x2x4.placeholder",
+		dirs: DEFAULT_DIRS,
+		speed: 200
+	},
 	monk: {
 		src: 'assets/creatures/monk.png',
+		dim: [32, 64],
+		blockName: "2x2x4.placeholder",
+		dirs: {
+			walk: ['s', 'se', 'e', 'ne', 'n', 'nw', 'w', 'sw'],
+			stand: ['s', 'se', 'e', 'ne', 'n', 'nw', 'w', 'sw']
+		},
+		speed: 200
+	},
+	monk_blue: {
+		src: 'assets/creatures/monk-blue.png',
+		dim: [32, 64],
+		blockName: "2x2x4.placeholder",
+		dirs: {
+			walk: ['s', 'se', 'e', 'ne', 'n', 'nw', 'w', 'sw'],
+			stand: ['s', 'se', 'e', 'ne', 'n', 'nw', 'w', 'sw']
+		},
+		speed: 200
+	},
+	monk_red: {
+		src: 'assets/creatures/monk-red.png',
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: {
