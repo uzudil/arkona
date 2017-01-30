@@ -1,14 +1,15 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
-import Block, { isFlat } from '../world/Block'
-import {getRandom, range, inRect} from '../utils'
+import Block from '../world/Block'
 import * as Config from '../config/Config'
-import $ from 'jquery'
 import Creature from '../models/Creature'
 import Level from '../models/Level'
 import Messages from '../ui/Messages'
 import ConvoUI from '../ui/ConvoUI'
 import Transition from '../ui/Transition'
+import OpenDoor from '../actions/OpenDoor'
+import Talk from '../actions/Talk'
+import Queue from '../actions/Queue'
 
 export default class extends Phaser.State {
 	init(context) {
@@ -21,6 +22,7 @@ export default class extends Phaser.State {
 		this.gameState = {}
 		this.level = null
 		this.newPos = { x: 0, y: 0, z: 0 }
+		this.actionQueue = new Queue(this)
 
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys()
@@ -43,47 +45,47 @@ export default class extends Phaser.State {
 
 		this.blocks.update()
 
-		if(this.messages.group.visible) {
-			if (this.space.justDown) {
-				this.messages.showNextLine()
-			}
-		} else if(this.convoUi.group.visible) {
-			if (this.esc.justDown) {
-				this.convoUi.end()
-			} else if(this.space.justDown) {
-				this.convoUi.select()
-			} else if(this.cursors.up.justDown) {
-				this.convoUi.change(-1)
-			} else if(this.cursors.down.justDown) {
-				this.convoUi.change(1)
-			}
-		} else {
+		if(!this.updateUI()) {
 			let updated = this.level.moveNpcs()
 			let b = this.movePlayer()
 			if (!updated) updated = b
 
 			if (this.t_key.justDown) {
-				let sprite = this.blocks.findClosestObject(this.player.sprite, 6, (sprite) => sprite.npc != null)
-				if(sprite) {
-					this.level.npcs.forEach(npc => npc.creature.stand(npc.dir))
-					this.convoUi.start(sprite.npc)
-				}
+				this.actionQueue.add(new Talk(this))
 			}
 			if (this.space.justDown) {
-				this.door = this.blocks.findClosestObject(this.player.sprite, 6, (sprite) => {
-					return Config.DOORS.indexOf(sprite.name) >= 0
-				})
-				if (this.door) {
-					console.log("Door open at " + this.door.gamePos)
-					this.blocks.replace(this.door, Config.getOppositeDoor(this.door.name))
-					updated = true
-				}
+				this.actionQueue.add(new OpenDoor(this))
 			}
+
+			b = this.actionQueue.update()
+			if(b) updated = b
 
 			if (updated) this.blocks.sort()
 		}
 
 		this.level.onLoad(this)
+	}
+
+	updateUI() {
+		if(this.messages.group.visible) {
+			if (this.space.justDown) {
+				this.messages.showNextLine()
+			}
+			return true
+		} else if(this.convoUi.group.visible) {
+			if (this.esc.justDown) {
+				this.convoUi.end()
+			} else if (this.space.justDown) {
+				this.convoUi.select()
+			} else if (this.cursors.up.justDown) {
+				this.convoUi.change(-1)
+			} else if (this.cursors.down.justDown) {
+				this.convoUi.change(1)
+			}
+			return true
+		} else {
+			return false
+		}
 	}
 
 	// todo: smooth/vector movement

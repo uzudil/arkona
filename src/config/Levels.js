@@ -106,6 +106,11 @@ export const LEVELS = {
 			{ creature: "man_blue", x: 80, y: 74, options: { movement: MOVE_ANCHOR, name: "Arton" } },
 			{ creature: "woman", x: 87, y: 84, options: { movement: MOVE_ANCHOR, name: "Sara" } },
 			{ creature: "monk_red", x: 131, y: 51, z: 7, options: { movement: MOVE_ANCHOR, name: "Marisan of Eldun", convo: ELDUN_CONVO.MARISAN } },
+		],
+		actions: [
+			{
+				type: "open_door", x: 135, y: 57, z: 0, allow: (arkona) => arkona.gameState["marissa_key"] == true
+			}
 		]
 	},
 	demo: {

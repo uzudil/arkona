@@ -60,4 +60,13 @@ export default class {
 		}
 		return null
 	}
+
+	isAllowed(action, arkona) {
+		if(this.info["actions"]) {
+			let actionAllowed = this.info.actions.find(o => o.type == action.getType() &&
+				o.x == action.getPos()[0] && o.y == action.getPos()[1] && o.z == action.getPos()[2])
+			if(actionAllowed) return actionAllowed.allow(arkona)
+		}
+		return true
+	}
 }
