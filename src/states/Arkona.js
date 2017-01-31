@@ -44,10 +44,7 @@ export default class extends Phaser.State {
 
 		if(!this.updateUI()) {
 			// assemble the actions
-			let npcs = this.level.getActiveNpcs()
-			if(npcs) this.actionQueue.add(Queue.MOVE_NPC, npcs)
-
-			this.movePlayer()
+			this.moveCreatures()
 
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
 			if (this.space.justDown) this.actionQueue.add(Queue.OPEN_DOOR)
@@ -83,7 +80,12 @@ export default class extends Phaser.State {
 		}
 	}
 
-	movePlayer() {
+	moveCreatures() {
+		// npcs
+		let npcs = this.level.getActiveNpcs()
+		if(npcs) this.actionQueue.add(Queue.MOVE_NPC, npcs)
+
+		// player
 		if (this.isCursorKeyDown()) {
 			if (this.game.time.elapsedSince(this.lastTime) > Config.SPEED) {
 				this.lastTime = this.game.time.time
