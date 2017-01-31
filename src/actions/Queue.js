@@ -1,16 +1,16 @@
-import OpenDoor from './OpenDoor'
+import UseObject from './UseObject'
 import Talk from './Talk'
 import MovePlayer from './MovePlayer'
 import MoveNpc from './MoveNpc'
 
 const ACTIONS = [
-	new OpenDoor(),
+	new UseObject(),
 	new Talk(),
 	new MovePlayer(),
 	new MoveNpc()
 ]
 
-export const OPEN_DOOR = 0
+export const USE_OBJECT = 0
 export const TALK = 1
 export const MOVE_PLAYER = 2
 export const MOVE_NPC = 3

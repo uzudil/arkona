@@ -35,6 +35,9 @@ export default class extends Phaser.State {
 
 		// start game
 		this.loadLevel("eldun")
+
+		// for debug/hacking
+		window.arkona = this
 	}
 
 	update() {
@@ -47,7 +50,7 @@ export default class extends Phaser.State {
 			this.moveCreatures()
 
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
-			if (this.space.justDown) this.actionQueue.add(Queue.OPEN_DOOR)
+			if (this.space.justDown) this.actionQueue.add(Queue.USE_OBJECT)
 
 			// run the actions
 			if(this.actionQueue.update()) {

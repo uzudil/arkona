@@ -11,7 +11,7 @@ export default class {
 	}
 
 	getPos() {
-		return this.npc.creature.sprite.gamePos
+		return null
 	}
 
 	isReady(arkona) {

@@ -163,6 +163,15 @@ export default class extends Phaser.State {
 
 		this.moveCamera()
 
+		// find the top object under the mouse
+		let spriteUnderMouse = this.blocks.getTopSpriteAt(this.game.input.x, this.game.input.y)
+		if(spriteUnderMouse) {
+			console.log(spriteUnderMouse.name)
+
+			// highlight it
+
+		}
+
 		// find new top z
 		let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
 		z = this.blocks.getTopAt(x, y, this.activeBlock)

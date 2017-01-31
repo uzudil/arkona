@@ -786,6 +786,17 @@ export default class {
 		]
 	}
 
+	getTopSpriteAt(screenX, screenY) {
+		let fromZ = this.visibleHeight > 0 ? this.visibleHeight - 1 : Config.MAX_Z
+		for(let z = fromZ; z >= 0; z--) {
+			let [worldX, worldY, worldZ] = this.toWorldCoords(screenX + z, screenY + z)
+			worldZ = z
+			let info = this.objectLayer.infos[_key(worldX, worldY, worldZ)]
+			if(info && info["imageInfos"] && info.imageInfos.length > 0) return info.imageInfos[0]
+		}
+		return null
+	}
+
 	move(dx, dy) {
 		for(let layer of this.layers) layer.move(dx, dy)
 	}

@@ -57,11 +57,22 @@ export default class {
 	}
 
 	isAllowed(action, arkona) {
-		if(this.info["actions"]) {
-			let actionAllowed = this.info.actions.find(o => o.type == action.getType() &&
-				o.x == action.getPos()[0] && o.y == action.getPos()[1] && o.z == action.getPos()[2])
+		if(this.info["actions"] && action.getPos()) {
+			let actionAllowed = this._getAction(action.getPos(), action.getType())
 			if(actionAllowed) return actionAllowed.allow(arkona)
 		}
 		return true
+	}
+
+	getAction(pos, action, arkona) {
+		if(this.info["actions"]) {
+			let actionInfo = this._getAction(pos, action.getType())
+			if(actionInfo && actionInfo["action"]) return actionInfo
+		}
+		return null
+	}
+
+	_getAction(pos, type) {
+		return this.info.actions.find(o => o.type == type && o.x == pos[0] && o.y == pos[1] && o.z == pos[2])
 	}
 }

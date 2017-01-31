@@ -109,7 +109,17 @@ export const LEVELS = {
 		],
 		actions: [
 			{
-				type: "open_door", x: 135, y: 57, z: 0, allow: (arkona) => arkona.gameState["marissa_key"] == true
+				type: "use_object", x: 135, y: 57, z: 0, allow: (arkona) => arkona.gameState["marisan_key"] == true
+			},
+			{
+				type: "use_object", x: 133, y: 53, z: 0,
+				allow: (arkona) => arkona.gameState["marisan_key"] == true && arkona.gameState["marisan_purple_tome"] != true,
+				action: (arkona) => {
+					arkona.gameState["marisan_purple_tome"] = true
+					arkona.narrate("You carefully inspect the books on this shelf. " +
+						"After considering many, you pick a large purple tome with ornately gilded lettering. " +
+						"You can't understand its text but hopefully Marisan can make sense of it.")
+				}
 			}
 		]
 	},
