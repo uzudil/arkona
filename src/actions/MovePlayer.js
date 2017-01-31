@@ -6,9 +6,6 @@ export default class {
 		this.dir = null
 	}
 
-	reset() {
-	}
-
 	getType() {
 		return "move_player"
 	}

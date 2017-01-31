@@ -33,13 +33,8 @@ export default class {
 		// todo: free npc memory?
 	}
 
-	moveNpcs() {
-		let updated = false
-		for(let npc of this.npcs) {
-			let b = npc.move()
-			if(!updated) updated = b
-		}
-		return updated
+	getActiveNpcs() {
+		return this.npcs.filter(npc => npc.isActive())
 	}
 
 	checkBounds(px, py, blocks) {

@@ -1,5 +1,6 @@
 import * as Config from './../config/Config'
 import { dist3d } from '../utils'
+import * as Queue from '../actions/Queue'
 
 export default class {
 	constructor(arkona, x, y, z, options, creature) {
@@ -18,22 +19,22 @@ export default class {
 		this.stopClock = null
 	}
 
-	move() {
-		let now = Date.now()
-		if(now - this.lastTime > this.creature.info.speed) {
-			this.lastTime = now
-
-			if (this._willStop()) {
-				this._stop()
-			} else if(this._isStopped()) {
-				this._turnToPlayer()
-			} else if (!this._takeStep()) {
-				this._changeDir()
-			}
-
+	isActive() {
+		if(this.arkona.game.time.elapsedSince(this.lastTime) > this.creature.info.speed) {
+			this.lastTime = this.arkona.game.time.time
 			return true
-		}  else {
+		} else {
 			return false
+		}
+	}
+
+	move() {
+		if (this._willStop()) {
+			this._stop()
+		} else if(this._isStopped()) {
+			this._turnToPlayer()
+		} else if (!this._takeStep()) {
+			this._changeDir()
 		}
 	}
 

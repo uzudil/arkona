@@ -1,11 +1,6 @@
 //import * as Config from '../config/Config'
 
 export default class {
-
-	reset() {
-		this.sprite = null
-	}
-
 	getType() {
 		return "start_convo"
 	}
@@ -19,6 +14,7 @@ export default class {
 	}
 
 	setContext(context) {
+		this.sprite = null
 	}
 
 	check(arkona) {

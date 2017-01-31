@@ -1,11 +1,6 @@
 import * as Config from '../config/Config'
 
 export default class {
-
-	reset() {
-		this.door = null
-	}
-
 	getType() {
 		return "open_door"
 	}
@@ -19,6 +14,7 @@ export default class {
 	}
 
 	setContext(context) {
+		this.door = null
 	}
 
 	check(arkona) {

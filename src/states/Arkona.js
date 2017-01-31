@@ -43,16 +43,19 @@ export default class extends Phaser.State {
 		this.blocks.update()
 
 		if(!this.updateUI()) {
-			let updated = this.level.moveNpcs()
+			// assemble the actions
+			let npcs = this.level.getActiveNpcs()
+			if(npcs) this.actionQueue.add(Queue.MOVE_NPC, npcs)
 
 			this.movePlayer()
+
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
 			if (this.space.justDown) this.actionQueue.add(Queue.OPEN_DOOR)
 
-			let b = this.actionQueue.update()
-			if(b) updated = b
-
-			if (updated) this.blocks.sort()
+			// run the actions
+			if(this.actionQueue.update()) {
+				this.blocks.sort()
+			}
 		}
 
 		this.level.onLoad(this)
