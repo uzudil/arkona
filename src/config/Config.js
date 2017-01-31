@@ -39,6 +39,17 @@ export const NO_BLEND = 0
 export const BLENDS = 1
 export const BLEND_TO_BLEND = 2
 
+export const MOVE_DELTA = {
+	w: [-1, 0],
+	e: [1, 0],
+	n: [0, -1],
+	s: [0, 1],
+	nw: [-1, -1],
+	se: [1, 1],
+	sw: [-1, 1],
+	ne: [1, -1],
+}
+
 export function getRandomDir() {
 	return DIRS[(Math.random() * DIRS.length)|0]
 }

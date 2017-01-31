@@ -19,7 +19,6 @@ export default class extends Phaser.State {
 		this.lastDir = null
 		this.gameState = {}
 		this.level = null
-		this.newPos = { x: 0, y: 0, z: 0 }
 		this.actionQueue = new Queue.Queue(this)
 
 		// controls
@@ -39,19 +38,18 @@ export default class extends Phaser.State {
 	}
 
 	update() {
-		if(this.loading) return
+		if(this.loading || !this.player) return
 
 		this.blocks.update()
 
 		if(!this.updateUI()) {
 			let updated = this.level.moveNpcs()
-			let b = this.movePlayer()
-			if (!updated) updated = b
 
+			this.movePlayer()
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
 			if (this.space.justDown) this.actionQueue.add(Queue.OPEN_DOOR)
 
-			b = this.actionQueue.update()
+			let b = this.actionQueue.update()
 			if(b) updated = b
 
 			if (updated) this.blocks.sort()
@@ -82,89 +80,52 @@ export default class extends Phaser.State {
 		}
 	}
 
-	// todo: smooth/vector movement
 	movePlayer() {
-		let cursorKeyDown = this.cursors.up.isDown || this.cursors.left.isDown || this.cursors.down.isDown || this.cursors.right.isDown
-		let now = Date.now()
-		if(now - this.lastTime > Config.SPEED && cursorKeyDown) {
-			this.lastTime = now
-
-			let [ox, oy, oz] = [this.px, this.py, this.pz]
-			let dir = null
-			if (this.cursors.up.isDown && this.cursors.left.isDown) {
-				this.px--
-				dir = 'w'
-			} else if (this.cursors.up.isDown && this.cursors.right.isDown) {
-				this.py--
-				dir = 'n'
-			} else if (this.cursors.down.isDown && this.cursors.right.isDown) {
-				this.px++
-				dir = 'e'
-			} else if (this.cursors.down.isDown && this.cursors.left.isDown) {
-				this.py++
-				dir = 's'
-			} else {
-				if (this.cursors.up.isDown) {
-					this.py--;
-					this.px--
-					dir = 'nw'
-				} else if (this.cursors.down.isDown) {
-					this.py++;
-					this.px++
-					dir = 'se'
-				} else if (this.cursors.left.isDown) {
-					this.px--;
-					this.py++
-					dir = 'sw'
-				} else if (this.cursors.right.isDown) {
-					this.px++;
-					this.py--
-					dir = 'ne'
-				}
+		if (this.isCursorKeyDown()) {
+			if (this.game.time.elapsedSince(this.lastTime) > Config.SPEED) {
+				this.lastTime = this.game.time.time
+				let dir = this.getDirFromCursorKeys()
+				if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
 			}
-
-			if (ox != this.px || oy != this.py) {
-				if(this.tryStepTo(this.px, this.py, this.pz) ||
-					this.tryStepTo(this.px, oy, this.pz) ||
-					this.tryStepTo(ox, this.py, this.pz)) {
-					this.blocks.checkRoof(this.px - 1, this.py - 1, this.pz)
-					if(dir) {
-						this.lastDir = dir
-						this.player.walk(dir)
-					}
-				} else {
-					this.px = ox; this.py = oy
-				}
-			}
-
-			if (ox != this.px || oy != this.py || oz != this.pz) {
-				this.playerMoved()
-				return true
-			}
-		}
-
-		if(!cursorKeyDown) {
-			if(this.player) {
-				this.player.stand(this.lastDir)
-			}
-		}
-		return false
-	}
-
-	tryStepTo(nx, ny, nz) {
-		if(this.blocks.moveTo(this.player.sprite, nx, ny, nz, false, this.newPos)) {
-			this.px = this.newPos.x
-			this.py = this.newPos.y
-			this.pz = this.newPos.z
-			this.blocks.centerOn(this.player.sprite)
-			return true
 		} else {
-			return false
+			this.player.stand(this.lastDir)
 		}
 	}
 
-	playerMoved() {
-		let dst = this.level.checkBounds(this.px, this.py, this.blocks)
+	isCursorKeyDown() {
+		return this.cursors.up.isDown || this.cursors.left.isDown || this.cursors.down.isDown || this.cursors.right.isDown
+	}
+
+	getDirFromCursorKeys() {
+		let dir = null
+		if (this.cursors.up.isDown && this.cursors.left.isDown) {
+			dir = 'w'
+		} else if (this.cursors.up.isDown && this.cursors.right.isDown) {
+			dir = 'n'
+		} else if (this.cursors.down.isDown && this.cursors.right.isDown) {
+			dir = 'e'
+		} else if (this.cursors.down.isDown && this.cursors.left.isDown) {
+			dir = 's'
+		} else if (this.cursors.up.isDown) {
+				dir = 'nw'
+		} else if (this.cursors.down.isDown) {
+			dir = 'se'
+		} else if (this.cursors.left.isDown) {
+			dir = 'sw'
+		} else if (this.cursors.right.isDown) {
+			dir = 'ne'
+		}
+		return dir
+	}
+
+	playerMoved(dir) {
+		let [px, py, pz] = this.player.sprite.gamePos
+		this.blocks.checkRoof(px - 1, py - 1, pz)
+		if (dir != null) {
+			this.lastDir = dir
+			this.player.walk(dir)
+		}
+		let dst = this.level.checkBounds(px, py, this.blocks)
 		if(dst) {
 			this.transition.fadeIn(() => this.loadLevel(dst.map, dst.x, dst.y, true))
 		}
@@ -178,10 +139,10 @@ export default class extends Phaser.State {
 		}
 		this.level = new Level(mapName)
 		this.level.start(this, this.blocks, () => {
-			this.px = startX || this.level.info.startPos[0]
-			this.py = startY || this.level.info.startPos[1]
-			this.pz= 0
-			this.player = new Creature(this.game, "man", this.blocks, this.px, this.py, this.pz)
+			this.player = new Creature(this.game, "man", this.blocks,
+				startX || this.level.info.startPos[0],
+				startY || this.level.info.startPos[1],
+				0)
 			this.player.stand(this.lastDir || Config.DIR_E)
 			this.transition.fadeOut(() => {
 				this.loading = false

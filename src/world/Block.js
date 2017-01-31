@@ -605,7 +605,7 @@ export default class {
 		return sprite
 	}
 
-	moveTo(sprite, rx, ry, rz, skipInfo, newPos) {
+	moveTo(sprite, rx, ry, rz, skipInfo, centerOnSuccess) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
 		let ok = false
 		if(skipInfo) {
@@ -629,12 +629,6 @@ export default class {
 		}
 
 		if(ok) {
-			if(newPos) {
-				newPos.x = x
-				newPos.y = y
-				newPos.z = z
-			}
-
 			layer.removeFromCurrentPos(sprite)
 
 			// move to new position
@@ -654,6 +648,11 @@ export default class {
 
 			layer.set(sprite.name, x, y, z, sprite, skipInfo)
 			if(!skipInfo) this.drawEdges(layer, sprite.name, x, y)
+
+			if(centerOnSuccess) {
+				this.centerOn(sprite)
+			}
+
 			return true
 		} else {
 			return false

@@ -18,6 +18,9 @@ export default class {
 		return true
 	}
 
+	setContext(context) {
+	}
+
 	check(arkona) {
 		this.door = arkona.blocks.findClosestObject(arkona.player.sprite, 6, (sprite) => {
 			return Config.DOORS.indexOf(sprite.name) >= 0

@@ -1,9 +1,11 @@
 import OpenDoor from './OpenDoor'
 import Talk from './Talk'
+import MovePlayer from './MovePlayer'
 
 const ACTIONS = [
 	new OpenDoor(),
 	new Talk(),
+	new MovePlayer()
 ]
 
 export const OPEN_DOOR = 0
@@ -16,8 +18,10 @@ export class Queue {
 		this.queue = []
 	}
 
-	add(action) {
-		this.queue.push(action)
+	add(actionIndex, context) {
+		let action = ACTIONS[actionIndex]
+		action.setContext(context)
+		this.queue.push(actionIndex)
 	}
 
 	update() {
@@ -27,14 +31,14 @@ export class Queue {
 			let action = ACTIONS[this.queue[idx]]
 			action.reset()
 			if(action.isReady(this.arkona)) {
-				console.log("Trying: " + action.getType())
+				this.log(action, "Trying")
 				if(action.check(this.arkona)) {
-					console.log("Running: " + action.getType() + " at " + action.getPos())
+					this.log(action, "Running")
 					if(this.arkona.level.isAllowed(action, this.arkona)) {
 						let b = action.run(this.arkona)
 						if (b) updated = b
 					} else {
-						console.log("NOT ALLOWED: " + action.getType() + " at " + action.getPos())
+						this.log(action, "NOT ALLOWED")
 						// todo: play FAIL sound or special handling?
 					}
 				}
@@ -45,5 +49,11 @@ export class Queue {
 			}
 		}
 		return updated
+	}
+
+	log(action, message) {
+		if(action != ACTIONS[MOVE_PLAYER]) {
+			console.log(message + ": type=" + action.getType() + " at " + action.getPos())
+		}
 	}
 }
