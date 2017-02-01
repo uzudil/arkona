@@ -103,8 +103,8 @@ export const LEVELS = {
 			}
 		],
 		npcs: [
-			{ creature: "man_blue", x: 80, y: 74, options: { movement: MOVE_ANCHOR, name: "Arton" } },
-			{ creature: "woman", x: 87, y: 84, options: { movement: MOVE_ANCHOR, name: "Sara" } },
+			{ creature: "man_blue", x: 80, y: 74, options: { movement: MOVE_ANCHOR, name: "Arton", convo: ELDUN_CONVO.ARTON } },
+			{ creature: "woman", x: 87, y: 84, options: { movement: MOVE_ANCHOR, name: "Sara", convo: ELDUN_CONVO.SARA } },
 			{ creature: "monk_red", x: 131, y: 51, z: 7, options: { movement: MOVE_ANCHOR, name: "Marisan of Eldun", convo: ELDUN_CONVO.MARISAN } },
 		],
 		actions: [

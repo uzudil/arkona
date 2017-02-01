@@ -85,7 +85,7 @@ export default class {
 					this.pcAnswer[index].text = " " + this.convo.answers[i].answer
 					this.pcAnswer[index].visible = true
 					this.pcAnswer[index].y = y
-					this.pcAnswer[index].answerIndex = index
+					this.pcAnswer[index].answerIndex = i
 					y += 30
 					index++
 				}
