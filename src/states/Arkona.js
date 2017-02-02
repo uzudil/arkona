@@ -1,5 +1,6 @@
 /* globals __DEV__ */
 import Phaser from 'phaser'
+import $ from 'jquery'
 import Block from '../world/Block'
 import * as Config from '../config/Config'
 import Creature from '../models/Creature'
@@ -19,6 +20,7 @@ export default class extends Phaser.State {
 		this.lastDir = null
 		this.gameState = {}
 		this.level = null
+		this.overlayShowing = false
 		this.actionQueue = new Queue.Queue(this)
 
 		// controls
@@ -62,7 +64,12 @@ export default class extends Phaser.State {
 	}
 
 	updateUI() {
-		if(this.messages.group.visible) {
+		if(this.overlayShowing) {
+			if (this.esc.justDown || this.space.justDown) {
+				this.hideOverlay()
+			}
+			return true
+		} else if(this.messages.group.visible) {
 			if (this.space.justDown) {
 				this.messages.showNextLine()
 			}
@@ -148,8 +155,8 @@ export default class extends Phaser.State {
 		this.level = new Level(mapName)
 		this.level.start(this, this.blocks, () => {
 			this.player = new Creature(this.game, "man", this.blocks,
-				startX || this.level.info.startPos[0],
-				startY || this.level.info.startPos[1],
+				startX == null ? this.level.info.startPos[0] : startX,
+				startY == null ? this.level.info.startPos[1] : startY,
 				0)
 			this.player.stand(this.lastDir || Config.DIR_E)
 			this.transition.fadeOut(() => {
@@ -160,5 +167,20 @@ export default class extends Phaser.State {
 
 	narrate(message) {
 		this.messages.showFirstLine(message)
+	}
+
+	showOverlay(image) {
+		let overlay = $("#overlay")
+		$("img", overlay).attr("src", "/assets/images/" + image + ".png")
+		overlay.show()
+		$("#overlay-shadow").show();
+		this.overlayShowing = true
+	}
+
+	hideOverlay() {
+		let overlay = $("#overlay")
+		overlay.hide()
+		$("#overlay-shadow").hide();
+		this.overlayShowing = false
 	}
 }

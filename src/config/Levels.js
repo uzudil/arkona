@@ -120,6 +120,9 @@ export const LEVELS = {
 						"After considering many, you pick a large purple tome with ornately gilded lettering. " +
 						"You can't understand its text but hopefully Marisan can make sense of it.")
 				}
+			},
+			{
+				type: "use_object", x: 137, y: 62, z: 14, allow: (arkona) => true, action: (arkona) => arkona.showOverlay("raighd")
 			}
 		]
 	},

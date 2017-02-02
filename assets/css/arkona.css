@@ -43,6 +43,26 @@ body {
     border: #ccc 3px solid;
 }
 
+#overlay {
+    display: none;
+    position: fixed;
+    left: 50%; top: 50%;
+    width: 500px;
+    height: 500px;
+    margin-left: -250px;
+    margin-top: -250px;
+    z-index: 100;
+}
+
+#overlay-shadow {
+    display: none;
+    position: fixed;
+    top:0; left:0; width: 100%; height: 100%;
+    z-index: 50;
+    background: #000;
+    opacity: 0.75;
+}
+
 .dialog {
     display: none;
     position: fixed;
