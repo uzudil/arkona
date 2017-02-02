@@ -440,6 +440,9 @@ export default class {
 			this.groundDebug.drawRect(0, 0, Config.GRID_SIZE * 6, Config.GRID_SIZE * 6)
 			this.groundDebug.angle = 45
 		}
+
+		this.shapeSelector = null
+		this.highlightedSprite = null
 	}
 
 	newMap(name, w, h, type) {
@@ -494,7 +497,7 @@ export default class {
 	}
 
 	checkRoof(worldX, worldY, worldZ) {
-		let roofHeight = worldZ < 6 ? 6 : 13
+		let roofHeight = worldZ < 6 ? 6 : (worldZ < 13 ? 13 : 19)
 		let under = this.objectLayer.hasShapeAbove(worldX, worldY, roofHeight)
 		if(under == this.roofVisible || roofHeight != this.visibleHeight) {
 			this.visibleHeight = roofHeight
@@ -531,6 +534,10 @@ export default class {
 			[offsX, offsY] = EDGE_OFFSET[name.substring(name.length - 1)]
 		}
 		return [layer, x, y, z, offsX, offsY]
+	}
+
+	clearSprite(sprite) {
+		this.clear(sprite.name, ...sprite.gamePos)
 	}
 
 	clear(name, rx, ry, rz) {
@@ -581,14 +588,10 @@ export default class {
 			}
 		}
 
-		let size = block.size
-
 		this._saveInSprite(sprite, name, x, y, z)
 		layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
 
-		let baseHeight = size[1] * Config.GRID_SIZE
-		// let anchorX = 1 - baseHeight / sprite.texture.width
-		let anchorX = 1 - baseHeight / block.dim[0]
+		let anchorX = this.getAnchorX(block)
 		sprite.anchor.setTo(anchorX, 1)
 
 		if(Config.DEBUG_BLOCKS && layer == this.objectLayer) {
@@ -603,6 +606,11 @@ export default class {
 		layer.set(name, x, y, z, sprite, skipInfo)
 		if(!skipInfo) this.drawEdges(layer, name, x, y)
 		return sprite
+	}
+
+	getAnchorX(block) {
+		let baseHeight = block.size[1] * Config.GRID_SIZE
+		return 1 - baseHeight / block.dim[0]
 	}
 
 	moveTo(sprite, rx, ry, rz, skipInfo, centerOnSuccess) {
@@ -786,17 +794,6 @@ export default class {
 		]
 	}
 
-	getTopSpriteAt(screenX, screenY) {
-		let fromZ = this.visibleHeight > 0 ? this.visibleHeight - 1 : Config.MAX_Z
-		for(let z = fromZ; z >= 0; z--) {
-			let [worldX, worldY, worldZ] = this.toWorldCoords(screenX + z, screenY + z)
-			worldZ = z
-			let info = this.objectLayer.infos[_key(worldX, worldY, worldZ)]
-			if(info && info["imageInfos"] && info.imageInfos.length > 0) return info.imageInfos[0]
-		}
-		return null
-	}
-
 	move(dx, dy) {
 		for(let layer of this.layers) layer.move(dx, dy)
 	}
@@ -848,5 +845,37 @@ export default class {
 
 	update() {
 		Filters.update()
+	}
+
+	getTopSpriteAt(screenX, screenY) {
+		// try the object layer
+		let fromZ = this.visibleHeight > 0 ? this.visibleHeight - 1 : Config.MAX_Z
+		for(let z = fromZ; z >= 0; z--) {
+			let [worldX, worldY, worldZ] = this.toWorldCoords(screenX, screenY + z * Config.GRID_SIZE)
+			worldZ = z
+			let info = this.objectLayer.infos[_key(worldX, worldY, worldZ)]
+			if(info && info["imageInfos"] && info.imageInfos.length > 0) return info.imageInfos[0].image
+		}
+		return null
+	}
+
+	highlight(sprite) {
+		if(sprite != this.highlightedSprite) {
+			this.highlightedSprite = sprite
+
+			if (this.shapeSelector != null) {
+				this.shapeSelector.destroy()
+			}
+
+			if (sprite) {
+				let block = BLOCKS[sprite.name]
+				let gx = sprite.world.x
+				let gy = sprite.world.y
+				let anchorX = this.getAnchorX(block)
+				this.shapeSelector = this.game.add.graphics(gx - block.dim[0] * anchorX, gy - block.dim[1])
+				this.shapeSelector.lineStyle(1, 0xFFFFFF, 1);
+				this.shapeSelector.drawRect(0, 0, block.dim[0], block.dim[1])
+			}
+		}
 	}
 }

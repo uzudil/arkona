@@ -47,7 +47,7 @@ export const BLOCKS = {
 	"mud.puddle": { size: [2, 2, 0], pos: [64, 128], dim: [32, 32], options: { stamp: true } },
 	"straw.stamp": { size: [4, 4, 0], pos: [64, 192], dim: [64, 64], options: { stamp: true }  },
 	"ashes": { size: [2, 2, 0], pos: [128, 48], dim: [32, 32], options: { sprites: 2, stamp: true } },
-	"ashes.big": { size: [4, 4, 0], pos: [130, 80], dim: [60, 64], options: { sprites: 2, tamp: true } },
+	"ashes.big": { size: [4, 4, 0], pos: [130, 80], dim: [60, 64], options: { sprites: 2, stamp: true } },
 	"blood.big": { size: [4, 4, 0], pos: [128, 192], dim: [64, 64], options: { sprites: 2, stamp: true } },
 	"blood.small": { size: [4, 4, 0], pos: [128, 256], dim: [32, 32], options: { sprites: 2, stamp: true } },
 	"rug.bear": { size: [4, 4, 0], pos: [0, 256], dim: [64, 62], options: { sprites: 2, stamp: true } },
@@ -70,6 +70,8 @@ export const BLOCKS = {
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
 	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },
 	"fence.ns": { size: [1, 4, 4], pos: [112, 384], dim: [40, 64] },
+	"fence.sm.ew": { size: [1, 4, 2], pos: [386, 322], dim: [40, 44], options: { sprites: 2 } },
+	"fence.sm.ns": { size: [4, 1, 2], pos: [430, 322], dim: [40, 44], options: { sprites: 2 } },
 
 	// placeholder for creatures
 	"2x2x4.placeholder": { size: [2, 2, 4], pos: [400, 0], dim: [32, 64] },
@@ -104,8 +106,10 @@ export const BLOCKS = {
 	"shelves.books": { size: [1, 4, 5], pos: [48, 160], dim: [40, 80], options: { sprites: 2 } },
 	"shelves.empty.n": { size: [4, 1, 5], pos: [88, 320], dim: [40, 80], options: { sprites: 2 } },
 	"shelves.books.n": { size: [4, 1, 5], pos: [136, 320], dim: [40, 80], options: { sprites: 2 } },
-	"commode": { size: [2, 4, 4], pos: [192, 320], dim: [48, 80], options: { sprites: 2 } },
+	"commode": { size: [1, 4, 4], pos: [192, 320], dim: [40, 72], options: { sprites: 2 } },
 	"table.round": { size: [2, 4, 2], pos: [256, 320], dim: [32, 48], options: { sprites: 2 } },
+	"houseplant": { size: [1, 1, 5], pos: [304, 320], dim: [16, 44], options: { sprites: 2 } },
+	"telescope": { size: [3, 3, 2], pos: [336, 320], dim: [44, 48], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

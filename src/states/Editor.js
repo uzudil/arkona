@@ -5,6 +5,7 @@ import {getRandom} from '../utils'
 import * as Config from '../config/Config'
 import Palette from '../editor/Palette'
 import $ from 'jquery'
+import {BLOCKS} from '../config/Blocks'
 
 export default class extends Phaser.State {
 	init() {
@@ -71,6 +72,7 @@ export default class extends Phaser.State {
 		this.tree2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Y)
 		this.mountain = this.game.input.keyboard.addKey(Phaser.Keyboard.M)
 		this.delete = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+		this.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
 	}
 
 	render() {
@@ -78,9 +80,12 @@ export default class extends Phaser.State {
 
 	setActiveBlock(name) {
 		if (this.activeBlock) this.activeBlock.destroy()
-
-		let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
-		this.activeBlock = this.blocks.set(name, x, y, z, true)
+		if(name) {
+			let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
+			this.activeBlock = this.blocks.set(name, x, y, z, true)
+		} else {
+			this.activeBlock = null
+		}
 		this.addNew = false
 	}
 
@@ -161,16 +166,14 @@ export default class extends Phaser.State {
 			game.input.enabled = true;
 		}
 
+		if (this.esc.justDown && this.activeBlock) {
+			this.setActiveBlock(null)
+		}
+
 		this.moveCamera()
 
 		// find the top object under the mouse
-		let spriteUnderMouse = this.blocks.getTopSpriteAt(this.game.input.x, this.game.input.y)
-		if(spriteUnderMouse) {
-			console.log(spriteUnderMouse.name)
-
-			// highlight it
-
-		}
+		this.blocks.highlight(this.blocks.getTopSpriteAt(this.game.input.x, this.game.input.y))
 
 		// find new top z
 		let [x, y, z] = this.blocks.toWorldCoords(this.game.input.x, this.game.input.y)
@@ -180,7 +183,9 @@ export default class extends Phaser.State {
 			this.drawGround(x, y)
 			this.drawObject(x, y, z)
 			if (this.delete.justDown) {
-				if(!this.blocks.clearFirst(x - 1, y - 1)) {
+				if(this.blocks.highlightedSprite) {
+					this.blocks.clearSprite(this.blocks.highlightedSprite)
+				} else {
 					// stamps are hard to clean...
 					for (let xx = -4; xx < 4; xx++) {
 						for (let yy = -4; yy < 4; yy++) {
