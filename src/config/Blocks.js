@@ -110,6 +110,8 @@ export const BLOCKS = {
 	"table.round": { size: [2, 4, 2], pos: [256, 320], dim: [32, 48], options: { sprites: 2 } },
 	"houseplant": { size: [1, 1, 5], pos: [304, 320], dim: [16, 44], options: { sprites: 2 } },
 	"telescope": { size: [3, 3, 2], pos: [336, 320], dim: [44, 48], options: { sprites: 2 } },
+	"candolabra.ns": { size: [2, 1, 5], pos: [512, 320], dim: [24, 60], options: { sprites: 2 } },
+	"candolabra.ew": { size: [1, 2, 5], pos: [544, 320], dim: [24, 60], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

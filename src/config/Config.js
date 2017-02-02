@@ -8,7 +8,7 @@ export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]
 export const GRID_SIZE = 8
 export const MAP_VERSION = 1
-export const SPEED = 100
+export const SPEED = 50
 export const DOORS = Object.keys(BLOCKS).filter(name => name.indexOf(".door.") >= 0)
 export const UNSTABLE_FLOORS = [ "water", "bramble", "lava" ]
 export const ANIMATION_SPEED = 8
