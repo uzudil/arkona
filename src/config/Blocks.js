@@ -1,10 +1,10 @@
 // don't chane the names
 export const BLOCKS = {
-	"trunk": { size: [2, 2, 4], pos: [0, 0], dim: [31, 48] },
-	"trunk.wide": { size: [4, 4, 4], pos: [192, 384], dim: [64, 56] },
-	"brown": { size: [4, 4, 3], pos: [32, 0], dim: [64, 48] },
-	"oak": { size: [4, 4, 4], pos: [64, 64], dim: [64, 64] },
-	"pine": { size: [4, 4, 4], pos: [128, 64], dim: [64, 64] },
+	"trunk": { size: [2, 2, 4], pos: [32, 0], dim: [31, 48] },
+	"trunk.wide": { size: [4, 4, 4], pos: [192, 448], dim: [64, 56] },
+	"brown": { size: [4, 4, 6], pos: [512, 384], dim: [64, 80] },
+	"oak": { size: [4, 4, 6], pos: [384, 384], dim: [64, 80] },
+	"pine": { size: [4, 4, 6], pos: [640, 384], dim: [64, 80] },
 	"dead": { size: [4, 4, 4], pos: [256, 384], dim: [64, 64] },
 
 	// floors
@@ -61,7 +61,7 @@ export const BLOCKS = {
 
 	// new doors
 	"regular.door.x": { size: [1, 3, 6], pos: [192, 306], dim: [32, 80] },
-	"regular.door.y": { size: [3, 1, 6], pos: [224, 306], dim: [32, 80] },
+	"regular.door.y": { size: [3, 1, 6], pos: [256, 306], dim: [32, 80] },
 
 	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
 	"mountain2": { size: [4, 4, 8], pos: [64, 256], dim: [64, 96] },
@@ -113,6 +113,7 @@ export const BLOCKS = {
 	"candolabra.ns": { size: [2, 1, 5], pos: [512, 320], dim: [24, 60], options: { sprites: 2 } },
 	"candolabra.ew": { size: [1, 2, 5], pos: [544, 320], dim: [24, 60], options: { sprites: 2 } },
 	"bridge.plank.ew": { size: [8, 2, 1], pos: [576, 320], dim: [80, 88], options: { sprites: 2 } },
+	"bridge.plank.ns": { size: [8, 2, 1], pos: [672, 320], dim: [80, 88], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },
