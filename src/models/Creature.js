@@ -16,6 +16,7 @@ export default class {
 		this.name = name
 		this.blocks = blocks
 		this.info = Creatures.CREATURES[this.name]
+		this.animationSpeed = Config.ANIMATION_SPEED
 
 		this.sprite = this.blocks.set(this.info.blockName, x, y, z, false, (screenX, screenY) => {
 			let sprite = this.game.add.sprite(screenX, screenY, this.name)
@@ -39,7 +40,7 @@ export default class {
 	}
 
 	walk(dir) {
-		this.sprite.animations.play('walk.' + dir, Config.ANIMATION_SPEED, true)
+		this.sprite.animations.play('walk.' + dir, this.animationSpeed, true)
 	}
 
 	stand(dir) {

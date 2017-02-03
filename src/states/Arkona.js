@@ -158,6 +158,7 @@ export default class extends Phaser.State {
 				startX == null ? this.level.info.startPos[0] : startX,
 				startY == null ? this.level.info.startPos[1] : startY,
 				0)
+			this.player.animationSpeed = 16
 			this.player.stand(this.lastDir || Config.DIR_E)
 			this.transition.fadeOut(() => {
 				this.loading = false

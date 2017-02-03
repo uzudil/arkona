@@ -301,10 +301,14 @@ class Layer {
 		return maxZ
 	}
 
-	canMoveTo(sprite, x, y, z, skipSupportCheck) {
+	canMoveTo(sprite, x, y, z, skipSupportCheck, blockers) {
 		let fits = _visit3SS(sprite.name, x, y, z, (xx, yy, zz) => {
 			let info = this.infos[_key(xx, yy, zz)]
-			return !(info && info.imageInfos.find((ii) => ii.image != sprite));
+			if(!info) return true
+			let blocker = info.imageInfos.find((ii) => ii.image != sprite)
+			if(!blocker) return true
+			if(blockers != null && blocker.image["creature"]) blockers.push(blocker.image)
+			return false
 		})
 		// if it fits, make sure we're standing on something
 		if(fits && z > 0 && !skipSupportCheck) {
@@ -616,46 +620,38 @@ export default class {
 	moveTo(sprite, rx, ry, rz, skipInfo, centerOnSuccess) {
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
 		let ok = false
+		let blockers = []
 		if(skipInfo) {
 			// editor mode
 			ok = layer.canMoveTo(sprite, x, y, z, true)
 		} else {
 			// game mode
 			if(z > 0 || this.isFloorSafe(x, y)) {
-				ok = layer.canMoveTo(sprite, x, y, z)
-				if(!ok) {
+				ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
+				if(!ok && blockers.length == 0) {
 					// check one step higher
 					[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz + 1)
-					ok = layer.canMoveTo(sprite, x, y, z)
-					if(!ok && rz > 0) {
+					ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
+					if(!ok && blockers.length == 0 && rz > 0) {
 						// check one step lower
 						[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz - 1)
-						ok = layer.canMoveTo(sprite, x, y, z)
+						ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
 					}
 				}
 			}
 		}
 
+		// swap places
+		if(blockers.length > 0) {
+			let blocker = blockers[0]; // ; needed here :-(
+			[x, y, z] = blocker.gamePos
+			let [toX, toY, toZ] = sprite.gamePos
+			this._moveSpriteTo(blocker, layer, offsX, offsY, toX, toY, toZ, skipInfo)
+			ok = true
+		}
+
 		if(ok) {
-			layer.removeFromCurrentPos(sprite)
-
-			// move to new position
-			let screenX, screenY
-			[screenX, screenY] = this.toScreenCoords(x + offsX, y + offsY, z)
-
-			this._saveInSprite(sprite, null, x, y, z)
-			layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
-
-			sprite.x = screenX
-			sprite.y = screenY
-
-			if(sprite.debugGraphics) {
-				sprite.debugGraphics.x = screenX
-				sprite.debugGraphics.y = screenY
-			}
-
-			layer.set(sprite.name, x, y, z, sprite, skipInfo)
-			if(!skipInfo) this.drawEdges(layer, sprite.name, x, y)
+			this._moveSpriteTo(sprite, layer, offsX, offsY, x, y, z, skipInfo)
 
 			if(centerOnSuccess) {
 				this.centerOn(sprite)
@@ -665,6 +661,28 @@ export default class {
 		} else {
 			return false
 		}
+	}
+
+	_moveSpriteTo(sprite, layer, offsX, offsY, x, y, z, skipInfo) {
+		layer.removeFromCurrentPos(sprite)
+
+		// move to new position
+		let screenX, screenY
+		[screenX, screenY] = this.toScreenCoords(x + offsX, y + offsY, z)
+
+		this._saveInSprite(sprite, null, x, y, z)
+		layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
+
+		sprite.x = screenX
+		sprite.y = screenY
+
+		if(sprite.debugGraphics) {
+			sprite.debugGraphics.x = screenX
+			sprite.debugGraphics.y = screenY
+		}
+
+		layer.set(sprite.name, x, y, z, sprite, skipInfo)
+		if(!skipInfo) this.drawEdges(layer, sprite.name, x, y)
 	}
 
 	isFloorSafe(x, y) {
