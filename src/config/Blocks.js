@@ -112,6 +112,7 @@ export const BLOCKS = {
 	"telescope": { size: [3, 3, 2], pos: [336, 320], dim: [44, 48], options: { sprites: 2 } },
 	"candolabra.ns": { size: [2, 1, 5], pos: [512, 320], dim: [24, 60], options: { sprites: 2 } },
 	"candolabra.ew": { size: [1, 2, 5], pos: [544, 320], dim: [24, 60], options: { sprites: 2 } },
+	"bridge.plank.ew": { size: [8, 2, 1], pos: [576, 320], dim: [80, 88], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

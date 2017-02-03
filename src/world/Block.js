@@ -626,17 +626,18 @@ export default class {
 			ok = layer.canMoveTo(sprite, x, y, z, true)
 		} else {
 			// game mode
-			if(z > 0 || this.isFloorSafe(x, y)) {
+			let floorOk = this.isFloorSafe(x, y)
+			if(z > 0 || floorOk) {
 				ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
-				if(!ok && blockers.length == 0) {
-					// check one step higher
-					[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz + 1)
+			}
+			if(!ok && blockers.length == 0) {
+				// check one step higher
+				[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz + 1)
+				ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
+				if(!ok && blockers.length == 0 && rz > 0 && floorOk) {
+					// check one step lower
+					[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz - 1)
 					ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
-					if(!ok && blockers.length == 0 && rz > 0) {
-						// check one step lower
-						[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz - 1)
-						ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
-					}
 				}
 			}
 		}
