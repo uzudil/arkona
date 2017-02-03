@@ -64,7 +64,7 @@ export const BLOCKS = {
 	"regular.door.y": { size: [3, 1, 6], pos: [256, 306], dim: [32, 80] },
 
 	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
-	"mountain2": { size: [4, 4, 8], pos: [64, 256], dim: [64, 96] },
+	"mountain2": { size: [4, 4, 8], pos: [64, 448], dim: [64, 96] },
 	"mountain3": { size: [4, 4, 4], pos: [128, 272], dim: [64, 64] },
 
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
