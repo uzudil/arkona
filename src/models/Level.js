@@ -18,14 +18,19 @@ export default class {
 	}
 
 	start(arkona, blocks, onLoad) {
+		// let t = Date.now()
+		// console.log("Starting to load level: " + this.info.map)
 		blocks.load(this.info.map, () => {
+			// console.log("Loaded in: " + (Date.now() - t)); t = Date.now()
 			for(let npcInfo of this.info.npcs || []) {
 				let [x, y, z] = [npcInfo.x, npcInfo.y, npcInfo["z"] || 0]
 				let creature = new Creature(arkona.game, npcInfo.creature, blocks, x, y, z)
 				let npc = new Npc(arkona, x, y, z, npcInfo["options"], creature)
 				this.npcs.push(npc)
 			}
+			// console.log("Npc init: " + (Date.now() - t)); t = Date.now()
 			onLoad()
+			// console.log("Onload in: " + (Date.now() - t)); t = Date.now()
 		})
 	}
 

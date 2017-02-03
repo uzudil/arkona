@@ -36,7 +36,7 @@ export default class extends Phaser.State {
 		this.transition = new Transition()
 
 		// start game
-		this.loadLevel("woods2")
+		this.loadLevel("eldun")
 
 		// for debug/hacking
 		window.arkona = this
@@ -142,7 +142,11 @@ export default class extends Phaser.State {
 		}
 		let dst = this.level.checkBounds(px, py, this.blocks)
 		if(dst) {
-			this.transition.fadeIn(() => this.loadLevel(dst.map, dst.x, dst.y, true))
+			this.transition.fadeIn(() => {
+				if(!this.loading) {
+					this.loadLevel(dst.map, dst.x, dst.y, true)
+				}
+			})
 		}
 	}
 
