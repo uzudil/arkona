@@ -3,6 +3,19 @@ const DEFAULT_DIRS = {
 	stand: ['se', 'e', 'ne', 'n', 'nw', 'w', 'sw', 's']
 }
 
+const DIRS = ['e', 'ne', 'n', 'nw', 'w', 'sw', 's', 'se']
+
+function dirsFrom(startDir) {
+	let idx = DIRS.indexOf(startDir)
+	let dirs = []
+	for(let i = 0; i < DIRS.length; i++) {
+		dirs.push(DIRS[idx])
+		idx++
+		if(idx >= DIRS.length) idx = 0
+	}
+	return dirs
+}
+
 export const CREATURES = {
 	cow: {
 		src: 'assets/creatures/cow.png',
@@ -19,6 +32,16 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: DEFAULT_DIRS,
+		speed: 200
+	},
+	goblin: {
+		src: 'assets/creatures/goblin.png',
+		dim: [48, 64],
+		blockName: "2x2x4.placeholder",
+		dirs: {
+			walk: dirsFrom("w"),
+			stand: dirsFrom("w")
+		},
 		speed: 200
 	},
 	man_blue: {
