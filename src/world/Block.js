@@ -307,7 +307,7 @@ class Layer {
 			if(!info) return true
 			let blocker = info.imageInfos.find((ii) => ii.image != sprite)
 			if(!blocker) return true
-			if(blockers != null && blocker.image["creature"]) blockers.push(blocker.image)
+			if(blockers != null && blocker.image["creature"] && sprite["userControlled"]) blockers.push(blocker.image)
 			return false
 		})
 		// if it fits, make sure we're standing on something
@@ -694,9 +694,13 @@ export default class {
 	}
 
 	replace(sprite, name) {
+		this.remove(sprite)
+		this.set(name, sprite.gamePos[0], sprite.gamePos[1], sprite.gamePos[2])
+	}
+
+	remove(sprite) {
 		let layer = this._getLayer(sprite.name)
 		layer.removeFromCurrentPos(sprite, true)
-		this.set(name, sprite.gamePos[0], sprite.gamePos[1], sprite.gamePos[2])
 	}
 
 	drawEdges(layer, name, x, y) {
@@ -896,5 +900,24 @@ export default class {
 				this.shapeSelector.drawRect(0, 0, block.dim[0], block.dim[1])
 			}
 		}
+	}
+
+	moveNear(sprite, x, y, z, range) {
+		return !_visit3d(x + (range/2)|0, y + (range/2)|0, z, range, range, 1, (xx, yy, zz) => {
+			if(this.moveTo(sprite, xx, yy, zz)) {
+				console.log("Around:" + xx +"," +yy +"," + zz + " pos:" + sprite.gamePos)
+				// return false so the SS loop quits
+				return false
+			}
+			// keep looking
+			return true
+		})
+	}
+
+	isOnScreen(worldX, worldY, worldZ) {
+		let [screenX, screenY] = this.toScreenCoords(worldX, worldY, worldZ)
+		screenX += this.objectLayer.x
+		screenY += this.objectLayer.y
+		return screenX >= 0 && screenX < Config.WIDTH && screenY >= 0 && screenY < Config.HEIGHT
 	}
 }

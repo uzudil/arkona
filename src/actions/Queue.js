@@ -2,20 +2,23 @@ import UseObject from './UseObject'
 import Talk from './Talk'
 import MovePlayer from './MovePlayer'
 import MoveNpc from './MoveNpc'
+import GeneratorAction from './GeneratorAction'
 
 const ACTIONS = [
 	new UseObject(),
 	new Talk(),
 	new MovePlayer(),
-	new MoveNpc()
+	new MoveNpc(),
+	new GeneratorAction()
 ]
 
 export const USE_OBJECT = 0
 export const TALK = 1
 export const MOVE_PLAYER = 2
 export const MOVE_NPC = 3
+export const GENERATORS = 4
 
-const DONT_LOG = [MOVE_PLAYER, MOVE_NPC]
+const DONT_LOG = [MOVE_PLAYER, MOVE_NPC, GENERATORS]
 
 export class Queue {
 	constructor(arkona) {

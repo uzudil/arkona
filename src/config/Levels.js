@@ -1,4 +1,5 @@
 import {MOVE_ANCHOR} from './Config'
+import {MONSTERS} from './Monsters'
 import * as FARM_CONVO from '../convo/farm'
 import * as MEDIAN_CONVO from '../convo/median'
 import * as ELDUN_CONVO from '../convo/eldun'
@@ -53,8 +54,12 @@ export const LEVELS = {
 				src: { dir: "n" },
 				dst: { map: "woods2", x: 52, y: 194 }
 			}
+		],
+		generators: [
+			{ x: 157, y: 99, z: 0, type: MONSTERS.goblin, count: 2 },
+			{ x: 196, y: 48, z: 0, type: MONSTERS.goblin },
+			{ x: 125, y: 23, z: 0, type: MONSTERS.goblin }
 		]
-
 	},
 	median: {
 		map: "median",

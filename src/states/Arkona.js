@@ -49,7 +49,12 @@ export default class extends Phaser.State {
 
 		if(!this.updateUI()) {
 			// assemble the actions
-			this.moveCreatures()
+			let npcs = this.level.getActiveNpcs()
+			if(npcs) this.actionQueue.add(Queue.MOVE_NPC, npcs)
+
+			if(this.level.generators) this.actionQueue.add(Queue.GENERATORS, this.level.generators)
+
+			this.movePlayer()
 
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
 			if (this.space.justDown) this.actionQueue.add(Queue.USE_OBJECT)
@@ -90,11 +95,7 @@ export default class extends Phaser.State {
 		}
 	}
 
-	moveCreatures() {
-		// npcs
-		let npcs = this.level.getActiveNpcs()
-		if(npcs) this.actionQueue.add(Queue.MOVE_NPC, npcs)
-
+	movePlayer() {
 		// player
 		if (this.isCursorKeyDown()) {
 			if (this.game.time.elapsedSince(this.lastTime) > Config.SPEED) {
@@ -157,13 +158,15 @@ export default class extends Phaser.State {
 			this.level.destroy()
 		}
 		this.level = new Level(mapName)
-		this.level.start(this, this.blocks, () => {
+		this.level.start(this, () => {
 			this.player = new Creature(this.game, "man", this.blocks,
 				startX == null ? this.level.info.startPos[0] : startX,
 				startY == null ? this.level.info.startPos[1] : startY,
 				0)
+			this.player.sprite.userControlled = true
 			this.player.animationSpeed = 16
 			this.player.stand(this.lastDir || Config.DIR_E)
+			this.player.centerOn()
 			this.transition.fadeOut(() => {
 				this.loading = false
 			})

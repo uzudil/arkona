@@ -32,6 +32,9 @@ export default class {
 			return sprite
 		})
 		this.blocks.sort()
+	}
+
+	centerOn() {
 		this.blocks.centerOn(this.sprite, Config.GAME_ZOOM)
 	}
 

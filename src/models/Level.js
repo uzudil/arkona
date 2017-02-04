@@ -1,12 +1,13 @@
 import Npc from './Npc'
 import Creature from './Creature'
-import * as Config from './../config/Config'
 import * as Levels from './../config/Levels'
+import Generator from './Generator'
 
 export default class {
 	constructor(levelName) {
 		this.info = Levels.LEVELS[levelName]
 		this.npcs = []
+		this.generators = []
 		this.loaded = false
 	}
 
@@ -17,21 +18,28 @@ export default class {
 		}
 	}
 
-	start(arkona, blocks, onLoad) {
-		// let t = Date.now()
-		// console.log("Starting to load level: " + this.info.map)
-		blocks.load(this.info.map, () => {
-			// console.log("Loaded in: " + (Date.now() - t)); t = Date.now()
-			for(let npcInfo of this.info.npcs || []) {
-				let [x, y, z] = [npcInfo.x, npcInfo.y, npcInfo["z"] || 0]
-				let creature = new Creature(arkona.game, npcInfo.creature, blocks, x, y, z)
-				let npc = new Npc(arkona, x, y, z, npcInfo["options"], creature)
-				this.npcs.push(npc)
+	start(arkona, onLoad) {
+		arkona.blocks.load(this.info.map, () => {
+			(this.info.npcs || []).forEach(npcInfo => this.addNpc(arkona, npcInfo))
+			for(let generatorInfo of this.info.generators || []) {
+				this.generators.push(new Generator(arkona, generatorInfo))
 			}
-			// console.log("Npc init: " + (Date.now() - t)); t = Date.now()
 			onLoad()
-			// console.log("Onload in: " + (Date.now() - t)); t = Date.now()
 		})
+	}
+
+	addNpc(arkona, npcInfo) {
+		let [x, y, z] = [npcInfo.x, npcInfo.y, npcInfo["z"] || 0]
+		let creature = new Creature(arkona.game, npcInfo.creature, arkona.blocks, x, y, z)
+		let npc = new Npc(arkona, x, y, z, npcInfo["options"], creature)
+		this.npcs.push(npc)
+		return npc
+	}
+
+	removeNpc(arkona, npc) {
+		arkona.blocks.remove(npc.creature.sprite)
+		let idx = this.npcs.indexOf(npc)
+		this.npcs.splice(idx, 1)
 	}
 
 	destroy() {

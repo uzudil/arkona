@@ -137,4 +137,8 @@ export default class {
 	getName() {
 		return this.options.name || this.creature.name
 	}
+
+	setPosFromSprite(sprite) {
+		[this.x, this.y, this.z] = sprite.gamePos
+	}
 }

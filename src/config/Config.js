@@ -25,6 +25,7 @@ export const DIR_NONE = 'none'
 export const DIRS = [DIR_N, DIR_NE, DIR_E, DIR_SE, DIR_S, DIR_SW, DIR_W, DIR_NW]
 export const MOVE_RANDOM = "random"
 export const MOVE_ANCHOR = "anchor"
+export const MOVE_ATTACK = "attack"
 export const STOP_TIME = 3000
 export const NEAR_DIST = 4
 export const DEBUG_BLOCKS = false
