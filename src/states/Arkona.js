@@ -185,4 +185,12 @@ export default class extends Phaser.State {
 		$("#overlay-shadow").hide();
 		this.overlayShowing = false
 	}
+
+	moveInDir(x, y, z, dir, speed) {
+		let d = this.game.time.elapsedMS / (60 * speed)
+		// smooth movement, fallback to a delta of 1 if can't maintain fps
+		let dx = Math.max(-1, Math.min(1, Config.MOVE_DELTA[dir][0] * d))
+		let dy = Math.max(-1, Math.min(1, Config.MOVE_DELTA[dir][1] * d))
+		return [x + dx, y + dy, z]
+	}
 }

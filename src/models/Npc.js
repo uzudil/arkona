@@ -82,7 +82,7 @@ export default class {
 	}
 
 	_takeStep() {
-		let [nx, ny, nz] = this._nextStepPos()
+		let [nx, ny, nz] = this.arkona.moveInDir(this.x, this.y, this.z, this.dir, this.creature.info.speed)
 		if(this.x == nx && this.y == ny) {
 			this.creature.stand(this.dir)
 			return true
@@ -94,17 +94,6 @@ export default class {
 			this.creature.stand(this.dir)
 			return false
 		}
-	}
-
-	_nextStepPos() {
-		let d = this.arkona.game.time.elapsedMS / (60 * this.creature.info.speed)
-		// smooth movement, fallback to a delta of 1 if can't maintain fps
-		let dx = Math.max(-1, Math.min(1, Config.MOVE_DELTA[this.dir][0] * d))
-		let dy = Math.max(-1, Math.min(1, Config.MOVE_DELTA[this.dir][1] * d))
-		let nx = this.x + dx
-		let ny = this.y + dy
-		let nz = this.z
-		return [nx, ny, nz]
 	}
 
 	_moveToNextStep(nx, ny, nz) {
