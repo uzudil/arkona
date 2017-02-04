@@ -19,15 +19,6 @@ export default class {
 		this.stopClock = null
 	}
 
-	isActive() {
-		if(this.arkona.game.time.elapsedSince(this.lastTime) > this.creature.info.speed) {
-			this.lastTime = this.arkona.game.time.time
-			return true
-		} else {
-			return false
-		}
-	}
-
 	move() {
 		if (this._willStop()) {
 			this._stop()
@@ -51,7 +42,7 @@ export default class {
 	}
 
 	_willStop() {
-		let probability = 9
+		let probability = 9.7
 		if(this.arkona.player && this.options.movement == Config.MOVE_ANCHOR) {
 			if(this.isNearPlayer()) probability = 1
 		}
@@ -106,19 +97,13 @@ export default class {
 	}
 
 	_nextStepPos() {
-		let nx = this.x
-		let ny = this.y
+		let d = this.arkona.game.time.elapsedMS / (60 * this.creature.info.speed)
+		// smooth movement, fallback to a delta of 1 if can't maintain fps
+		let dx = Math.max(-1, Math.min(1, Config.MOVE_DELTA[this.dir][0] * d))
+		let dy = Math.max(-1, Math.min(1, Config.MOVE_DELTA[this.dir][1] * d))
+		let nx = this.x + dx
+		let ny = this.y + dy
 		let nz = this.z
-		switch(this.dir) {
-			case Config.DIR_N: ny--; break
-			case Config.DIR_NE: ny--; nx++; break
-			case Config.DIR_E: nx++; break
-			case Config.DIR_SE: ny++; nx++; break
-			case Config.DIR_S: ny++; break
-			case Config.DIR_SW: ny++; nx--; break
-			case Config.DIR_W: nx--; break
-			case Config.DIR_NW: ny--; nx--; break
-		}
 		return [nx, ny, nz]
 	}
 
@@ -139,6 +124,7 @@ export default class {
 	}
 
 	setPosFromSprite(sprite) {
-		[this.x, this.y, this.z] = sprite.gamePos
+		[this.x, this.y] = sprite.floatPos
+		this.z = sprite.gamePos[2]
 	}
 }

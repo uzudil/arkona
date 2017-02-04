@@ -574,7 +574,7 @@ export default class {
 
 	// todo: figure out zoom from game.scale
 	centerOn(image) {
-		let [ screenX, screenY ] = this.toScreenCoords(image.gamePos[0], image.gamePos[1], image.gamePos[2])
+		let [ screenX, screenY ] = this.toScreenCoords(image.floatPos[0], image.floatPos[1], image.gamePos[2])
 		screenX = -(screenX - Config.WIDTH / this.zoom / 2)
 		screenY = -(screenY - Config.HEIGHT / this.zoom / 2)
 		for(let layer of this.layers) layer.moveTo(screenX, screenY)
@@ -628,7 +628,8 @@ export default class {
 		return 1 - baseHeight / block.dim[0]
 	}
 
-	moveTo(sprite, rx, ry, rz, skipInfo, centerOnSuccess) {
+	moveTo(sprite, fx, fy, fz, skipInfo, centerOnSuccess) {
+		let [rx, ry, rz] = [Math.round(fx), Math.round(fy), Math.round(fz)]
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
 		let ok = false
 		let blockers = []
@@ -658,12 +659,13 @@ export default class {
 			let blocker = blockers[0]; // ; needed here :-(
 			[x, y, z] = blocker.gamePos
 			let [toX, toY, toZ] = sprite.gamePos
-			this._moveSpriteTo(blocker, layer, offsX, offsY, toX, toY, toZ, skipInfo)
+			this._moveSpriteTo(blocker, layer, offsX, offsY, toX, toY, toZ, skipInfo); // ; is needed...
+			[fx, fy] = [x, y] // exact swap
 			ok = true
 		}
 
 		if(ok) {
-			this._moveSpriteTo(sprite, layer, offsX, offsY, x, y, z, skipInfo)
+			this._moveSpriteTo(sprite, layer, offsX, offsY, x, y, z, skipInfo, fx, fy)
 
 			if(centerOnSuccess) {
 				this.centerOn(sprite)
@@ -675,14 +677,18 @@ export default class {
 		}
 	}
 
-	_moveSpriteTo(sprite, layer, offsX, offsY, x, y, z, skipInfo) {
+	_moveSpriteTo(sprite, layer, offsX, offsY, x, y, z, skipInfo, fx, fy) {
 		layer.removeFromCurrentPos(sprite)
 
 		// move to new position
 		let screenX, screenY
-		[screenX, screenY] = this.toScreenCoords(x + offsX, y + offsY, z)
+		if(layer == this.objectLayer && fx != null && fy != null) {
+			[screenX, screenY] = this.toScreenCoords(fx, fy, z)
+		} else {
+			[screenX, screenY] = this.toScreenCoords(x + offsX, y + offsY, z)
+		}
 
-		this._saveInSprite(sprite, null, x, y, z)
+		this._saveInSprite(sprite, null, x, y, z, fx, fy)
 		layer.sortingStrategy.spriteMovedTo(sprite, x, y, z)
 
 		sprite.x = screenX
@@ -782,11 +788,12 @@ export default class {
 		}
 	}
 
-	_saveInSprite(sprite, name, x, y, z) {
+	_saveInSprite(sprite, name, x, y, z, fx, fy) {
 		// set some calculated values
 		if(name) sprite.name = name
 		sprite.key = _key(x, y, z)
 		sprite.gamePos = [x, y, z]
+		sprite.floatPos = [fx || x, fy || y]
 	}
 
 	/**

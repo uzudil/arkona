@@ -8,7 +8,7 @@ export const GROUND_TILE_W = BLOCKS['grass'].size[0]
 export const GROUND_TILE_H = BLOCKS['grass'].size[1]
 export const GRID_SIZE = 8
 export const MAP_VERSION = 1
-export const SPEED = 50
+export const PLAYER_SPEED = 1.33
 export const DOORS = Object.keys(BLOCKS).filter(name => name.indexOf(".door.") >= 0)
 export const UNSTABLE_FLOORS = [ "water", "bramble", "lava" ]
 export const ANIMATION_SPEED = 8
@@ -45,10 +45,11 @@ export const MOVE_DELTA = {
 	e: [1, 0],
 	n: [0, -1],
 	s: [0, 1],
-	nw: [-1, -1],
-	se: [1, 1],
-	sw: [-1, 1],
-	ne: [1, -1],
+	// diagonal move: 1^2=x^2+x^2 ==> x ~= sqrt(0.5) ~= 0.71
+	nw: [-0.71, -0.71],
+	se: [0.71, 0.71],
+	sw: [-0.71, 0.71],
+	ne: [0.71, -0.71],
 }
 
 export function getRandomDir() {

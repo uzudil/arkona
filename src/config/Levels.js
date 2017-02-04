@@ -18,7 +18,7 @@ export const LEVELS = {
 					convo: FARM_CONVO.SHARYA
 				},
 			},
-			{ creature: 'cow', x: 37, y: 97, options: { convo: FARM_CONVO.COW } },
+			{ creature: 'cow', x: 42, y: 97, options: { convo: FARM_CONVO.COW } },
 			{ creature: 'cow', x: 42, y: 89, options: { convo: FARM_CONVO.COW } }
 		],
 		onLoad: function(arkona) {

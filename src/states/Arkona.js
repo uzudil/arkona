@@ -49,9 +49,7 @@ export default class extends Phaser.State {
 
 		if(!this.updateUI()) {
 			// assemble the actions
-			let npcs = this.level.getActiveNpcs()
-			if(npcs) this.actionQueue.add(Queue.MOVE_NPC, npcs)
-
+			if(this.level.npcs) this.actionQueue.add(Queue.MOVE_NPC, this.level.npcs)
 			if(this.level.generators) this.actionQueue.add(Queue.GENERATORS, this.level.generators)
 
 			this.movePlayer()
@@ -96,13 +94,9 @@ export default class extends Phaser.State {
 	}
 
 	movePlayer() {
-		// player
 		if (this.isCursorKeyDown()) {
-			if (this.game.time.elapsedSince(this.lastTime) > Config.SPEED) {
-				this.lastTime = this.game.time.time
-				let dir = this.getDirFromCursorKeys()
-				if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
-			}
+			let dir = this.getDirFromCursorKeys()
+			if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
 		} else {
 			this.player.stand(this.lastDir)
 		}

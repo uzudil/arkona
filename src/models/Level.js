@@ -46,10 +46,6 @@ export default class {
 		// todo: free npc memory?
 	}
 
-	getActiveNpcs() {
-		return this.npcs.filter(npc => npc.isActive())
-	}
-
 	checkBounds(px, py, blocks) {
 		for(let conn of this.info.connect || []) {
 			let found = false
