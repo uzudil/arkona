@@ -7,6 +7,7 @@ import Palette from '../editor/Palette'
 import $ from 'jquery'
 
 export default class extends Phaser.State {
+
 	init() {
 	}
 
