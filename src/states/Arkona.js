@@ -36,7 +36,7 @@ export default class extends Phaser.State {
 		this.transition = new Transition()
 
 		// start game
-		this.loadLevel("woods2")
+		this.loadLevel("farm")
 
 		// for debug/hacking
 		window.arkona = this

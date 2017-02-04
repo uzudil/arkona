@@ -301,13 +301,24 @@ class Layer {
 		return maxZ
 	}
 
+	_canSwapPlaces(sprite, blockerImageInfo) {
+		// only the player and another creature
+		if(sprite["userControlled"] && blockerImageInfo.image["creature"]) {
+			let a = BLOCKS[sprite.name]
+			let b = BLOCKS[blockerImageInfo.name]
+			// they should be the same size
+			return a.size[0] == b.size[0] && a.size[1] == b.size[1] && a.size[2] == b.size[2]
+		}
+		return false
+	}
+
 	canMoveTo(sprite, x, y, z, skipSupportCheck, blockers) {
 		let fits = _visit3SS(sprite.name, x, y, z, (xx, yy, zz) => {
 			let info = this.infos[_key(xx, yy, zz)]
 			if(!info) return true
 			let blocker = info.imageInfos.find((ii) => ii.image != sprite)
 			if(!blocker) return true
-			if(blockers != null && blocker.image["creature"] && sprite["userControlled"]) blockers.push(blocker.image)
+			if(blockers != null && this._canSwapPlaces(sprite, blocker)) blockers.push(blocker.image)
 			return false
 		})
 		// if it fits, make sure we're standing on something
