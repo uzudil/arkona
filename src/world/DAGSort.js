@@ -14,10 +14,9 @@ export default class {
 	// This is O(n^2)
 	prepareToSort(sprites) {
 		// figure out which sprite is behind which other one (ie. create dag)
-		//let t = Date.now()
+		// let t = Date.now()
 		let behind = this._createDAG(sprites)
-		//console.log(behind)
-		//let t2 = Date.now()
+		// let t2 = Date.now()
 
 		// depth sort the dag
 		let isoCount = 0
@@ -27,8 +26,7 @@ export default class {
 				currentSprite.isoIndex = isoCount++
 			})
 		}
-		//console.log(sprites.map((sprite) => [sprite.key, sprite.isoIndex]))
-		//console.log("DAG: create=" + (t2 - t) + " visit=" + (Date.now() - t2))
+		// console.log("DAG: create=" + (t2 - t) + " visit=" + (Date.now() - t2) + " sprites=" + sprites.length)
 	}
 
 	_visitSpritesBehind(behind, sprite, seen, fx) {
