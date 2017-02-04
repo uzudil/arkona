@@ -5,7 +5,6 @@ import {getRandom} from '../utils'
 import * as Config from '../config/Config'
 import Palette from '../editor/Palette'
 import $ from 'jquery'
-import {BLOCKS} from '../config/Blocks'
 
 export default class extends Phaser.State {
 	init() {
