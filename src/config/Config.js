@@ -1,11 +1,11 @@
-import {BLOCKS} from './Blocks'
+import {BLOCKS} from "./Blocks"
 
 export const WIDTH = 1024
 export const HEIGHT = 768
 export const NARRATE_HEIGHT = 100
 export const CONVO_HEIGHT = 220
-export const GROUND_TILE_W = BLOCKS['grass'].size[0]
-export const GROUND_TILE_H = BLOCKS['grass'].size[1]
+export const GROUND_TILE_W = BLOCKS["grass"].size[0]
+export const GROUND_TILE_H = BLOCKS["grass"].size[1]
 export const GRID_SIZE = 8
 export const MAP_VERSION = 1
 export const PLAYER_SPEED = 1.33
@@ -13,15 +13,15 @@ export const DOORS = Object.keys(BLOCKS).filter(name => name.indexOf(".door.") >
 export const UNSTABLE_FLOORS = [ "water", "bramble", "lava" ]
 export const ANIMATION_SPEED = 8
 export const GAME_ZOOM = 2
-export const DIR_N = 'n'
-export const DIR_NE = 'ne'
-export const DIR_E = 'e'
-export const DIR_SE = 'se'
-export const DIR_S = 's'
-export const DIR_SW = 'sw'
-export const DIR_W = 'w'
-export const DIR_NW = 'nw'
-export const DIR_NONE = 'none'
+export const DIR_N = "n"
+export const DIR_NE = "ne"
+export const DIR_E = "e"
+export const DIR_SE = "se"
+export const DIR_S = "s"
+export const DIR_SW = "sw"
+export const DIR_W = "w"
+export const DIR_NW = "nw"
+export const DIR_NONE = "none"
 export const DIRS = [DIR_N, DIR_NE, DIR_E, DIR_SE, DIR_S, DIR_SW, DIR_W, DIR_NW]
 export const MOVE_RANDOM = "random"
 export const MOVE_ANCHOR = "anchor"
@@ -58,7 +58,7 @@ export function getRandomDir() {
 
 export function getOppositeDoor(name) {
 	let dir = name.substring(name.length - 1)
-	return name.substring(0, name.length - 1) + (dir == 'x' ? 'y' : 'x')
+	return name.substring(0, name.length - 1) + (dir == "x" ? "y" : "x")
 }
 
 export function toCss(name) {

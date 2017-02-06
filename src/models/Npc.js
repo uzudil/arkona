@@ -1,6 +1,5 @@
-import * as Config from './../config/Config'
-import { dist3d } from '../utils'
-import * as Queue from '../actions/Queue'
+import * as Config from "./../config/Config"
+import { dist3d } from "../utils"
 
 export default class {
 	constructor(arkona, x, y, z, options, creature) {

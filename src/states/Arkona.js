@@ -1,14 +1,14 @@
 /* globals __DEV__ */
-import Phaser from 'phaser'
-import $ from 'jquery'
-import Block from '../world/Block'
-import * as Config from '../config/Config'
-import Creature from '../models/Creature'
-import Level from '../models/Level'
-import Messages from '../ui/Messages'
-import ConvoUI from '../ui/ConvoUI'
-import Transition from '../ui/Transition'
-import * as Queue from '../actions/Queue'
+import Phaser from "phaser"
+import $ from "jquery"
+import Block from "../world/Block"
+import * as Config from "../config/Config"
+import Creature from "../models/Creature"
+import Level from "../models/Level"
+import Messages from "../ui/Messages"
+import ConvoUI from "../ui/ConvoUI"
+import Transition from "../ui/Transition"
+import * as Queue from "../actions/Queue"
 
 export default class extends Phaser.State {
 	init(context) {
@@ -109,21 +109,21 @@ export default class extends Phaser.State {
 	getDirFromCursorKeys() {
 		let dir = null
 		if (this.cursors.up.isDown && this.cursors.left.isDown) {
-			dir = 'w'
+			dir = "w"
 		} else if (this.cursors.up.isDown && this.cursors.right.isDown) {
-			dir = 'n'
+			dir = "n"
 		} else if (this.cursors.down.isDown && this.cursors.right.isDown) {
-			dir = 'e'
+			dir = "e"
 		} else if (this.cursors.down.isDown && this.cursors.left.isDown) {
-			dir = 's'
+			dir = "s"
 		} else if (this.cursors.up.isDown) {
-				dir = 'nw'
+				dir = "nw"
 		} else if (this.cursors.down.isDown) {
-			dir = 'se'
+			dir = "se"
 		} else if (this.cursors.left.isDown) {
-			dir = 'sw'
+			dir = "sw"
 		} else if (this.cursors.right.isDown) {
-			dir = 'ne'
+			dir = "ne"
 		}
 		return dir
 	}

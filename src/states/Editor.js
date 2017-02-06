@@ -1,10 +1,10 @@
 /* globals __DEV__ */
-import Phaser from 'phaser'
-import Block, { isFlat } from '../world/Block'
-import {getRandom} from '../utils'
-import * as Config from '../config/Config'
-import Palette from '../editor/Palette'
-import $ from 'jquery'
+import Phaser from "phaser"
+import Block, { isFlat } from "../world/Block"
+import {getRandom} from "../utils"
+import * as Config from "../config/Config"
+import Palette from "../editor/Palette"
+import $ from "jquery"
 
 export default class extends Phaser.State {
 
@@ -55,7 +55,7 @@ export default class extends Phaser.State {
 
 		//  The Text is positioned at 0, 100
 		this.posLabel = game.add.text(0, 0, "Pos: ", style);
-		this.posLabel.setShadow(1, 1, 'rgba(0,0,0,1)', 2);
+		this.posLabel.setShadow(1, 1, "rgba(0,0,0,1)", 2);
 		this.posLabel.setTextBounds(0, 0, 800, 20);
 
 		this.cursors = this.game.input.keyboard.createCursorKeys()

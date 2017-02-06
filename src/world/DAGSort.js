@@ -1,5 +1,5 @@
-import {BLOCKS} from '../config/Blocks'
-import {WIDTH, HEIGHT} from '../config/Config'
+import {BLOCKS} from "../config/Blocks"
+
 /*
  A (more) correct way of sorting isometric shapes, as described here:
  https://shaunlebron.github.io/IsometricBlocks/
@@ -54,7 +54,7 @@ export default class {
 	 * Create the DAG. As an optimization, only store sprites that are currently
 	 * visible. Since each step requires a resort, we can get away with this.
 	 * @param sprites
-	 * @returns a map of key->[list of sprites] where the value is a list of sprites 'behind' the key
+	 * @returns a map of key->[list of sprites] where the value is a list of sprites "behind" the key
 	 * @private
 	 */
 	_createDAG(sprites) {

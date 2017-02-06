@@ -1,10 +1,9 @@
-import Phaser from 'phaser'
-import * as Config from '../config/Config'
-import {BLOCKS} from '../config/Blocks'
-import ImpreciseSort from './ImpreciseSort'
-import DAGSort from './DAGSort'
-import $ from 'jquery'
-import * as Filters from './Filters'
+import * as Config from "../config/Config"
+import {BLOCKS} from "../config/Blocks"
+import ImpreciseSort from "./ImpreciseSort"
+import DAGSort from "./DAGSort"
+import $ from "jquery"
+import * as Filters from "./Filters"
 
 function getBlendLevel(block) {
 	return block && block.options && block.options["blendLevel"] ? block.options["blendLevel"] : Config.NO_BLEND
@@ -466,10 +465,10 @@ export default class {
 		this.h = h
 		for(let layer of this.layers) layer.reset()
 
-		if(type == 'grass') {
+		if(type == "grass") {
 			for (let x = 0; x < w; x += 4) {
 				for (let y = 0; y < h; y += 4) {
-					this.set('grass', x, y, 0)
+					this.set("grass", x, y, 0)
 				}
 			}
 		}
@@ -856,7 +855,7 @@ export default class {
 			layers: this.layers.map(layer => layer.save())
 		})
 		$.ajax({
-			type: 'POST',
+			type: "POST",
 			url: "http://localhost:9090/cgi-bin/upload.py",
 			data: "name=" + this.name + "&file=" + data,
 			//success: ()=>{alert("Success!");},

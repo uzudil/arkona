@@ -1,8 +1,9 @@
 {
   "name": "arkona",
   "version": "1.0.0",
-  "description": "",
-  "author": "leandro cabrera <leandcabrera@gmail.com>",
+  "description": "retro isometric rpg",
+  "author": "Gabor Torok <cctorok@yahoo.com>",
+  "repository": "https://github.com/uzudil/arkona",
   "main": "index.js",
   "scripts": {
     "dev": "webpack",
@@ -12,11 +13,14 @@
   "license": "ISC",
   "devDependencies": {
     "babel-core": "^6.18.2",
+    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.8",
     "babel-polyfill": "^6.16.0",
     "babel-preset-es2015": "^6.18.0",
     "browser-sync": "^2.18.2",
     "browser-sync-webpack-plugin": "^1.1.3",
+    "eslint": "^3.15.0",
+    "eslint-loader": "^1.6.1",
     "expose-loader": "^0.7.1",
     "standard": "^8.6.0",
     "webfontloader": "^1.6.27",

@@ -1,4 +1,4 @@
-import Convo from './Convo'
+import Convo from "./Convo"
 
 export const ARADUN = Convo.condition((arkona) => arkona.gameState["visit_eldun"],
 	new Convo("Thou hath returned. What news from Marisan of Eldun?")

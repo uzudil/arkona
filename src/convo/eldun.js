@@ -1,4 +1,4 @@
-import Convo from './Convo'
+import Convo from "./Convo"
 
 export const MARISAN = Convo.condition((arkona) => arkona.gameState["marisan_key"],
 	Convo.condition((arkona) => arkona.gameState["marisan_purple_tome"],

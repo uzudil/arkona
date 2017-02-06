@@ -1,8 +1,8 @@
-import UseObject from './UseObject'
-import Talk from './Talk'
-import MovePlayer from './MovePlayer'
-import MoveNpc from './MoveNpc'
-import GeneratorAction from './GeneratorAction'
+import UseObject from "./UseObject"
+import Talk from "./Talk"
+import MovePlayer from "./MovePlayer"
+import MoveNpc from "./MoveNpc"
+import GeneratorAction from "./GeneratorAction"
 
 const ACTIONS = [
 	new UseObject(),

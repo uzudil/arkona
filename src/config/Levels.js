@@ -1,8 +1,8 @@
-import {MOVE_ANCHOR} from './Config'
-import {MONSTERS} from './Monsters'
-import * as FARM_CONVO from '../convo/farm'
-import * as MEDIAN_CONVO from '../convo/median'
-import * as ELDUN_CONVO from '../convo/eldun'
+import {MOVE_ANCHOR} from "./Config"
+import {MONSTERS} from "./Monsters"
+import * as FARM_CONVO from "../convo/farm"
+import * as MEDIAN_CONVO from "../convo/median"
+import * as ELDUN_CONVO from "../convo/eldun"
 
 export const LEVELS = {
 	farm: {
@@ -10,7 +10,7 @@ export const LEVELS = {
 		startPos: [102, 28, 0],
 		npcs: [
 			{
-				creature: 'woman_brown',
+				creature: "woman_brown",
 				x: 55, y: 66,
 				options: {
 					movement: MOVE_ANCHOR,
@@ -18,8 +18,8 @@ export const LEVELS = {
 					convo: FARM_CONVO.SHARYA
 				},
 			},
-			{ creature: 'cow', x: 42, y: 97, options: { convo: FARM_CONVO.COW } },
-			{ creature: 'cow', x: 42, y: 89, options: { convo: FARM_CONVO.COW } }
+			{ creature: "cow", x: 42, y: 97, options: { convo: FARM_CONVO.COW } },
+			{ creature: "cow", x: 42, y: 89, options: { convo: FARM_CONVO.COW } }
 		],
 		onLoad: function(arkona) {
 			if(!arkona.gameState["intro_seen"]) {

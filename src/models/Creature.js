@@ -1,6 +1,6 @@
-import {range} from '../utils'
-import * as Config from '../config/Config'
-import * as Creatures from '../config/Creatures'
+import {range} from "../utils"
+import * as Config from "../config/Config"
+import * as Creatures from "../config/Creatures"
 
 export default class {
 
@@ -43,12 +43,12 @@ export default class {
 	}
 
 	walk(dir) {
-		this.sprite.animations.play('walk.' + dir, this.animationSpeed, true)
+		this.sprite.animations.play("walk." + dir, this.animationSpeed, true)
 	}
 
 	stand(dir) {
 		if(dir) {
-			this.sprite.animations.play('stand.' + dir)
+			this.sprite.animations.play("stand." + dir)
 		} else {
 			this.sprite.animations.stop()
 		}

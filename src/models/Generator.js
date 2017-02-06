@@ -1,7 +1,4 @@
-import * as Config from '../config/Config'
-import {MONSTERS} from '../config/Monsters'
-import {CREATURES} from '../config/Creatures'
-import {BLOCKS} from '../config/Blocks'
+import * as Config from "../config/Config"
 
 export default class {
 	constructor(arkona, info) {

@@ -1,7 +1,7 @@
-import Npc from './Npc'
-import Creature from './Creature'
-import * as Levels from './../config/Levels'
-import Generator from './Generator'
+import Npc from "./Npc"
+import Creature from "./Creature"
+import * as Levels from "./../config/Levels"
+import Generator from "./Generator"
 
 export default class {
 	constructor(levelName) {

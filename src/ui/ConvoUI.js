@@ -1,4 +1,4 @@
-import * as Config from '../config/Config'
+import * as Config from "../config/Config"
 
 export default class {
 	constructor(arkona) {
@@ -24,7 +24,7 @@ export default class {
 			wordWrapWidth: Config.WIDTH
 		}
 		this.npcMessage = arkona.game.add.text(5, 40, "Pos: ", this.npcStyle, this.group)
-		this.npcMessage.setShadow(1, 1, 'rgba(0,0,0,1)', 2)
+		this.npcMessage.setShadow(1, 1, "rgba(0,0,0,1)", 2)
 		this.npcMessage.setTextBounds(5, 5, Config.WIDTH - 10, Config.CONVO_HEIGHT - 10)
 
 		this.pcStyle = {
@@ -46,7 +46,7 @@ export default class {
 		this.pcAnswer = []
 		for(let i = 0; i < 5; i++) {
 			let m = arkona.game.add.text(15, 5, "Pos: ", this.pcStyle, this.group)
-			m.setShadow(1, 1, 'rgba(0,0,0,1)', 2)
+			m.setShadow(1, 1, "rgba(0,0,0,1)", 2)
 			m.setTextBounds(15, 5, Config.WIDTH - 20, Config.CONVO_HEIGHT - 10)
 			m.visible = false
 			this.pcAnswer.push(m)
@@ -60,7 +60,7 @@ export default class {
 			wordWrap: true,
 			wordWrapWidth: Config.WIDTH
 		}, this.group)
-		this.npcName.setShadow(1, 1, 'rgba(0,0,0,1)', 2)
+		this.npcName.setShadow(1, 1, "rgba(0,0,0,1)", 2)
 		this.npcName.setTextBounds(5, 5, Config.WIDTH - 10, Config.CONVO_HEIGHT - 10)
 
 		this.group.visible = false

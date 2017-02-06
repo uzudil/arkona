@@ -1,4 +1,4 @@
-import Convo from './Convo'
+import Convo from "./Convo"
 
 export const COW = new Convo("Moo.").answer("Uh, thanks for that.")
 

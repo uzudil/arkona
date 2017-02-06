@@ -1,4 +1,4 @@
-import * as Config from '../config/Config'
+import * as Config from "../config/Config"
 
 export default class {
 	constructor(arkona) {
@@ -18,7 +18,7 @@ export default class {
 			wordWrapWidth: Config.WIDTH
 		}
 		this.narratorMessage = arkona.game.add.text(5, 5, "Pos: ", style, this.group)
-		this.narratorMessage.setShadow(1, 1, 'rgba(0,0,0,1)', 2)
+		this.narratorMessage.setShadow(1, 1, "rgba(0,0,0,1)", 2)
 		this.narratorMessage.setTextBounds(5, 5, Config.WIDTH - 10, Config.NARRATE_HEIGHT - 10)
 
 		this.group.visible = false

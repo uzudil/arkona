@@ -1,4 +1,4 @@
-import * as Config from '../config/Config'
+import * as Config from "../config/Config"
 
 const MODE_OPEN_DOOR = 0
 const MODE_CUSTOM_USE = 1

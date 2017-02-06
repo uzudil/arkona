@@ -1,29 +1,29 @@
-import Phaser from 'phaser'
-import { centerGameObjects, loadSettings, saveSettings } from '../utils'
-import * as Config from '../config/Config'
-import Creature from '../models/Creature'
-import $ from 'jquery'
-import Transition from '../ui/Transition'
+import Phaser from "phaser"
+import { centerGameObjects, loadSettings, saveSettings } from "../utils"
+import * as Config from "../config/Config"
+import Creature from "../models/Creature"
+import $ from "jquery"
+import Transition from "../ui/Transition"
 
 export default class extends Phaser.State {
 	init() {
 	}
 
 	preload() {
-		this.loaderBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loaderBg')
-		this.loaderBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loaderBar')
+		this.loaderBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "loaderBg")
+		this.loaderBar = this.add.sprite(this.game.world.centerX, this.game.world.centerY, "loaderBar")
 		centerGameObjects([this.loaderBg, this.loaderBar])
 
 		this.load.setPreloadSprite(this.loaderBar)
 		//
 		// load your assets
 		//
-		this.load.atlas('sprites', 'assets/images/arkona.png?cb=' + Date.now(), null, Config.toJson(), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-		this.load.atlas('sprites2', 'assets/images/arkona2.png?cb=' + Date.now(), null, Config.toJson(2), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+		this.load.atlas("sprites", "assets/images/arkona.png?cb=" + Date.now(), null, Config.toJson(), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+		this.load.atlas("sprites2", "assets/images/arkona2.png?cb=" + Date.now(), null, Config.toJson(2), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
 
-		this.load.image('logo', './assets/images/logo.png')
-		this.load.shader('shader', '/assets/shaders/logo.frag?cb=' + Date.now());
-		this.load.shader('shader2', '/assets/shaders/logo2.frag?cb=' + Date.now());
+		this.load.image("logo", "./assets/images/logo.png")
+		this.load.shader("shader", "/assets/shaders/logo.frag?cb=" + Date.now());
+		this.load.shader("shader2", "/assets/shaders/logo2.frag?cb=" + Date.now());
 
 		Creature.preload(this.game)
 	}
@@ -46,9 +46,9 @@ export default class extends Phaser.State {
 		this.filter = new Phaser.Filter(this.game, null, this.game.cache.getShader("shader"))
 		this.filter.addToWorld(0, 0, Config.WIDTH, Config.HEIGHT, 0, 0)
 
-		this.logo = this.add.image(this.game.world.centerX - 256, 50, 'logo')
+		this.logo = this.add.image(this.game.world.centerX - 256, 50, "logo")
 		this.filter2 = new Phaser.Filter(this.game, {
-			iChannel0: { type: 'sampler2D', value: this.logo.texture, textureData: { repeat: true } }
+			iChannel0: { type: "sampler2D", value: this.logo.texture, textureData: { repeat: true } }
 		}, this.game.cache.getShader("shader2"))
 		this.filter2.setResolution(512, 256)
 		this.logo.filters = [ this.filter2 ]
@@ -99,16 +99,16 @@ export default class extends Phaser.State {
 		if(this.space.justDown) {
 			if(this.menuIndex == 0) {
 				$("#right-menu").show()
-				this.state.start('Editor')
+				this.state.start("Editor")
 			} else if(this.menuIndex == 1) {
 				// new game
 				this.transition.fadeIn(() => {
-					this.state.start('Arkona')
+					this.state.start("Arkona")
 				})
 			} else if(this.menuIndex == 2) {
 				// load game
 				this.transition.fadeIn(() => {
-					this.state.start('Arkona', true, false, { loadGame: true })
+					this.state.start("Arkona", true, false, { loadGame: true })
 				})
 			} else if(this.menuIndex == 3) {
 				let o = loadSettings()
