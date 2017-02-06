@@ -55,7 +55,7 @@ module.exports = {
     ]
   },
   eslint: {
-      failOnWarning: true,
+      failOnWarning: false,
       failOnError: true
   },
   node: {

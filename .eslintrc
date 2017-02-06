@@ -9,7 +9,7 @@
     "browser": true
   },
   "rules": {
-    "quotes": [2, "double"],
+    "quotes": ["error", "double"],
     "no-console": ["error", { "allow": ["warn", "error"] }]
   }
 }
