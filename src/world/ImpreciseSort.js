@@ -7,6 +7,7 @@ export default class {
 		sprite.isoDepth = x + y + 0.001 * z
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	prepareToSort(sprites) {
 	}
 

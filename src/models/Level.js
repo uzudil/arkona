@@ -73,7 +73,7 @@ export default class {
 		return true
 	}
 
-	getAction(pos, action, arkona) {
+	getAction(pos, action) {
 		if(this.info["actions"]) {
 			let actionInfo = this._getAction(pos, action.getType())
 			if(actionInfo && actionInfo["action"]) return actionInfo

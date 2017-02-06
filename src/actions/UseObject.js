@@ -12,10 +12,7 @@ export default class {
 		return this.sprite ? this.sprite.gamePos : null
 	}
 
-	isReady(arkona) {
-		return true
-	}
-
+	// eslint-disable-next-line no-unused-vars
 	setContext(context) {
 		this.sprite = null
 		this.mode = null
@@ -23,8 +20,8 @@ export default class {
 
 	check(arkona) {
 		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 6, (sprite) => {
-			console.log("" + sprite.name + ":" + sprite.gamePos)
-			return arkona.level.getAction(sprite.gamePos, this, arkona) != null
+			console.warn("" + sprite.name + ":" + sprite.gamePos)
+			return arkona.level.getAction(sprite.gamePos, this) != null
 		})
 		if(this.sprite) {
 			this.mode = MODE_CUSTOM_USE
@@ -45,7 +42,7 @@ export default class {
 				arkona.blocks.replace(this.sprite, Config.getOppositeDoor(this.sprite.name))
 				break
 			default:
-				arkona.level.getAction(this.sprite.gamePos, this, arkona).action(arkona)
+				arkona.level.getAction(this.sprite.gamePos, this).action(arkona)
 		}
 		return true
 	}

@@ -1,4 +1,3 @@
-/* globals __DEV__ */
 import Phaser from "phaser"
 import Block, { isFlat } from "../world/Block"
 import {getRandom} from "../utils"
@@ -54,7 +53,7 @@ export default class extends Phaser.State {
 		var style = {font: "bold 14px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "top"};
 
 		//  The Text is positioned at 0, 100
-		this.posLabel = game.add.text(0, 0, "Pos: ", style);
+		this.posLabel = this.game.add.text(0, 0, "Pos: ", style);
 		this.posLabel.setShadow(1, 1, "rgba(0,0,0,1)", 2);
 		this.posLabel.setTextBounds(0, 0, 800, 20);
 
@@ -134,7 +133,7 @@ export default class extends Phaser.State {
 		}
 	}
 
-	drawObject(x, y, z) {
+	drawObject(x, y) {
 		if ((this.tree.isDown || this.tree2.isDown) && this.blocks.isFree(x, y, 0, 4, 4, 8)) {
 			if(this.tree2.isDown) {
 				this.blocks.clear("trunk.wide", x, y, 0)
@@ -160,10 +159,10 @@ export default class extends Phaser.State {
 		this.blocks.update()
 
 		if ($(".dialog").is(":visible")) {
-			game.input.enabled = false;
+			this.game.input.enabled = false;
 			return
 		} else {
-			game.input.enabled = true;
+			this.game.input.enabled = true;
 		}
 
 		if (this.esc.justDown && this.activeBlock) {
@@ -181,7 +180,7 @@ export default class extends Phaser.State {
 
 		if (this.blocks.isInBounds(x, y)) {
 			this.drawGround(x, y)
-			this.drawObject(x, y, z)
+			this.drawObject(x, y)
 			if (this.delete.justDown) {
 				if(this.blocks.highlightedSprite) {
 					this.blocks.clearSprite(this.blocks.highlightedSprite)
@@ -201,14 +200,13 @@ export default class extends Phaser.State {
 		if (this.activeBlock) {
 			// handle click
 			if (this.game.input.activePointer.isDown && this.addNew && this.blocks.isInBounds(x, y)) {
-				let newSprite
 				if (isFlat(this.activeBlock)) {
 					if(!this.blocks.isStamp(this.activeBlock.name)) {
 						this.blocks.clear("grass", x, y, 0)
 					}
-					newSprite = this.blocks.set(this.activeBlock.name, x, y, 0)
+					this.blocks.set(this.activeBlock.name, x, y, 0)
 				} else {
-					newSprite = this.blocks.set(this.activeBlock.name, x, y, z)
+					this.blocks.set(this.activeBlock.name, x, y, z)
 				}
 
 				z = this.blocks.getTopAt(x, y, this.activeBlock)

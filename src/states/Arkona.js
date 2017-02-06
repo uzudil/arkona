@@ -1,4 +1,3 @@
-/* globals __DEV__ */
 import Phaser from "phaser"
 import $ from "jquery"
 import Block from "../world/Block"
@@ -12,7 +11,7 @@ import * as Queue from "../actions/Queue"
 
 export default class extends Phaser.State {
 	init(context) {
-		console.log("context=", context)
+		console.warn("context=", context)
 	}
 
 	create() {

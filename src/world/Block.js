@@ -727,14 +727,14 @@ export default class {
 			} else {
 				for (let xx = -1; xx <= 1; xx++) {
 					for (let yy = -1; yy <= 1; yy++) {
-						this.drawGroundEdges(x + xx * Config.GROUND_TILE_W, y + yy * Config.GROUND_TILE_H, name)
+						this.drawGroundEdges(x + xx * Config.GROUND_TILE_W, y + yy * Config.GROUND_TILE_H)
 					}
 				}
 			}
 		}
 	}
 
-	drawGroundEdges(gx, gy, ground) {
+	drawGroundEdges(gx, gy) {
 		if(this.isInBounds(gx, gy)) {
 			let blendLevel = this.getBlendLevel(gx, gy)
 			if (blendLevel == Config.NO_BLEND) {
@@ -782,7 +782,7 @@ export default class {
 		this.edgeLayer.reset()
 		for (let xx = 0; xx < this.w; xx += Config.GROUND_TILE_W) {
 			for (let yy = 0; yy < this.h; yy += Config.GROUND_TILE_H) {
-				this.drawGroundEdges(xx, yy, this.floorLayer.getFloorAt(xx, yy))
+				this.drawGroundEdges(xx, yy)
 			}
 		}
 	}
@@ -922,7 +922,6 @@ export default class {
 	moveNear(sprite, x, y, z, range) {
 		return !_visit3d(x + (range/2)|0, y + (range/2)|0, z, range, range, 1, (xx, yy, zz) => {
 			if(this.moveTo(sprite, xx, yy, zz)) {
-				console.log("Around:" + xx +"," +yy +"," + zz + " pos:" + sprite.gamePos)
 				// return false so the SS loop quits
 				return false
 			}

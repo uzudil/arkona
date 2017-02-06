@@ -38,7 +38,7 @@ export default class {
 						this._visitSpritesBehind(behind, spriteBehind, seen, fx)
 					} catch(exc) {
 						// sometimes we get a max stacksize error here
-						console.log(exc)
+						console.error(exc)
 					}
 				}
 			}

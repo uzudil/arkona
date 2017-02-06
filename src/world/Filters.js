@@ -12,18 +12,18 @@ export function preload(state) {
 }
 
 export function create(game) {
-	FILTERS["water"] = _initSimpleWater()
-	FILTERS["lava"] = _initLava()
+	FILTERS["water"] = _initSimpleWater(game)
+	FILTERS["lava"] = _initLava(game)
 }
 
-function _initWater() {
-	let sprite = game.add.sprite(-500, -500, "water-texture")
-	let filter = new Phaser.Filter(game, null, game.cache.getShader("water"))
-	filter.setResolution(sprite.texture.width, sprite.texture.height)
-	return filter
-}
+// function _initWater(game) {
+// 	let sprite = game.add.sprite(-500, -500, "water-texture")
+// 	let filter = new Phaser.Filter(game, null, game.cache.getShader("water"))
+// 	filter.setResolution(sprite.texture.width, sprite.texture.height)
+// 	return filter
+// }
 
-function _initSimpleWater() {
+function _initSimpleWater(game) {
 	let sprite = game.add.sprite(-500, -500, "water-texture")
 	let filter = new Phaser.Filter(game, {
 		iChannel0: { type: "sampler2D", value: sprite.texture, textureData: { repeat: true } }
@@ -32,7 +32,7 @@ function _initSimpleWater() {
 	return filter
 }
 
-function _initLava() {
+function _initLava(game) {
 	let sprite = game.add.sprite(-550, -550, "lava-texture")
 	let filter = new Phaser.Filter(game, {
 		iChannel0: { type: "sampler2D", value: sprite.texture, textureData: { repeat: true } }
@@ -47,6 +47,6 @@ export function update() {
 			FILTERS[key].update()
 		}
 	} catch(e) {
-		console.log(e)
+		console.error(e)
 	}
 }

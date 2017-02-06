@@ -12,10 +12,7 @@ export default class {
 		return null
 	}
 
-	isReady(arkona) {
-		return true
-	}
-
+	// eslint-disable-next-line no-unused-vars
 	check(arkona) {
 		return this.generators != null && this.generators.length > 0
 	}
@@ -24,6 +21,7 @@ export default class {
 		this.generators = context
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	run(arkona) {
 		this.generators.forEach(g => g.update())
 		return true

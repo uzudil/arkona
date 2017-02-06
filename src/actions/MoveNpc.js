@@ -12,10 +12,7 @@ export default class {
 		return null
 	}
 
-	isReady(arkona) {
-		return true
-	}
-
+	// eslint-disable-next-line no-unused-vars
 	check(arkona) {
 		return true
 	}
@@ -24,6 +21,7 @@ export default class {
 		this.npcs = context
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	run(arkona) {
 		this.npcs.forEach(npc => npc.move())
 		return true

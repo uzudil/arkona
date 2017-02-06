@@ -9,10 +9,7 @@ export default class {
 		return this.sprite ? this.sprite.gamePos : null
 	}
 
-	isReady(arkona) {
-		return true
-	}
-
+	// eslint-disable-next-line no-unused-vars
 	setContext(context) {
 		this.sprite = null
 	}
@@ -23,7 +20,6 @@ export default class {
 	}
 
 	run(arkona) {
-		console.log("Talking to " + this.sprite.npc.getName())
 		arkona.level.npcs.forEach(npc => npc.creature.stand(npc.dir))
 		arkona.convoUi.start(this.sprite.npc)
 		return true

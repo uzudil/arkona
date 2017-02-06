@@ -127,7 +127,10 @@ export const LEVELS = {
 				}
 			},
 			{
-				type: "use_object", x: 137, y: 62, z: 14, allow: (arkona) => true, action: (arkona) => arkona.showOverlay("raighd")
+				type: "use_object", x: 137, y: 62, z: 14,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => arkona.showOverlay("raighd")
 			}
 		]
 	},

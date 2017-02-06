@@ -11,7 +11,7 @@ export default class {
 		// - only create 1 per call
 		// - only if generator location is off-screen
 		if(this.getCount() > this.generated.length && !this.isOnScreen()) {
-			console.log("Generating " + this.info.type.creature + " at " + this.info.x + "," + this.info.y + "," + this.info.z)
+			console.warn("Generating " + this.info.type.creature + " at " + this.info.x + "," + this.info.y + "," + this.info.z)
 			let monster = this.info.type
 			let npc = this.arkona.level.addNpc(this.arkona, {
 				creature: monster.creature,
@@ -25,11 +25,11 @@ export default class {
 			// try to find a place for it
 			// if(this.arkona.blocks.moveTo(npc.creature.sprite, this.info.x, this.info.y, this.info.z)) {
 			if (this.arkona.blocks.moveNear(npc.creature.sprite, this.info.x, this.info.y, this.info.z, this.getRange())) {
-				console.log("Starting " + this.info.type.creature + " at " + npc.creature.sprite.gamePos)
+				console.warn("Starting " + this.info.type.creature + " at " + npc.creature.sprite.gamePos)
 				npc.setPosFromSprite(npc.creature.sprite)
 				this.generated.push(npc)
 			} else {
-				console.log("Generator unable to position " + this.info.type.creature + " at " + this.info.x + "," + this.info.y + "," + this.info.z)
+				console.warn("Generator unable to position " + this.info.type.creature + " at " + this.info.x + "," + this.info.y + "," + this.info.z)
 				this.arkona.level.removeNpc(this.arkona, npc)
 			}
 		}

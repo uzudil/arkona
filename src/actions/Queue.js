@@ -34,32 +34,26 @@ export class Queue {
 
 	update() {
 		let updated = false
-		let idx = 0
-		while(idx < this.queue.length) {
-			let action = ACTIONS[this.queue[idx]]
-			if(action.isReady(this.arkona)) {
-				this.log(action, "Trying")
-				if(action.check(this.arkona)) {
-					this.log(action, "Running")
-					if(this.arkona.level.isAllowed(action, this.arkona)) {
-						let b = action.run(this.arkona)
-						if (b) updated = b
-					} else {
-						this.log(action, "NOT ALLOWED")
-						// todo: play FAIL sound or special handling?
-					}
+		while(this.queue.length > 0) {
+			let action = ACTIONS[this.queue[0]]
+			this.log(action, "Trying")
+			if(action.check(this.arkona)) {
+				this.log(action, "Running")
+				if(this.arkona.level.isAllowed(action, this.arkona)) {
+					let b = action.run(this.arkona)
+					if (b) updated = b
+				} else {
+					this.log(action, "NOT ALLOWED")
+					// todo: play FAIL sound or special handling?
 				}
-				this.queue.splice(idx, 1)
-				// don't incr idx here
-			} else {
-				idx++
 			}
+			this.queue.splice(0, 1)
 		}
 		return updated
 	}
 
 	log(action, message) {
 		if(DONT_LOG.find(s => ACTIONS[s] == action)) return
-		console.log(message + ": type=" + action.getType() + " at " + action.getPos())
+		console.warn(message + ": type=" + action.getType() + " at " + action.getPos())
 	}
 }

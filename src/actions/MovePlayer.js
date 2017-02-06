@@ -14,14 +14,12 @@ export default class {
 		return this.pos
 	}
 
-	isReady(arkona) {
-		return true
-	}
-
+	// eslint-disable-next-line no-unused-vars
 	check(arkona) {
 		return true
 	}
 
+	// eslint-disable-next-line no-unused-vars
 	setContext(context) {
 		this.dir = context
 	}

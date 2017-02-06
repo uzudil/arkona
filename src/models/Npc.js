@@ -61,7 +61,7 @@ export default class {
 		return this.getDirToLocation(...this.arkona.player.sprite.gamePos)
 	}
 
-	getDirToLocation(x, y, z) {
+	getDirToLocation(x, y) {
 		let dx = this.x - x
 		let dy = this.y - y
 		if(dx > 0 && dy > 0) return Config.DIR_NW
