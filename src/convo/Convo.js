@@ -18,6 +18,15 @@ class Answer {
 			return this.result
 		}
 	}
+
+	validate() {
+		if(typeof this.result === "string") {
+			if(CONVOS[this.result] == null)
+				throw new Error("Can't find answer reference \"" + this.result + "\".")
+		} else if(this.result) {
+			this.result.validate()
+		}
+	}
 }
 
 /**
@@ -53,7 +62,7 @@ export default class {
 	}
 
 	isComplete() {
-		return this.cond || (this.question && this.answers.length > 0)
+		return (this.cond && this.pass && this.fail) || (this.question && this.answers.length > 0)
 	}
 
 	static condition(fx, pass, fail) {
@@ -69,6 +78,16 @@ export default class {
 			return this.cond(arkona) ? this.pass.eval(arkona) : this.fail.eval(arkona)
 		} else {
 			return this
+		}
+	}
+
+	validate() {
+		if(!this.isComplete()) throw new Error("Convo: \"" + this.question + "\" is incomplete.")
+		if(this.cond) {
+			this.pass.validate()
+			this.fail.validate()
+		} else {
+			this.answers.forEach(a => a.validate())
 		}
 	}
 }
