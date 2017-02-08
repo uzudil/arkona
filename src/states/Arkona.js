@@ -8,6 +8,7 @@ import Messages from "../ui/Messages"
 import ConvoUI from "../ui/ConvoUI"
 import Transition from "../ui/Transition"
 import * as Queue from "../actions/Queue"
+import Stats from "stats.js"
 
 export default class extends Phaser.State {
 	init(context) {
@@ -34,6 +35,16 @@ export default class extends Phaser.State {
 		this.convoUi = new ConvoUI(this)
 		this.transition = new Transition()
 
+		if(document.location.hostname == "localhost") {
+			this.stats = new Stats();
+			this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+			this.phaserStatsPanel = this.stats.addPanel( new Stats.Panel( "", "#ff8", "#221" ) );
+			document.body.appendChild(this.stats.dom);
+		} else {
+			this.stats = null
+			this.phaserStatsPanel = null
+		}
+
 		// start game
 		this.loadLevel("eldun")
 
@@ -42,6 +53,10 @@ export default class extends Phaser.State {
 	}
 
 	update() {
+		if(this.stats) {
+			this.stats.begin()
+		}
+
 		if(this.loading || !this.player) return
 
 		this.blocks.update()
@@ -63,6 +78,11 @@ export default class extends Phaser.State {
 		}
 
 		this.level.onLoad(this)
+
+		if(this.stats) {
+			this.stats.end()
+			this.phaserStatsPanel.update(this.stage.currentRenderOrderID, this.world.children.length)
+		}
 	}
 
 	updateUI() {
