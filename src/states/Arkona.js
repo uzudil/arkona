@@ -38,7 +38,7 @@ export default class extends Phaser.State {
 		if(document.location.hostname == "localhost") {
 			this.stats = new Stats();
 			this.stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-			this.phaserStatsPanel = this.stats.addPanel( new Stats.Panel( "", "#ff8", "#221" ) );
+			this.phaserStatsPanel = this.stats.addPanel( new Stats.Panel( "SP", "#ff8", "#221" ) );
 			document.body.appendChild(this.stats.dom);
 		} else {
 			this.stats = null

@@ -29,6 +29,7 @@ export default class extends Phaser.State {
 
 		document.getElementById("save-map").onclick = () => {
 			this.blocks.name = prompt("Map name:", this.blocks.name)
+			this.blocks.fixEdges()
 			this.blocks.save()
 			//let save = $("#save-map")
 			//save.attr("download", this.blocks.name + ".json")
