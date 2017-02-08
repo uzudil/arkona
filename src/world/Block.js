@@ -597,6 +597,15 @@ export default class {
 			sprite = loaderFx(screenX, screenY)
 		} else {
 			sprite = this.game.add.image(screenX, screenY, this._getSprites(name), name, layer.getGroup(name))
+			// do not render out of bounds objects - fps boost
+			// also set autoCull to true (even tho we're not using it) so world.camera.totalInView has a value
+			sprite.checkWorldBounds = sprite.autoCull = true
+			sprite.events.onOutOfBounds.add((sprite) => {
+				sprite.renderable = sprite.alive = false
+			}, this)
+			sprite.events.onEnterBounds.add((sprite) => {
+				sprite.renderable = sprite.alive = true
+			}, this)
 			if(block.options && block.options.filter && Filters.FILTERS[block.options.filter]) {
 				sprite.filters = [ Filters.FILTERS[block.options.filter] ]
 			}

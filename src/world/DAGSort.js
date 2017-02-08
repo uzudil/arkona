@@ -60,9 +60,9 @@ export default class {
 	_createDAG(sprites) {
 		let behind = {}
 		for(let a of sprites) {
-			if(!a.inCamera) continue
+			if(!a.renderable) continue
 			for(let b of sprites) {
-				if(!b.inCamera) continue
+				if(!b.renderable) continue
 				if(a != b) {
 					if (this._doHexagonsOverlap(a.hexBounds, b.hexBounds) &&
 						this._isBoxInBehind(a.boxBounds, b.boxBounds)) {

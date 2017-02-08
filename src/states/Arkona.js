@@ -81,7 +81,7 @@ export default class extends Phaser.State {
 
 		if(this.stats) {
 			this.stats.end()
-			this.phaserStatsPanel.update(this.stage.currentRenderOrderID, this.world.children.length)
+			this.phaserStatsPanel.update(this.world.camera.totalInView, this.stage.currentRenderOrderID)
 		}
 	}
 
