@@ -73,6 +73,7 @@ export default class extends Phaser.State {
 		this.mountain = this.game.input.keyboard.addKey(Phaser.Keyboard.M)
 		this.delete = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
 		this.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
+		this.dungeon = this.game.input.keyboard.addKey(Phaser.Keyboard.N)
 	}
 
 	render() {
@@ -100,6 +101,102 @@ export default class extends Phaser.State {
 			this.blocks.move(Config.GRID_SIZE, 0)
 		} else if (this.cursors.right.isDown) {
 			this.blocks.move(-Config.GRID_SIZE, 0)
+		}
+	}
+
+	drawDungeon() {
+		// find the starting point
+		if (this.dungeon.justDown) {
+			for (let xx = 0; xx < this.blocks.w; xx += Config.GROUND_TILE_W) {
+				for (let yy = 0; yy < this.blocks.h; yy += Config.GROUND_TILE_H) {
+					if (this.blocks.getFloor(xx, yy) == "dungeon.floor") {
+						this._drawDungeonAt(xx, yy, {})
+						this.blocks.sort()
+						return
+					}
+				}
+			}
+		}
+	}
+
+	_drawDungeonAt(x, y, seen) {
+		if(!seen[x + "." + y]) {
+			seen[x + "." + y] = true
+
+			let dungeonFloorName = "dungeon.floor"
+			for (let xx = x - Config.GROUND_TILE_W; xx < x; xx++) {
+				for (let yy = y - Config.GROUND_TILE_H; yy < y; yy++) {
+					this.blocks.clear("dungeon.col.nw", xx + 1, yy + 1, 0)
+				}
+			}
+
+			let w = this.blocks.getFloor(x - Config.GROUND_TILE_W, y) == dungeonFloorName
+			let e = this.blocks.getFloor(x + Config.GROUND_TILE_W, y) == dungeonFloorName
+			let n = this.blocks.getFloor(x, y - Config.GROUND_TILE_W) == dungeonFloorName
+			let s = this.blocks.getFloor(x, y + Config.GROUND_TILE_W) == dungeonFloorName
+			let nw = this.blocks.getFloor(x - Config.GROUND_TILE_W, y - Config.GROUND_TILE_W) == dungeonFloorName
+			let ne = this.blocks.getFloor(x + Config.GROUND_TILE_W, y - Config.GROUND_TILE_W) == dungeonFloorName
+			let sw = this.blocks.getFloor(x - Config.GROUND_TILE_W, y + Config.GROUND_TILE_W) == dungeonFloorName
+			let se = this.blocks.getFloor(x + Config.GROUND_TILE_W, y + Config.GROUND_TILE_W) == dungeonFloorName
+
+			console.warn("pos=" + x + "," + y + " n=" + n + " s=" + s + " e=" + e + " w=" + w + " nw=" + nw + " ne=" + ne + " sw=" + sw + " se=" + se)
+
+			if (w && e && n && s && nw && ne && sw && se) {
+				// nada
+			} else if (w && e && n && s && !nw && ne && sw && se) {
+				console.warn("nw")
+				this.blocks.set("dungeon.col.nw", x - Config.GROUND_TILE_W + 1, y - Config.GROUND_TILE_H + 1, 0)
+			} else if (w && e && n && s && nw && !ne && sw && se) {
+				console.warn("ne")
+				this.blocks.set("dungeon.col.nw", x, y - Config.GROUND_TILE_H + 1, 0)
+			} else if (w && e && n && s && nw && ne && sw && !se) {
+				console.warn("se")
+				this.blocks.set("dungeon.col.nw", x, y, 0)
+			} else if (w && e && n && s && nw && ne && !sw && se) {
+				console.warn("sw")
+				this.blocks.set("dungeon.col.nw", x - Config.GROUND_TILE_W + 1, y, 0)
+			} else if (!w && n && s) {
+				console.warn("w")
+				this.blocks.set("dungeon.w.4", x - Config.GROUND_TILE_W + 1, y, 0)
+			} else if (!e && n && s) {
+				console.warn("e")
+				this.blocks.set("dungeon.e.4", x, y, 0)
+			} else if (w && e && !n) {
+				console.warn("n")
+				this.blocks.set("dungeon.n.4", x, y - Config.GROUND_TILE_H + 1, 0)
+			} else if (w && e && !s) {
+				console.warn("s")
+				this.blocks.set("dungeon.s.4", x, y, 0)
+			} else if (e && s) {
+				console.warn("e+s")
+				this.blocks.set("dungeon.col.se", x - Config.GROUND_TILE_W + 1, y - Config.GROUND_TILE_H + 1, 0)
+				this.blocks.set("dungeon.n.3", x, y - Config.GROUND_TILE_H + 1, 0)
+				this.blocks.set("dungeon.w.3", x - Config.GROUND_TILE_W + 1, y, 0)
+			} else if (e && n) {
+				console.warn("e+n")
+				this.blocks.set("dungeon.col.se", x - Config.GROUND_TILE_W + 1, y, 0)
+				this.blocks.set("dungeon.s.3", x, y, 0)
+				this.blocks.set("dungeon.w.3", x - Config.GROUND_TILE_W + 1, y - 1, 0)
+			} else if (w && n) {
+				console.warn("w+n")
+				this.blocks.set("dungeon.col.se", x, y, 0)
+				this.blocks.set("dungeon.s.3", x - 1, y, 0)
+				this.blocks.set("dungeon.e.3", x, y - 1, 0)
+			} else if (w && s) {
+				console.warn("e+n")
+				this.blocks.set("dungeon.col.se", x, y - Config.GROUND_TILE_H + 1, 0)
+				this.blocks.set("dungeon.n.3", x - 1, y - Config.GROUND_TILE_H + 1, 0)
+				this.blocks.set("dungeon.e.3", x, y, 0)
+			}
+
+			if (w) this._drawDungeonAt(x - Config.GROUND_TILE_W, y, seen)
+			if (e) this._drawDungeonAt(x + Config.GROUND_TILE_W, y, seen)
+			if (n) this._drawDungeonAt(x, y - Config.GROUND_TILE_W, seen)
+			if (s) this._drawDungeonAt(x, y + Config.GROUND_TILE_W, seen)
+			if (nw) this._drawDungeonAt(x - Config.GROUND_TILE_W, y - Config.GROUND_TILE_W, seen)
+			if (ne) this._drawDungeonAt(x + Config.GROUND_TILE_W, y - Config.GROUND_TILE_W, seen)
+			if (sw) this._drawDungeonAt(x - Config.GROUND_TILE_W, y + Config.GROUND_TILE_W, seen)
+			if (se) this._drawDungeonAt(x + Config.GROUND_TILE_W, y + Config.GROUND_TILE_W, seen)
 		}
 	}
 
@@ -182,14 +279,25 @@ export default class extends Phaser.State {
 		if (this.blocks.isInBounds(x, y)) {
 			this.drawGround(x, y)
 			this.drawObject(x, y)
+			this.drawDungeon()
 			if (this.delete.justDown) {
 				if(this.blocks.highlightedSprite) {
 					this.blocks.clearSprite(this.blocks.highlightedSprite)
 				} else {
 					// stamps are hard to clean...
+					let found = false
 					for (let xx = -4; xx < 4; xx++) {
 						for (let yy = -4; yy < 4; yy++) {
-							this.blocks.clear("ashes.big", x - 1 + xx, y - 1 + xx, 0)
+							let b = this.blocks.clear("ashes.big", x - 1 + xx, y - 1 + xx, 0)
+							if(b) found = true
+						}
+					}
+					// clear ground
+					if(!found) {
+						for (let xx = -4; xx < 4; xx++) {
+							for (let yy = -4; yy < 4; yy++) {
+								this.blocks.clear("grass", x - 1 + xx, y - 1 + xx, 0)
+							}
 						}
 					}
 				}

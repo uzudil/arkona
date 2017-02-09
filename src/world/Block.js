@@ -201,6 +201,8 @@ class Layer {
 				}
 			})
 		}
+
+		return info != null
 	}
 
 	clearFirst(x, y, z) {
@@ -556,7 +558,7 @@ export default class {
 
 	clear(name, rx, ry, rz) {
 		let [layer, x, y, z] = this._getLayerAndXYZ(name, rx, ry, rz)
-		layer.clear(name, x, y, z)
+		return layer.clear(name, x, y, z)
 	}
 
 	clearFirst(x, y) {

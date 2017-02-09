@@ -120,4 +120,17 @@ export const BLOCKS = {
 	"roof.ew": { size: [10, 10, 6], pos: [688, 0], dim: [164, 172] },
 	"roof.ns.brown": { size: [10, 10, 3], pos: [448, 192], dim: [164, 164] },
 	"roof.ew.brown": { size: [10, 10, 3], pos: [640, 192], dim: [176, 180] },
+
+	// dungeon
+	"dungeon.s.4": { size: [4, 1, 6], pos: [0, 0], dim: [40, 88], options: { sprites: 3 } },
+	"dungeon.e.4": { size: [1, 4, 6], pos: [48, 0], dim: [40, 88], options: { sprites: 3 } },
+	"dungeon.n.4": { size: [4, 1, 6], pos: [96, 0], dim: [40, 88], options: { sprites: 3 } },
+	"dungeon.w.4": { size: [1, 4, 6], pos: [144, 0], dim: [40, 88], options: { sprites: 3 } },
+	"dungeon.col.nw": { size: [1, 1, 6], pos: [192, 0], dim: [16, 64], options: { sprites: 3 } },
+	"dungeon.s.3": { size: [3, 1, 6], pos: [0, 96], dim: [32, 80], options: { sprites: 3 } },
+	"dungeon.e.3": { size: [1, 3, 6], pos: [48, 96], dim: [32, 80], options: { sprites: 3 } },
+	"dungeon.n.3": { size: [3, 1, 6], pos: [96, 96], dim: [32, 80], options: { sprites: 3 } },
+	"dungeon.w.3": { size: [1, 3, 6], pos: [144, 96], dim: [32, 80], options: { sprites: 3 } },
+	"dungeon.col.se": { size: [1, 1, 6], pos: [192, 96], dim: [16, 64], options: { sprites: 3 } },
+	"dungeon.floor": { size: [4, 4, 0], pos: [214, 0], dim: [64, 64], options: { sprites: 3, blendLevel: 0 } },
 }
