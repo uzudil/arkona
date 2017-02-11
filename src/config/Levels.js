@@ -74,6 +74,10 @@ export const LEVELS = {
 			{
 				src: { dir: "e" },
 				dst: { map: "woods", x: 1, y: 37 }
+			},
+			{
+				src: { x: 69, y: 5, z: 0 },
+				dst: { map: "archives" }
 			}
 		],
 		onLoad: function(arkona) {
@@ -82,7 +86,18 @@ export const LEVELS = {
 				arkona.narrate("In the distance you see crumbling stone huts surrounded by a few fruit trees and a small vegetable garden. " +
 					"A robed figure in black paces back and forth in the court yard, his face lined with worry.")
 			}
-		},
+		}
+	},
+	archives: {
+		map: "archives",
+		startPos: [64, 12, 0],
+		startDir: "s",
+		connect: [
+			{
+				src: { x: 64, y: 5, z: 0 },
+				dst: { map: "median", x: 66, y: 10, dir: "n" }
+			}
+		]
 	},
 	woods2: {
 		map: "woods2",

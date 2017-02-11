@@ -65,6 +65,15 @@ export default class {
 		return null
 	}
 
+	checkPos(x, y, z) {
+		for(let c of this.info.connect || []) {
+			if (c.src["x"] == x && c.src["y"] == y && c.src["z"] == z) {
+				return c.dst
+			}
+		}
+		return null
+	}
+
 	isAllowed(action, arkona) {
 		if(this.info["actions"] && action.getPos()) {
 			let actionAllowed = this._getAction(action.getPos(), action.getType())

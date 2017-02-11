@@ -302,24 +302,13 @@ class Layer {
 		return maxZ
 	}
 
-	_canSwapPlaces(sprite, blockerImageInfo) {
-		// only the player and another creature
-		if(sprite["userControlled"] && blockerImageInfo.image["creature"]) {
-			let a = BLOCKS[sprite.name]
-			let b = BLOCKS[blockerImageInfo.name]
-			// they should be the same size
-			return a.size[0] == b.size[0] && a.size[1] == b.size[1] && a.size[2] == b.size[2]
-		}
-		return false
-	}
-
 	canMoveTo(sprite, x, y, z, skipSupportCheck, blockers) {
 		let fits = _visit3SS(sprite.name, x, y, z, (xx, yy, zz) => {
 			let info = this.infos[_key(xx, yy, zz)]
 			if(!info) return true
 			let blocker = info.imageInfos.find((ii) => ii.image != sprite)
 			if(!blocker) return true
-			if(blockers != null && this._canSwapPlaces(sprite, blocker)) blockers.push(blocker.image)
+			if(blockers != null) blockers.push(blocker.image)
 			return false
 		})
 		// if it fits, make sure we're standing on something
@@ -471,6 +460,12 @@ export default class {
 			for (let x = 0; x < w; x += 4) {
 				for (let y = 0; y < h; y += 4) {
 					this.set("grass", x, y, 0)
+				}
+			}
+		} else if(type == "dungeon") {
+			for (let x = 0; x < w; x += 4) {
+				for (let y = 0; y < h; y += 4) {
+					this.set("dungeon.floor.black", x, y, 0)
 				}
 			}
 		}
@@ -638,7 +633,18 @@ export default class {
 		return 1 - baseHeight / block.dim[0]
 	}
 
-	moveTo(sprite, fx, fy, fz, skipInfo, centerOnSuccess) {
+	_canSwapPlaces(sprite, blockerSprite) {
+		// only the player and another creature
+		if(sprite["userControlled"] && blockerSprite["creature"]) {
+			let a = BLOCKS[sprite.name]
+			let b = BLOCKS[blockerSprite.name]
+			// they should be the same size
+			return a.size[0] == b.size[0] && a.size[1] == b.size[1] && a.size[2] == b.size[2]
+		}
+		return false
+	}
+
+	moveTo(sprite, fx, fy, fz, skipInfo, centerOnSuccess, onBlock) {
 		let [rx, ry, rz] = [Math.round(fx), Math.round(fy), Math.round(fz)]
 		let [layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz)
 		let ok = false
@@ -667,11 +673,15 @@ export default class {
 		// swap places
 		if(blockers.length > 0) {
 			let blocker = blockers[0]; // ; needed here :-(
-			[x, y, z] = blocker.gamePos
-			let [toX, toY, toZ] = sprite.gamePos
-			this._moveSpriteTo(blocker, layer, offsX, offsY, toX, toY, toZ, skipInfo); // ; is needed...
-			[fx, fy] = [x, y] // exact swap
-			ok = true
+			if(this._canSwapPlaces(sprite, blocker)) {
+				[x, y, z] = blocker.gamePos
+				let [toX, toY, toZ] = sprite.gamePos
+				this._moveSpriteTo(blocker, layer, offsX, offsY, toX, toY, toZ, skipInfo); // ; is needed...
+				[fx, fy] = [x, y] // exact swap
+				ok = true
+			} else if(onBlock) {
+				if(onBlock(blocker)) return true
+			}
 		}
 
 		if(ok) {

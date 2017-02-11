@@ -66,6 +66,7 @@ export const BLOCKS = {
 	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
 	"mountain2": { size: [4, 4, 8], pos: [64, 448], dim: [64, 96] },
 	"mountain3": { size: [4, 4, 4], pos: [128, 272], dim: [64, 64] },
+	"mountain.cave": { size: [4, 4, 8], pos: [256, 512], dim: [64, 96] },
 
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
 	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },
@@ -133,4 +134,8 @@ export const BLOCKS = {
 	"dungeon.w.3": { size: [1, 3, 6], pos: [144, 96], dim: [32, 80], options: { sprites: 3 } },
 	"dungeon.col.se": { size: [1, 1, 6], pos: [192, 96], dim: [16, 64], options: { sprites: 3 } },
 	"dungeon.floor": { size: [4, 4, 0], pos: [214, 0], dim: [64, 64], options: { sprites: 3, blendLevel: 0 } },
+	"dungeon.floor.black": { size: [4, 4, 0], pos: [214, 96], dim: [64, 64], options: { sprites: 3, blendLevel: 0 } },
+	"dungeon.gate": { size: [4, 1, 6], pos: [288, 0], dim: [40, 88], options: { sprites: 3 } },
+	"dungeon.block": { size: [4, 4, 6], pos: [336, 0], dim: [64, 112], options: { sprites: 3 } },
+	"dungeon.block.big": { size: [8, 8, 6], pos: [416, 0], dim: [128, 176], options: { sprites: 3 } },
 }

@@ -28,11 +28,12 @@ export default class {
 		if(arkona.player) {
 			let [ox, oy] = arkona.player.sprite.floatPos
 			let oz = arkona.player.sprite.gamePos[2]
+			let blockTestFx = (blocker) => arkona.playerBlockedBy(blocker)
 			if(this.dir) {
 				let [nx, ny, nz] = arkona.moveInDir(ox, oy, oz, this.dir, Config.PLAYER_SPEED)
-				if (arkona.blocks.moveTo(arkona.player.sprite, nx, ny, nz, false, true) ||
-					arkona.blocks.moveTo(arkona.player.sprite, nx, oy, nz, false, true) ||
-					arkona.blocks.moveTo(arkona.player.sprite, ox, ny, nz, false, true)) {
+				if (arkona.blocks.moveTo(arkona.player.sprite, nx, ny, nz, false, true, blockTestFx) ||
+					arkona.blocks.moveTo(arkona.player.sprite, nx, oy, nz, false, true, blockTestFx) ||
+					arkona.blocks.moveTo(arkona.player.sprite, ox, ny, nz, false, true, blockTestFx)) {
 					arkona.playerMoved(this.dir)
 					return true
 				}

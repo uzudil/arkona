@@ -16,6 +16,7 @@ export default class extends Phaser.State {
 	}
 
 	create() {
+		this.game.stage.backgroundColor = "#000000";
 		this.lastTime = 0
 		this.lastDir = null
 		this.gameState = {}
@@ -147,6 +148,11 @@ export default class extends Phaser.State {
 		return dir
 	}
 
+	/**
+	 * The player just moved in this direction.
+	 *
+	 * @param dir the direction of the player's last step
+	 */
 	playerMoved(dir) {
 		let [px, py, pz] = this.player.sprite.gamePos
 		this.blocks.checkRoof(px - 1, py - 1, pz)
@@ -156,15 +162,33 @@ export default class extends Phaser.State {
 		}
 		let dst = this.level.checkBounds(px, py, this.blocks)
 		if(dst) {
-			this.transition.fadeIn(() => {
-				if(!this.loading) {
-					this.loadLevel(dst.map, dst.x, dst.y, true)
-				}
-			})
+			this.transitionToLevel(dst.map, dst.x, dst.y, dst.dir)
 		}
 	}
 
-	loadLevel(mapName, startX, startY) {
+	/**
+	 * The player was just blocked by this sprite.
+	 *
+	 * @param sprite the sprite blocking the player
+	 */
+	playerBlockedBy(sprite) {
+		let dst = this.level.checkPos(...sprite.gamePos)
+		if(dst) {
+			this.transitionToLevel(dst.map, dst.x, dst.y, dst.dir)
+			return true
+		}
+		return false
+	}
+
+	transitionToLevel(mapName, startX, startY, startDir) {
+		this.transition.fadeIn(() => {
+			if(!this.loading) {
+				this.loadLevel(mapName, startX, startY, startDir)
+			}
+		})
+	}
+
+	loadLevel(mapName, startX, startY, startDir) {
 		this.loading = true
 		if(this.level) {
 			this.blocks.destroy()
@@ -178,7 +202,9 @@ export default class extends Phaser.State {
 				0)
 			this.player.sprite.userControlled = true
 			this.player.animationSpeed = 16
-			this.player.stand(this.lastDir || Config.DIR_E)
+			let dir = startDir || this.level.info["startDir"]
+			if(dir) this.lastDir = dir
+			this.player.stand(dir || this.lastDir || Config.DIR_E)
 			this.player.centerOn()
 			this.transition.fadeOut(() => {
 				this.loading = false
