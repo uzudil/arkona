@@ -77,7 +77,8 @@ export const LEVELS = {
 			},
 			{
 				src: { x: 69, y: 5, z: 0 },
-				dst: { map: "archives" }
+				dst: { map: "archives" },
+				test: (arkona) => arkona.gameState["archives_open"]
 			}
 		],
 		onLoad: function(arkona) {
@@ -85,19 +86,28 @@ export const LEVELS = {
 				arkona.gameState["median_visited"] = true
 				arkona.narrate("In the distance you see crumbling stone huts surrounded by a few fruit trees and a small vegetable garden. " +
 					"A robed figure in black paces back and forth in the court yard, his face lined with worry.")
+			} else if(arkona.gameState["archives_open"]) {
+				arkona.level.removeNpcByName(arkona, "Brother Xan")
+				arkona.level.removeNpcByName(arkona, "Brother Fran")
+				arkona.level.removeNpcByName(arkona, "Brother Smen")
 			}
 		}
 	},
 	archives: {
 		map: "archives",
-		startPos: [64, 12, 0],
+		startPos: [31, 6, 0],
 		startDir: "s",
 		connect: [
 			{
-				src: { x: 64, y: 5, z: 0 },
+				src: { x: 32, y: 1, z: 0 },
 				dst: { map: "median", x: 66, y: 10, dir: "n" }
 			}
-		]
+		],
+		npcs: [
+			{ creature: "monk", x: 8, y: 16, options: { movement: MOVE_ANCHOR, name: "Brother Xan", convo: MEDIAN_CONVO.XAN } },
+			{ creature: "monk", x: 60, y: 8, options: { movement: MOVE_ANCHOR, name: "Brother Fran", convo: MEDIAN_CONVO.FRAN } },
+			{ creature: "monk", x: 65, y: 68, options: { movement: MOVE_ANCHOR, name: "Brother Smen", convo: MEDIAN_CONVO.SMEN } }
+		],
 	},
 	woods2: {
 		map: "woods2",

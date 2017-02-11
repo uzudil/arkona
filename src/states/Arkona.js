@@ -160,7 +160,7 @@ export default class extends Phaser.State {
 			this.lastDir = dir
 			this.player.walk(dir)
 		}
-		let dst = this.level.checkBounds(px, py, this.blocks)
+		let dst = this.level.checkBounds(this, px, py)
 		if(dst) {
 			this.transitionToLevel(dst.map, dst.x, dst.y, dst.dir)
 		}
@@ -172,7 +172,7 @@ export default class extends Phaser.State {
 	 * @param sprite the sprite blocking the player
 	 */
 	playerBlockedBy(sprite) {
-		let dst = this.level.checkPos(...sprite.gamePos)
+		let dst = this.level.checkPos(this, ...sprite.gamePos)
 		if(dst) {
 			this.transitionToLevel(dst.map, dst.x, dst.y, dst.dir)
 			return true

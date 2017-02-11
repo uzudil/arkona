@@ -658,11 +658,11 @@ export default class {
 			if(z > 0 || floorOk) {
 				ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
 			}
-			if(!ok && blockers.length == 0) {
+			if(!ok) {
 				// check one step higher
 				[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz + 1)
 				ok = layer.canMoveTo(sprite, x, y, z, false, blockers)
-				if(!ok && blockers.length == 0 && rz > 0 && floorOk) {
+				if(!ok && rz > 0 && floorOk) {
 					// check one step lower
 					[layer, x, y, z, offsX, offsY] = this._getLayerAndXYZ(sprite.name, rx, ry, rz - 1)
 					ok = layer.canMoveTo(sprite, x, y, z, false, blockers)

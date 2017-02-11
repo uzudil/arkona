@@ -36,6 +36,15 @@ export default class {
 		return npc
 	}
 
+	removeNpcByName(arkona, name) {
+		for(let npc of this.npcs) {
+			if(npc.getName() == name) {
+				this.removeNpc(arkona, npc)
+				return
+			}
+		}
+	}
+
 	removeNpc(arkona, npc) {
 		arkona.blocks.remove(npc.creature.sprite)
 		let idx = this.npcs.indexOf(npc)
@@ -46,28 +55,36 @@ export default class {
 		// todo: free npc memory?
 	}
 
-	checkBounds(px, py, blocks) {
+	checkBounds(arkona, px, py) {
 		for(let conn of this.info.connect || []) {
 			let found = false
 			if(conn.src.dir == "w" && px <= -4) {
 				found = true
-			} else if(conn.src.dir == "e" && px >= blocks.w - 4) {
+			} else if(conn.src.dir == "e" && px >= arkona.blocks.w - 4) {
 				found = true
 			} else if(conn.src.dir == "n" && py <= -4) {
 				found = true
-			} else if(conn.src.dir == "s" && py >= blocks.h - 4) {
+			} else if(conn.src.dir == "s" && py >= arkona.blocks.h - 4) {
 				found = true
 			}
 			if(found) {
+				if(conn["test"] && !conn.test(arkona)) {
+					// todo: play 'denined' sound
+					return
+				}
 				return conn.dst
 			}
 		}
 		return null
 	}
 
-	checkPos(x, y, z) {
+	checkPos(arkona, x, y, z) {
 		for(let c of this.info.connect || []) {
 			if (c.src["x"] == x && c.src["y"] == y && c.src["z"] == z) {
+				if(c["test"] && !c.test(arkona)) {
+					// todo: play 'denined' sound
+					return
+				}
 				return c.dst
 			}
 		}

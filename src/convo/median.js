@@ -1,73 +1,93 @@
 import Convo from "./Convo"
 
-export const ARADUN = Convo.condition((arkona) => arkona.gameState["visit_eldun"],
-	new Convo("Thou hath returned. What news from Marisan of Eldun?")
-		.answer("I'm still working on it")
-		.answer("Could you tell me again why I'm going to Eldun?", "R_MARISAN"),
-	Convo.condition((arkona) => arkona.gameState["seen_aradun"],
-		new Convo("How art thou progressing with the resolution of the murder?")
-			.answer("Can you tell me again what happened?", "R_MURDER")
-			.answer("I'm still investigating")
-			.answer("I know who did it!",
-				Convo.condition((arkona) => arkona.gameState["R_DARK_SHAPE"] == true,
-					new Convo("Blessed Kada! What hath thou found out? I must know!")
-						.answer("The brothers saw a large dark shape, covered in feathers that night.",
-							new Convo("Very interesting. Dost thou know anything else?")
-								.answer("The creature's feathers were found around Pazu's hut.",
-									new Convo("Thou should take one of the feathers to Marisan of Eldun. He is a master of " +
-										"all natural lore and will give thee more information.", "R_MARISAN",
-										(arkona) => arkona.gameState["visit_eldun"] = true)
-										.answer("No. I solved the murder and now you must tell me how I can get home.", "R_MORE_SERIOUSLY")
-										.answer("Yes... ok... and how do I get to Eldun?",
-											new Convo("Walk back whence thou came. In the woods, take the road heading north. " +
-												"Marisan's tower of Eldun sits atop a rocky craig not far from the woods.")
-												.answer("Tell me again why I'm going to see Marisan?", "R_MARISAN")
-												.answer("I'm not going anywhere. I'll open the archives myself.")
-												.answer("I'll come back when I have more info about the feathers.")
-										)
-								)
-						),
-					new Convo("Blessed Kada! Who is the killer? Thou should keep me in suspense no longer.")
-						.answer("It was brother Xan.",
-							new Convo("But how and why? We're not wizards who cast evil magics to burn the flesh. And there is no motive for such a heinous crime!", "R_JUST_KIDDING")
-								.answer("I actually have no idea - I'm still investigating.",
-									new Convo("Thou should take the investigation more seriously and not accuse innocents of a wrong-doing. " +
-										"We will not reopen the archives until this matter is resolved.", "R_MORE_SERIOUSLY")
-										.answer("Ok, ok. I'll keep looking.")
-										.answer("Forget it. I've spent enough time here already.")
-								)
-								.answer("Just wanted to see your reaction to this.", "R_MORE_SERIOUSLY")
-						)
-						.answer("Brother Smen is responsible.", "R_JUST_KIDDING")
-						.answer("Brother Fran is guilty.", "R_JUST_KIDDING")
-				)
+export const ARADUN = Convo.condition((arkona) => arkona.gameState["archives_open"],
+	new Convo("Thank you for thy work exposing brother Pazu's murderer. The monks are down in the archives researching the " +
+		"events surrounding the attack.")
+		.answer("It was my pleasure to help")
+		.answer("I will go see if they can help me get back home"),
+	Convo.condition((arkona) => arkona.gameState["visit_eldun"],
+		new Convo("Thou hath returned. What news from Marisan of Eldun?")
+			.answer("I'm still working on it")
+			.answer("Could you tell me again why I'm going to Eldun?", "R_MARISAN")
+			.answerIf((arkona) => arkona.gameState["gramnor_research"], "Brother Pazu was killed by a horror from the Raighd",
+				new Convo("I have feared this... Tell me more.")
+					.answer("Marisan says it's a demon called the Gramnor",
+						new Convo("Thou hath done well to bring us these sad news. I have reopened the archives for thee, " +
+							"the monks working there can now help thee on thy journey home.", "",
+							(arkona)=> {
+								if(!arkona.gameState["archives_open"]) {
+									arkona.gameState["archives_open"] = true
+									arkona.level.info.onLoad(arkona)
+								}
+							})
+							.answer("Thank you I will be on my way.")
+					)
 			),
-		new Convo("Thank the Kada, thou art finally here. Hurry, we left everything untouched!")
-			.answer("I... have no idea what you're talking about.",
-				new Convo("Then thou art not the police inspector? This murder has all of us confused!", "R_NOT_INSPECTOR",
-					(arkona) => arkona.gameState["seen_aradun"] = true)
-					.answer("I'm not the inspector. I'm just here looking for information.",
-						new Convo("We're simple monks of the Kada, dedicated to gathering all knowledge. I would help thee but not until the murder has been solved.")
-							.answer("Very well. Tell me what happened", "R_MURDER")
-							.answer("I want nothing to do with this.")
-					)
-					.answer("Why, I am the inspector. Show me to the crime scene.",
-						new Convo("It's brother Pazu... he's been... incinerated as if by a foul magic. We left his hut untouched. Thou should also talk to my brethren, they may know more.", "R_MURDER")
-							.answer("I will see what I can do")
-							.answer("Your brethren? Are there other monks here?",
-								new Convo("Brother Xan, Brother Fran and Brother Smen are meditating in their cells. Thou canst find them to the north of here.")
-									.answer("Thanks, I will speak with them.")
-									.answer("Why would someone murder a monk? Was anything stolen?", "R_TREASURE")
+		Convo.condition((arkona) => arkona.gameState["seen_aradun"],
+			new Convo("How art thou progressing with the resolution of the murder?")
+				.answer("Can you tell me again what happened?", "R_MURDER")
+				.answer("I'm still investigating")
+				.answer("I know who did it!",
+					Convo.condition((arkona) => arkona.gameState["R_DARK_SHAPE"] == true,
+						new Convo("Blessed Kada! What hath thou found out? I must know!")
+							.answer("The brothers saw a large dark shape, covered in feathers that night.",
+								new Convo("Very interesting. Dost thou know anything else?")
+									.answer("The creature's feathers were found around Pazu's hut.",
+										new Convo("Thou should take one of the feathers to Marisan of Eldun. He is a master of " +
+											"all natural lore and will give thee more information.", "R_MARISAN",
+											(arkona) => arkona.gameState["visit_eldun"] = true)
+											.answer("No. I solved the murder and now you must tell me how I can get home.", "R_MORE_SERIOUSLY")
+											.answer("Yes... ok... and how do I get to Eldun?",
+												new Convo("Walk back whence thou came. In the woods, take the road heading north. " +
+													"Marisan's tower of Eldun sits atop a rocky craig not far from the woods.")
+													.answer("Tell me again why I'm going to see Marisan?", "R_MARISAN")
+													.answer("I'm not going anywhere. I'll open the archives myself.")
+													.answer("I'll come back when I have more info about the feathers.")
+											)
+									)
+							),
+						new Convo("Blessed Kada! Who is the killer? Thou should keep me in suspense no longer.")
+							.answer("It was brother Xan.",
+								new Convo("But how and why? We're not wizards who cast evil magics to burn the flesh. And there is no motive for such a heinous crime!", "R_JUST_KIDDING")
+									.answer("I actually have no idea - I'm still investigating.",
+										new Convo("Thou should take the investigation more seriously and not accuse innocents of a wrong-doing. " +
+											"We will not reopen the archives until this matter is resolved.", "R_MORE_SERIOUSLY")
+											.answer("Ok, ok. I'll keep looking.")
+											.answer("Forget it. I've spent enough time here already.")
+									)
+									.answer("Just wanted to see your reaction to this.", "R_MORE_SERIOUSLY")
 							)
+							.answer("Brother Smen is responsible.", "R_JUST_KIDDING")
+							.answer("Brother Fran is guilty.", "R_JUST_KIDDING")
 					)
-					.answer("Murder?! It's been nice talking to you. I'll come back later.")
+				),
+			new Convo("Thank the Kada, thou art finally here. Hurry, we left everything untouched!")
+				.answer("I... have no idea what you're talking about.",
+					new Convo("Then thou art not the police inspector? This murder has all of us confused!", "R_NOT_INSPECTOR",
+						(arkona) => arkona.gameState["seen_aradun"] = true)
+						.answer("I'm not the inspector. I'm just here looking for information.",
+							new Convo("We're simple monks of the Kada, dedicated to gathering all knowledge. I would help thee but not until the murder has been solved.")
+								.answer("Very well. Tell me what happened", "R_MURDER")
+								.answer("I want nothing to do with this.")
+						)
+						.answer("Why, I am the inspector. Show me to the crime scene.",
+							new Convo("It's brother Pazu... he's been... incinerated as if by a foul magic. We left his hut untouched. Thou should also talk to my brethren, they may know more.", "R_MURDER")
+								.answer("I will see what I can do")
+								.answer("Your brethren? Are there other monks here?",
+									new Convo("Brother Xan, Brother Fran and Brother Smen are meditating in their cells. Thou canst find them to the north of here.")
+										.answer("Thanks, I will speak with them.")
+										.answer("Why would someone murder a monk? Was anything stolen?", "R_TREASURE")
+								)
+						)
+						.answer("Murder?! It's been nice talking to you. I'll come back later.")
+				)
+				.answer("Yes, you have done well. Now, show me to your treasury.",
+					new Convo("We have no earthly goods, only tomes of wisdom. I would show these to thee if not for this foul crime.", "R_TREASURE")
+						.answer("Tell me more about what happened.", "R_MURDER")
+						.answer("I'll just show myself around then.")
+				)
+				.answer("I don't think I'm the one you're expecting...", "R_NOT_INSPECTOR")
 			)
-			.answer("Yes, you have done well. Now, show me to your treasury.",
-				new Convo("We have no earthly goods, only tomes of wisdom. I would show these to thee if not for this foul crime.", "R_TREASURE")
-					.answer("Tell me more about what happened.", "R_MURDER")
-					.answer("I'll just show myself around then.")
-			)
-			.answer("I don't think I'm the one you're expecting...", "R_NOT_INSPECTOR")
 		)
 	)
 
