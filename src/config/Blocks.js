@@ -66,7 +66,8 @@ export const BLOCKS = {
 	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
 	"mountain2": { size: [4, 4, 8], pos: [64, 448], dim: [64, 96] },
 	"mountain3": { size: [4, 4, 4], pos: [128, 272], dim: [64, 64] },
-	"mountain.cave": { size: [4, 4, 8], pos: [256, 512], dim: [64, 96] },
+	"mountain.cave": { size: [4, 4, 7], pos: [256, 512], dim: [64, 80] },
+	"sign.ns": { size: [2, 1, 4], pos: [352, 512], dim: [20, 48] },
 
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
 	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },

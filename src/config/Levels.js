@@ -91,7 +91,15 @@ export const LEVELS = {
 				arkona.level.removeNpcByName(arkona, "Brother Fran")
 				arkona.level.removeNpcByName(arkona, "Brother Smen")
 			}
-		}
+		},
+		actions: [
+			{
+				type: "use_object", x: 65, y: 7, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => arkona.showOverlay("sign", arkona.gameState["archives_open"] ? "The Archives" : "The Archives [Closed]")
+			}
+		]
 	},
 	archives: {
 		map: "archives",

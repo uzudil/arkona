@@ -54,6 +54,19 @@ body {
     z-index: 100;
 }
 
+#overlay .text {
+    position: absolute;
+    top: 50%;
+    margin-top: -120px;
+    text-align: center;
+    font-size: 45px;
+    white-space: nowrap;
+    color: #fff;
+    opacity: 0.5;
+    width: 100%;
+    margin-left: 40px;
+}
+
 #overlay-shadow {
     display: none;
     position: fixed;

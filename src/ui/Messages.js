@@ -45,6 +45,7 @@ export default class {
 	}
 
 	getSentences(message) {
-		return message.match( /[^\.!\?]+[\.!\?]+/g )
+		let s = message.match( /[^\.!\?]+[\.!\?]+/g )
+		return s ? s : [message]
 	}
 }
