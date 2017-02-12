@@ -61,10 +61,11 @@ body {
     text-align: center;
     font-size: 45px;
     white-space: nowrap;
-    color: #fff;
-    opacity: 0.5;
+    color: rgba(160,160,80,0.5);
     width: 100%;
     margin-left: 40px;
+    font-family: "Old Standard TT";
+    text-shadow: 1px 1px 0px rgba(255,255,255,0.5), -1px -1px 0px rgba(0,0,0,1);
 }
 
 #overlay-shadow {

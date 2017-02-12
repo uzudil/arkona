@@ -26,7 +26,7 @@ export default class {
 		if(this.sprite) {
 			this.mode = MODE_CUSTOM_USE
 		} else {
-			this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 6, (sprite) => {
+			this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 10, (sprite) => {
 				return Config.DOORS.indexOf(sprite.name) >= 0
 			})
 			if (this.sprite) {
