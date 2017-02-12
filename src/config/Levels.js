@@ -59,6 +59,20 @@ export const LEVELS = {
 			{ x: 157, y: 99, z: 0, type: MONSTERS.goblin, count: 2 },
 			{ x: 196, y: 48, z: 0, type: MONSTERS.goblin },
 			{ x: 125, y: 23, z: 0, type: MONSTERS.goblin }
+		],
+		actions: [
+			{
+				type: "use_object", x: 90, y: 93, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => arkona.showOverlay("sign", "To Median")
+			},
+			{
+				type: "use_object", x: 89, y: 15, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => arkona.showOverlay("sign", "To Eldun")
+			}
 		]
 	},
 	median: {
