@@ -47,19 +47,19 @@ export default class extends Phaser.State {
 		this.filter = new Phaser.Filter(this.game, null, this.game.cache.getShader("shader"))
 		this.filter.addToWorld(0, 0, Config.WIDTH, Config.HEIGHT, 0, 0)
 
-		this.logo = this.add.image(this.game.world.centerX - 256, 50, "logo")
-		this.filter2 = new Phaser.Filter(this.game, {
-			iChannel0: { type: "sampler2D", value: this.logo.texture, textureData: { repeat: true } }
-		}, this.game.cache.getShader("shader2"))
-		this.filter2.setResolution(512, 256)
-		this.logo.filters = [ this.filter2 ]
+		this.logo = this.add.image(200, 150, "logo")
+		// this.filter2 = new Phaser.Filter(this.game, {
+		// 	iChannel0: { type: "sampler2D", value: this.logo.texture, textureData: { repeat: true } }
+		// }, this.game.cache.getShader("shader2"))
+		// this.filter2.setResolution(512, 256)
+		// this.logo.filters = [ this.filter2 ]
 
 		var style = {font: "bold 36px " + Config.FONT_FAMILY_NAME, fill: "#888"};
 		this.menu = []
-		let y = 400
+		let y = 180
 		for(let s of ["Game Editor", "New Game", "Load Game", "Options"]) {
-			let m = this.game.add.text(this.game.world.centerX, y, s, style)
-			m.anchor.setTo(0.5, 0.5)
+			let m = this.game.add.text(400, y, s, style)
+			m.anchor.setTo(0, 0.5)
 			this.menu.push(m)
 			y += 50
 		}
@@ -78,7 +78,7 @@ export default class extends Phaser.State {
 
 	updateMenu() {
 		var style = {font: "bold 36px " + Config.FONT_FAMILY_NAME, fill: "#888"};
-		var activeStyle = {font: "bold 42px " + Config.FONT_FAMILY_NAME, fill: "#c8c"};
+		var activeStyle = {font: "bold 42px " + Config.FONT_FAMILY_NAME, fill: "#86c"};
 		for(let i = 0; i < this.menu.length; i++) {
 			this.menu[i].setStyle(i == this.menuIndex ? activeStyle : style)
 		}
@@ -86,7 +86,7 @@ export default class extends Phaser.State {
 
 	update() {
 		this.filter.update()
-		this.filter2.update()
+		// this.filter2.update()
 		let oldMenu = this.menuIndex
 		if (this.cursors.up.justDown) {
 			this.menuIndex--
