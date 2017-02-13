@@ -3,6 +3,7 @@ import {MONSTERS} from "./Monsters"
 import * as FARM_CONVO from "../convo/farm"
 import * as MEDIAN_CONVO from "../convo/median"
 import * as ELDUN_CONVO from "../convo/eldun"
+import * as ARCHIVES_CONVO from "../convo/archives"
 
 export const LEVELS = {
 	farm: {
@@ -126,10 +127,60 @@ export const LEVELS = {
 			}
 		],
 		npcs: [
-			{ creature: "monk", x: 8, y: 16, options: { movement: MOVE_ANCHOR, name: "Brother Xan", convo: MEDIAN_CONVO.XAN } },
-			{ creature: "monk", x: 60, y: 8, options: { movement: MOVE_ANCHOR, name: "Brother Fran", convo: MEDIAN_CONVO.FRAN } },
-			{ creature: "monk", x: 65, y: 68, options: { movement: MOVE_ANCHOR, name: "Brother Smen", convo: MEDIAN_CONVO.SMEN } }
+			{ creature: "monk", x: 8, y: 16, options: { movement: MOVE_ANCHOR, name: "Brother Xan", convo: ARCHIVES_CONVO.XAN } },
+			{ creature: "monk", x: 60, y: 8, options: { movement: MOVE_ANCHOR, name: "Brother Fran", convo: ARCHIVES_CONVO.FRAN } },
+			{ creature: "monk", x: 65, y: 68, options: { movement: MOVE_ANCHOR, name: "Brother Smen", convo: ARCHIVES_CONVO.SMEN } }
 		],
+		actions: [
+			{
+				type: "use_object", x: 24, y: 66, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => {
+					if(!arkona.gameState["pazu_cell"]) {
+						arkona.gameState["pazu_cell"] = true
+						arkona.narrate("This room must have belonged to brother Pazu. " +
+							"Crumpled papers are stacked high on a small desk. " +
+							"A lone candelabra stands oddly placed at the center of the room; underneath ashes cover the floor.")
+					}
+				}
+			},
+			{
+				type: "use_object", x: 2, y: 65, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => {
+					if(arkona.gameState["see_pazus_notes"]) {
+						if(arkona.gameState["green_sky_stone"]) {
+							arkona.narrate("You remember the weird green stone you found on these shelves.")
+						} else {
+							arkona.narrate("You thoroughly search the shelves. " +
+								"Hidden behind a large book you find a strange green stone.")
+							arkona.gameState["green_sky_stone"] = true
+						}
+					} else {
+						arkona.narrate("You look through the books on the shelves but nothing catches your interest.")
+					}
+				}
+			},
+			{
+				type: "use_object", x: 9, y: 59, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => {
+					if(arkona.gameState["see_pazus_notes"]) {
+						arkona.narrate("At first glance this chest contains only dirty laundry. " +
+							"However after some delicate rifling, you find some hastily hidden notes." +
+							"'The green sky stone found me, bless the Kada'. " +
+							"'Through it I feel the Raighd speak the Illumis'. " +
+							"'In the tower of Urhaw, pass the stone through the first gates'. " +
+							"'Beware the grey race, fear will raise them from the Raighd'.")
+					} else {
+						arkona.narrate("This chest seems to contain Pazu's laundry.")
+					}
+				}
+			}
+		]
 	},
 	woods2: {
 		map: "woods2",

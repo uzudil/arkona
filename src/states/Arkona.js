@@ -47,7 +47,7 @@ export default class extends Phaser.State {
 		}
 
 		// start game
-		this.loadLevel("median")
+		this.loadLevel("archives")
 
 		// for debug/hacking
 		window.arkona = this
