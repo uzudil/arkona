@@ -169,6 +169,7 @@ export const LEVELS = {
 				allow: (arkona) => true,
 				action: (arkona) => {
 					if(arkona.gameState["see_pazus_notes"]) {
+						arkona.gameState["urhaw_notes"] = true
 						arkona.narrate("At first glance this chest contains only dirty laundry. " +
 							"However after some delicate rifling, you find some hastily hidden notes." +
 							"'The green sky stone found me, bless the Kada'. " +
