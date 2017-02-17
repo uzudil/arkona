@@ -45,6 +45,9 @@
         </div>
     </div>
 
+    <div id="overlay"><img src=""><span class="text"></span></div>
+    <div id="overlay-shadow"></div>
+
     <div id="options" class="dialog">
         <div class="title">Options</div>
         <div class="body">
@@ -55,8 +58,17 @@
         </div>
     </div>
 
-    <div id="overlay"><img src=""><span class="text"></span></div>
-    <div id="overlay-shadow"></div>
+    <div id="in-game-menu" class="dialog">
+        <div class="title">Arkona: options</div>
+        <div class="body">
+            <div class="button-row"><button id="save-game">Save game</button></div>
+            <div class="button-row"><button id="load-game">Reload level</button></div>
+            <div class="button-row"><button id="quit-game">Exit game</button></div>
+        </div>
+        <div class="footer">
+            <button id="resume-game">Resume</button>
+        </div>
+    </div>
 
     <script src="dist/vendor.bundle.js"></script>
     <script src="dist/bundle.js"></script>

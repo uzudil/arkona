@@ -82,7 +82,10 @@ export default class {
 	}
 
 	validate() {
-		if(!this.isComplete()) throw new Error("Convo: \"" + this.question + "\" is incomplete.")
+		if(!this.isComplete()) {
+			console.error("Incomplete convo: ", this)
+			throw new Error("Convo: \"" + this.question + "\" is incomplete.")
+		}
 		if(this.cond) {
 			this.pass.validate()
 			this.fail.validate()

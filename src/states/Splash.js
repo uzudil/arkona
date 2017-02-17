@@ -4,6 +4,7 @@ import * as Config from "../config/Config"
 import Creature from "../models/Creature"
 import $ from "jquery"
 import Transition from "../ui/Transition"
+import Arkona from "./Arkona"
 
 export default class extends Phaser.State {
 	init() {
@@ -103,9 +104,11 @@ export default class extends Phaser.State {
 				this.state.start("Editor")
 			} else if(this.menuIndex == 1) {
 				// new game
-				this.transition.fadeIn(() => {
-					this.state.start("Arkona")
-				})
+				if(!Arkona.doesSaveGameExist() || confirm("Delete saved game?")) {
+					this.transition.fadeIn(() => {
+						this.state.start("Arkona")
+					})
+				}
 			} else if(this.menuIndex == 2) {
 				// load game
 				this.transition.fadeIn(() => {

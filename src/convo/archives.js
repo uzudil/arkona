@@ -36,6 +36,10 @@ export const XAN = new Convo("Ah thou again... the investigator. How can I help 
 
 export const SMEN = new Convo("I'm forever thankful to thee for solving the murder of brother Pazu. It is so good to be back in my library again.")
 	.answer("Say nothing of it.")
+	.answerIf((arkona) => arkona.gameState["urhaw_notes"] == true, "Have you heard of a place called Urhaw?",
+		new Convo("Not I, but if it's connected to Raighd, perhaps Marisan of Eldun knows of it.")
+			.answer("I will ask him then.")
+	)
 	.answer("Ok... Now can you help me get back home?",
 		new Convo("I looked into thy story a bit but my library is lacking on the subject. " +
 			"None of my tomes discuss other heavenly bodies. I'm afraid this does not bode well for thee...")

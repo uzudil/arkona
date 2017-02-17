@@ -20,7 +20,11 @@ class Game extends Phaser.Game {
 		super(Config.WIDTH, Config.HEIGHT, o["use_webgl"] ? Phaser.AUTO : Phaser.CANVAS, "content", null)
 		$("#palette").height((Config.HEIGHT - 46) + "px")
 
-		this.checkConvos()
+		try {
+			this.checkConvos()
+		} catch(exc) {
+			console.error(exc);
+		}
 
 		this.state.add("Boot", BootState, false)
 		this.state.add("Splash", SplashState, false)

@@ -5,6 +5,7 @@ import Generator from "./Generator"
 
 export default class {
 	constructor(levelName) {
+		this.name = levelName
 		this.info = Levels.LEVELS[levelName]
 		this.npcs = []
 		this.generators = []

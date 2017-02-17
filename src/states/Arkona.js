@@ -7,12 +7,20 @@ import Level from "../models/Level"
 import Messages from "../ui/Messages"
 import ConvoUI from "../ui/ConvoUI"
 import Transition from "../ui/Transition"
+import InGameMenu from "../ui/InGameMenu"
 import * as Queue from "../actions/Queue"
 import Stats from "stats.js"
 
 export default class extends Phaser.State {
+	constructor() {
+		super()
+		this.startFromSavedGame = false
+	}
+
 	init(context) {
-		console.warn("context=", context)
+		if(context && context["loadGame"]) {
+			this.startFromSavedGame = context.loadGame
+		}
 	}
 
 	create() {
@@ -35,6 +43,7 @@ export default class extends Phaser.State {
 		this.messages = new Messages(this)
 		this.convoUi = new ConvoUI(this)
 		this.transition = new Transition()
+		this.inGameMenu = new InGameMenu(this)
 
 		if(document.location.hostname == "localhost") {
 			this.stats = new Stats();
@@ -47,7 +56,7 @@ export default class extends Phaser.State {
 		}
 
 		// start game
-		this.loadLevel("archives")
+		this.loadGame(this.startFromSavedGame)
 
 		// for debug/hacking
 		window.arkona = this
@@ -87,7 +96,12 @@ export default class extends Phaser.State {
 	}
 
 	updateUI() {
-		if(this.overlayShowing) {
+		if(this.inGameMenu.visible) {
+			if (this.esc.justDown) {
+				this.inGameMenu.hide()
+			}
+			return true
+		} else if(this.overlayShowing) {
 			if (this.esc.justDown || this.space.justDown) {
 				this.hideOverlay()
 			}
@@ -109,6 +123,10 @@ export default class extends Phaser.State {
 			}
 			return true
 		} else {
+			if (this.esc.justDown) {
+				this.inGameMenu.show()
+				return true;
+			}
 			return false
 		}
 	}
@@ -206,10 +224,46 @@ export default class extends Phaser.State {
 			if(dir) this.lastDir = dir
 			this.player.stand(dir || this.lastDir || Config.DIR_E)
 			this.player.centerOn()
+			this.saveGame()
 			this.transition.fadeOut(() => {
 				this.loading = false
 			})
 		})
+	}
+
+	static doesSaveGameExist() {
+		return window.localStorage["arkona"] != null
+	}
+
+	/**
+	 * Save the game. This currently only saves player state not level state.
+	 */
+	saveGame() {
+		window.localStorage["arkona"] = JSON.stringify({
+			version: 1,
+			level: this.level.name,
+			pos: this.player.sprite.gamePos,
+			dir: this.lastDir,
+			state: this.gameState
+		})
+	}
+
+	/**
+	 * Load the game. This currently only loads player state not level state.
+	 */
+	loadGame(startFromSavedGame) {
+		if(startFromSavedGame) {
+			let savegameStr = window.localStorage["arkona"]
+			if (savegameStr) {
+				let savegame = JSON.parse(savegameStr)
+				if (savegame) {
+					this.gameState = savegame.state
+					this.loadLevel(savegame.level, savegame.pos[0], savegame.pos[1], savegame.dir)
+					return
+				}
+			}
+		}
+		this.loadLevel("farm")
 	}
 
 	narrate(message) {

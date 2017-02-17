@@ -115,7 +115,7 @@ body {
     height: 32px;
 }
 
-.dialog .footer button {
+.dialog button {
     border: 4px outset #646;
     background: #435;
     color: #101;
@@ -123,7 +123,22 @@ body {
     font-size: 16px;
 }
 
+.dialog button:hover {
+    border: 4px outset #757;
+    background: #546;
+    color: #303;
+}
+
 .dialog label {
     display: block;
     padding: 2px;
+}
+
+.dialog .button-row {
+    padding-bottom: 3px;
+    text-align: center;
+}
+
+.dialog .button-row button {
+    width: 80%;
 }

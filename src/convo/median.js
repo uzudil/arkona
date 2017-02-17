@@ -1,8 +1,8 @@
 import Convo from "./Convo"
 
 export const ARADUN = Convo.condition((arkona) => arkona.gameState["archives_open"],
-	new Convo("Thank you for thy work exposing brother Pazu's murderer. The monks are down in the archives researching the " +
-		"events surrounding the attack.")
+	new Convo("Thank you for thy work exposing brother Pazu's murderer. The monks have returned to their studies " +
+		"down in the archives. Perhaps they can help thee return home.")
 		.answer("It was my pleasure to help")
 		.answer("I will go see if they can help me get back home"),
 	Convo.condition((arkona) => arkona.gameState["visit_eldun"],
