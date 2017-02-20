@@ -19,15 +19,24 @@ export default class extends Phaser.State {
 		//
 		// load your assets
 		//
-		this.load.atlas("sprites", "assets/images/arkona.png?cb=" + Date.now(), null, Config.toJson(), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-		this.load.atlas("sprites2", "assets/images/arkona2.png?cb=" + Date.now(), null, Config.toJson(2), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
-		this.load.atlas("sprites3", "assets/images/arkona3.png?cb=" + Date.now(), null, Config.toJson(3), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+		this.atlas()
+		this.atlas(2)
+		this.atlas(3)
+		this.atlas(4)
 
 		this.load.image("logo", "./assets/images/logo.png")
 		this.load.shader("shader", "/assets/shaders/logo.frag?cb=" + Date.now());
 		this.load.shader("shader2", "/assets/shaders/logo2.frag?cb=" + Date.now());
 
 		Creature.preload(this.game)
+	}
+
+	atlas(n) {
+		if(n == null) {
+			this.load.atlas("sprites", "assets/images/arkona.png?cb=" + Date.now(), null, Config.toJson(), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+		} else {
+			this.load.atlas("sprites" + n, "assets/images/arkona" + n + ".png?cb=" + Date.now(), null, Config.toJson(n), Phaser.Loader.TEXTURE_ATLAS_JSON_HASH);
+		}
 	}
 
 	create() {

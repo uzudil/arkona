@@ -63,11 +63,25 @@ export const BLOCKS = {
 	"regular.door.x": { size: [1, 3, 6], pos: [192, 306], dim: [32, 80] },
 	"regular.door.y": { size: [3, 1, 6], pos: [256, 306], dim: [32, 80] },
 
+	// old mountains
 	"mountain1": { size: [4, 4, 8], pos: [0, 256], dim: [64, 96] },
 	"mountain2": { size: [4, 4, 8], pos: [64, 448], dim: [64, 96] },
 	"mountain3": { size: [4, 4, 4], pos: [128, 272], dim: [64, 64] },
 	"mountain.cave": { size: [4, 4, 7], pos: [256, 512], dim: [64, 80] },
 	"sign.ns": { size: [2, 1, 4], pos: [352, 512], dim: [20, 48] },
+
+	// new mountains
+	"mtn.ctr": { size: [8, 8, 8], pos: [0, 0], dim: [128, 160], options: { sprites: 4 } },
+	"mtn.e": { size: [8, 8, 8], pos: [144, 0], dim: [128, 160], options: { sprites: 4 } },
+	"mtn.s": { size: [8, 8, 8], pos: [272, 0], dim: [128, 160], options: { sprites: 4 } },
+	"mtn.n": { size: [8, 8, 8], pos: [448, 0], dim: [128, 160], options: { sprites: 4 } },
+	"mtn.w": { size: [8, 8, 8], pos: [576, 0], dim: [128, 160], options: { sprites: 4 } },
+	"mtn.e.2": { size: [3, 8, 8], pos: [128, 192], dim: [88, 120], options: { sprites: 4 } },
+	"mtn.s.2": { size: [8, 3, 8], pos: [0, 192], dim: [96, 120], options: { sprites: 4 } },
+	"mtn.n.2": { size: [8, 3, 8], pos: [256, 192], dim: [88, 152], options: { sprites: 4 } },
+	"mtn.w.2": { size: [3, 8, 8], pos: [384, 192], dim: [88, 152], options: { sprites: 4 } },
+	"mtn.s.2.cave": { size: [8, 3, 8], pos: [0, 384], dim: [96, 120], options: { sprites: 4 } },
+	"mtn.e.2.cave": { size: [3, 8, 8], pos: [128, 384], dim: [88, 120], options: { sprites: 4 } },
 
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
 	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },
