@@ -25,8 +25,6 @@ export default class extends Phaser.State {
 		this.atlas(4)
 
 		this.load.image("logo", "./assets/images/logo.png")
-		this.load.shader("shader", "/assets/shaders/logo.frag?cb=" + Date.now());
-		this.load.shader("shader2", "/assets/shaders/logo2.frag?cb=" + Date.now());
 
 		Creature.preload(this.game)
 	}
@@ -52,28 +50,22 @@ export default class extends Phaser.State {
 
 		this.loaderBg.kill()
 		this.loaderBar.kill()
-		this.game.stage.backgroundColor = "#222222";
+		this.game.stage.backgroundColor = "#000000";
 
-		this.filter = new Phaser.Filter(this.game, null, this.game.cache.getShader("shader"))
-		this.filter.addToWorld(0, 0, Config.WIDTH, Config.HEIGHT, 0, 0)
 
-		this.logo = this.add.image(200, 150, "logo")
-		// this.filter2 = new Phaser.Filter(this.game, {
-		// 	iChannel0: { type: "sampler2D", value: this.logo.texture, textureData: { repeat: true } }
-		// }, this.game.cache.getShader("shader2"))
-		// this.filter2.setResolution(512, 256)
-		// this.logo.filters = [ this.filter2 ]
+		this.logo = this.add.image(512, 100, "logo")
+		this.logo.anchor.setTo(0.5, 0)
 
-		var style = {font: "bold 36px " + Config.FONT_FAMILY_NAME, fill: "#888"};
+		var style = {font: "bold 20px " + Config.FONT_FAMILY, fill: "#888"};
 		this.menu = []
-		let y = 180
+		let y = 230
 		for(let s of ["Game Editor", "New Game", "Load Game", "Options"]) {
-			let m = this.game.add.text(400, y, s, style)
-			m.anchor.setTo(0, 0.5)
+			let m = this.game.add.text(512, y, s, style)
+			m.anchor.setTo(0.5, 0.5)
 			this.menu.push(m)
-			y += 50
+			y += 35
 		}
-		style = {font: "bold 20px " + Config.FONT_FAMILY_NAME, fill: "#555"};
+		style = {font: "bold 11px " + Config.FONT_FAMILY, fill: "#555"};
 		this.copyright = this.game.add.text(this.game.world.centerX, 720, "MMXVII \u00A9 Gabor Torok", style);
 		this.copyright.anchor.setTo(0.5, 0.5)
 
@@ -87,16 +79,14 @@ export default class extends Phaser.State {
 	}
 
 	updateMenu() {
-		var style = {font: "bold 36px " + Config.FONT_FAMILY_NAME, fill: "#888"};
-		var activeStyle = {font: "bold 42px " + Config.FONT_FAMILY_NAME, fill: "#86c"};
+		var style = {font: "bold 20px " + Config.FONT_FAMILY, fill: "#888"};
+		var activeStyle = {font: "bold 22px " + Config.FONT_FAMILY, fill: "#6ac"};
 		for(let i = 0; i < this.menu.length; i++) {
 			this.menu[i].setStyle(i == this.menuIndex ? activeStyle : style)
 		}
 	}
 
 	update() {
-		this.filter.update()
-		// this.filter2.update()
 		let oldMenu = this.menuIndex
 		if (this.cursors.up.justDown) {
 			this.menuIndex--
