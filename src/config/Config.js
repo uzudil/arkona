@@ -35,6 +35,7 @@ export const FONT_FAMILY_NAME = "Trade Winds"
 export const ARKONA_FONT_FAMILY = "Old Standard TT"
 export const ARKONA_FONT_FAMILY_NAME = "Old Standard TT"
 export const MAX_Z = 15
+export const START_MAP = "median"
 
 export const NO_BLEND = 0
 export const BLENDS = 1

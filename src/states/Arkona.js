@@ -263,7 +263,7 @@ export default class extends Phaser.State {
 				}
 			}
 		}
-		this.loadLevel("farm")
+		this.loadLevel(Config.START_MAP)
 	}
 
 	narrate(message) {

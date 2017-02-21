@@ -74,6 +74,7 @@ export default class extends Phaser.State {
 		this.tree2 = this.game.input.keyboard.addKey(Phaser.Keyboard.Y)
 		this.mountain = this.game.input.keyboard.addKey(Phaser.Keyboard.M)
 		this.delete = this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+		this.shift = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
 		this.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
 		this.dungeon = this.game.input.keyboard.addKey(Phaser.Keyboard.N)
 	}
@@ -350,7 +351,7 @@ export default class extends Phaser.State {
 		if (this.delete.justDown) {
 			if(this.blocks.highlightedSprite) {
 				this.blocks.clearSprite(this.blocks.highlightedSprite)
-			} else {
+			} else if(this.shift.isDown) {
 				// stamps are hard to clean...
 				let found = false
 				for (let xx = -4; xx < 4; xx++) {

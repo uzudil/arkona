@@ -82,6 +82,8 @@ export const BLOCKS = {
 	"mtn.w.2": { size: [3, 8, 8], pos: [384, 192], dim: [88, 152], options: { sprites: 4 } },
 	"mtn.s.2.cave": { size: [8, 3, 8], pos: [0, 384], dim: [96, 120], options: { sprites: 4 } },
 	"mtn.e.2.cave": { size: [3, 8, 8], pos: [128, 384], dim: [88, 120], options: { sprites: 4 } },
+	"mtn.ctr.2": { size: [8, 8, 8], pos: [256, 384], dim: [128, 160], options: { sprites: 4 } },
+	"mtn.ctr.2.snow": { size: [8, 8, 8], pos: [400, 384], dim: [128, 160], options: { sprites: 4 } },
 
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
 	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },

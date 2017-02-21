@@ -83,7 +83,7 @@ export const LEVELS = {
 			{ creature: "monk", x: 9, y: 7, options: { movement: MOVE_ANCHOR, name: "Brother Xan", convo: MEDIAN_CONVO.XAN } },
 			{ creature: "monk", x: 31, y: 5, options: { movement: MOVE_ANCHOR, name: "Brother Fran", convo: MEDIAN_CONVO.FRAN } },
 			{ creature: "monk", x: 45, y: 26, options: { movement: MOVE_ANCHOR, name: "Brother Smen", convo: MEDIAN_CONVO.SMEN } },
-			{ creature: "monk", x: 52, y: 65, options: { movement: MOVE_ANCHOR, name: "Brother Aradun", convo: MEDIAN_CONVO.ARADUN } },
+			{ creature: "monk", x: 50, y: 59, options: { movement: MOVE_ANCHOR, name: "Brother Aradun", convo: MEDIAN_CONVO.ARADUN } },
 		],
 		connect: [
 			{
@@ -91,7 +91,7 @@ export const LEVELS = {
 				dst: { map: "woods", x: 1, y: 37 }
 			},
 			{
-				src: { x: 69, y: 5, z: 0 },
+				src: { x: 74, y: 7, z: 0 },
 				dst: { map: "archives" },
 				test: (arkona) => arkona.gameState["archives_open"]
 			}
