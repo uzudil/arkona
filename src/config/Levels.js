@@ -91,7 +91,7 @@ export const LEVELS = {
 				dst: { map: "woods", x: 1, y: 37 }
 			},
 			{
-				src: { x: 74, y: 7, z: 0 },
+				src: { x: 74, y: 8, z: 0 },
 				dst: { map: "archives" },
 				test: (arkona) => arkona.gameState["archives_open"]
 			}
