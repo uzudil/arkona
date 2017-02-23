@@ -204,6 +204,10 @@ export const LEVELS = {
 			{
 				src: { dir: "s" },
 				dst: { map: "woods2", x: 63, y: 0 }
+			},
+			{
+				src: { x: 7, y: 84, z: 0 },
+				dst: { map: "ravenous", x: 62, y: 9, dir: "s" }
 			}
 		],
 		npcs: [
@@ -230,8 +234,46 @@ export const LEVELS = {
 				// eslint-disable-next-line no-unused-vars
 				allow: (arkona) => true,
 				action: (arkona) => arkona.showOverlay("raighd")
-			}
+			},
+			{
+				type: "use_object", x: 56, y: 57, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => arkona.showOverlay("sign", "Eldun")
+			},
+			{
+				type: "use_object", x: 10, y: 76, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => arkona.showOverlay("sign", "Ravenous")
+			},
+			{
+				type: "use_object", x: 25, y: 14, z: 0,
+				// eslint-disable-next-line no-unused-vars
+				allow: (arkona) => true,
+				action: (arkona) => arkona.showOverlay("sign", "to Voln")
+			},
 		]
+	},
+	ravenous: {
+		map: "ravenous",
+		startPos: [62, 12, 0],
+		startDir: "s",
+		lamplight: true,
+		connect: [
+			{
+				src: { x: 64, y: 5, z: 0 },
+				dst: { map: "eldun", x: 11, y: 80, dir: "w" }
+			}
+		],
+		onLoad: function(arkona) {
+			if(!arkona.gameState["ravenous_visited"]) {
+				arkona.gameState["ravenous_visited"] = true
+				arkona.narrate("The air is cold and stale in this vast underground cave. " +
+					"Oppressive claustrophobia threatens to overwhelm your senses. " +
+					"Sounds of stone scraping on stone can be heard in the darkness.")
+			}
+		},
 	},
 	demo: {
 		map: "demo",

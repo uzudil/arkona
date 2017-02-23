@@ -52,6 +52,7 @@ export const BLOCKS = {
 	"blood.small": { size: [4, 4, 0], pos: [128, 256], dim: [32, 32], options: { sprites: 2, stamp: true } },
 	"rug.bear": { size: [4, 4, 0], pos: [0, 256], dim: [64, 62], options: { sprites: 2, stamp: true } },
 	"rug.round": { size: [4, 4, 0], pos: [64, 256], dim: [64, 62], options: { sprites: 2, stamp: true } },
+	"corpse": { size: [4, 4, 0], pos: [192, 192], dim: [56, 56], options: { sprites: 2, stamp: true } },
 
 	"wood.column": { size: [1, 1, 6], pos: [176, 0], dim: [16, 64] },
 	"stone.wall.x": { size: [4, 1, 6], pos: [216, 0], dim: [40, 96] },
@@ -104,7 +105,6 @@ export const BLOCKS = {
 	"table": { size: [3, 2, 3], pos: [192, 0], dim: [48, 64], options: { sprites: 2 } },
 	"straw-bale": { size: [2, 6, 2], pos: [0, 80], dim: [64, 64], options: { sprites: 2 } },
 	"chimney.ns": { size: [3, 1, 10], pos: [96, 48], dim: [32, 104], options: { sprites: 2 } },
-	"corpse": { size: [4, 4, 1], pos: [192, 192], dim: [56, 56], options: { sprites: 2 } },
 	"pod": { size: [8, 8, 8], pos: [192, 64], dim: [96, 96], options: { sprites: 2 } },
 	"well": { size: [5, 5, 6], pos: [312, 0], dim: [80, 112], options: { sprites: 2 } },
 	"flowers.yellow.big": { size: [2, 2, 2], pos: [528, 0], dim: [36, 40], options: { sprites: 2 } },

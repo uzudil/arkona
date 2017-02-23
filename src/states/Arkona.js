@@ -8,6 +8,7 @@ import Messages from "../ui/Messages"
 import ConvoUI from "../ui/ConvoUI"
 import Transition from "../ui/Transition"
 import InGameMenu from "../ui/InGameMenu"
+import Lamp from "../ui/Lamp"
 import * as Queue from "../actions/Queue"
 import Stats from "stats.js"
 
@@ -40,6 +41,7 @@ export default class extends Phaser.State {
 
 		// ui (order matters)
 		this.blocks = new Block(this)
+		this.lamp = new Lamp(this)
 		this.messages = new Messages(this)
 		this.convoUi = new ConvoUI(this)
 		this.transition = new Transition()
@@ -224,6 +226,7 @@ export default class extends Phaser.State {
 			if(dir) this.lastDir = dir
 			this.player.stand(dir || this.lastDir || Config.DIR_E)
 			this.player.centerOn()
+			this.lamp.setVisible(this.level.info["lamplight"]);
 			this.saveGame()
 			this.transition.fadeOut(() => {
 				this.loading = false
