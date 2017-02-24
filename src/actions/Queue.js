@@ -3,13 +3,15 @@ import Talk from "./Talk"
 import MovePlayer from "./MovePlayer"
 import MoveNpc from "./MoveNpc"
 import GeneratorAction from "./GeneratorAction"
+import MouseClickAction from "./MouseClickAction"
 
 const ACTIONS = [
 	new UseObject(),
 	new Talk(),
 	new MovePlayer(),
 	new MoveNpc(),
-	new GeneratorAction()
+	new GeneratorAction(),
+	new MouseClickAction()
 ]
 
 export const USE_OBJECT = 0
@@ -17,6 +19,7 @@ export const TALK = 1
 export const MOVE_PLAYER = 2
 export const MOVE_NPC = 3
 export const GENERATORS = 4
+export const CLICK = 5
 
 const DONT_LOG = [MOVE_PLAYER, MOVE_NPC, GENERATORS]
 

@@ -15,24 +15,31 @@ export default class {
 	}
 
 	check(arkona) {
-		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 6, (sprite) => {
-			console.warn("" + sprite.name + ":" + sprite.gamePos)
-			return arkona.level.getAction(sprite.gamePos, this) != null
-		})
-		if(!this.sprite) {
-			this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 10, (sprite) => {
-				return Config.DOORS.indexOf(sprite.name) >= 0
-			})
-		}
+		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 10,
+			(sprite) => this.isValid(arkona, sprite))
 		return this.sprite
 	}
 
+	isValid(arkona, sprite) {
+		return Config.DOORS.indexOf(sprite.name) >= 0 || arkona.level.getAction(sprite.gamePos, this) != null
+	}
+
+	setSprite(sprite) {
+		this.sprite = sprite
+		return this
+	}
+
 	run(arkona) {
+		let updated = false
 		if(Config.DOORS.indexOf(this.sprite.name) >= 0) {
 			arkona.blocks.replace(this.sprite, Config.getOppositeDoor(this.sprite.name))
+			updated = true
 		}
 		let action = arkona.level.getAction(this.sprite.gamePos, this);
-		if(action) action.action(arkona)
-		return true
+		if(action) {
+			action.action(arkona)
+			updated = true
+		}
+		return updated
 	}
 }

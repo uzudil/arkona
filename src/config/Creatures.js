@@ -29,7 +29,7 @@ export const CREATURES = {
 	},
 	man: {
 		src: "assets/creatures/man.png",
-		dim: [32, 64],
+		dim: [64, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: DEFAULT_DIRS,
 		speed: 2.0

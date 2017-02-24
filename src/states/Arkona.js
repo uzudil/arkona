@@ -10,7 +10,9 @@ import Transition from "../ui/Transition"
 import InGameMenu from "../ui/InGameMenu"
 import Lamp from "../ui/Lamp"
 import * as Queue from "../actions/Queue"
+import MouseClickAction from "../actions/MouseClickAction"
 import Stats from "stats.js"
+import * as Utils from "../utils"
 
 export default class extends Phaser.State {
 	constructor() {
@@ -25,13 +27,13 @@ export default class extends Phaser.State {
 	}
 
 	create() {
-		this.game.stage.backgroundColor = "#000000";
-		this.lastTime = 0
+		this.game.stage.backgroundColor = "#000000"
 		this.lastDir = null
 		this.gameState = {}
 		this.level = null
 		this.overlayShowing = false
 		this.actionQueue = new Queue.Queue(this)
+		this.mouseClickAction = new MouseClickAction()
 
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys()
@@ -74,6 +76,7 @@ export default class extends Phaser.State {
 		this.blocks.update()
 
 		if(!this.updateUI()) {
+
 			// assemble the actions
 			if(this.level.npcs) this.actionQueue.add(Queue.MOVE_NPC, this.level.npcs)
 			if(this.level.generators) this.actionQueue.add(Queue.GENERATORS, this.level.generators)
@@ -82,6 +85,11 @@ export default class extends Phaser.State {
 
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
 			if (this.space.justDown) this.actionQueue.add(Queue.USE_OBJECT)
+
+			let underMouse = this.getSpriteUnderMouse()
+			if (this.game.input.activePointer.justReleased()) {
+				this.actionQueue.add(Queue.CLICK, underMouse)
+			}
 
 			// run the actions
 			if(this.actionQueue.update()) {
@@ -95,6 +103,18 @@ export default class extends Phaser.State {
 			this.stats.end()
 			this.phaserStatsPanel.update(this.world.camera.totalInView, this.stage.currentRenderOrderID)
 		}
+	}
+
+	getSpriteUnderMouse() {
+		let underMouse = this.blocks.getTopSpriteAt(this.game.input.x, this.game.input.y)
+		this.mouseClickAction.setContext(underMouse)
+		if(!this.mouseClickAction.check(this)) {
+			// there is a sprite but mouse click action can't handle it
+			underMouse = null
+		}
+		// highlight (or de-highlight)
+		this.blocks.highlight(underMouse)
+		return underMouse
 	}
 
 	updateUI() {
@@ -198,6 +218,16 @@ export default class extends Phaser.State {
 			return true
 		}
 		return false
+	}
+
+	canPlayerReach(sprite) {
+		// todo: find path to sprite
+
+		// for now just check distance
+		return sprite && this.player && Utils.dist3d(
+			this.player.sprite.gamePos[0],this.player.sprite.gamePos[1],this.player.sprite.gamePos[2],
+				sprite.gamePos[0],sprite.gamePos[1],sprite.gamePos[2],
+			) < 10
 	}
 
 	transitionToLevel(mapName, startX, startY, startDir) {

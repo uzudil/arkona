@@ -15,8 +15,18 @@ export default class {
 	}
 
 	check(arkona) {
-		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 6, (sprite) => sprite.npc != null)
+		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 6,
+			(sprite) => this.isValid(sprite))
 		return this.sprite
+	}
+
+	isValid(sprite) {
+		return sprite.npc != null
+	}
+
+	setSprite(sprite) {
+		this.sprite = sprite
+		return this
 	}
 
 	run(arkona) {

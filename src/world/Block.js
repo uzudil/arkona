@@ -446,7 +446,6 @@ export default class {
 			this.groundDebug.angle = 45
 		}
 
-		this.shapeSelector = null
 		this.highlightedSprite = null
 	}
 
@@ -851,7 +850,7 @@ export default class {
 		return [
 			(worldX)|0,
 			(worldY)|0,
-			0 // todo: figure this out?
+			0
 		]
 	}
 
@@ -912,7 +911,7 @@ export default class {
 		// try the object layer
 		let fromZ = this.visibleHeight > 0 ? this.visibleHeight - 1 : Config.MAX_Z
 		for(let z = fromZ; z >= 0; z--) {
-			let [worldX, worldY, worldZ] = this.toWorldCoords(screenX, screenY + z * Config.GRID_SIZE)
+			let [worldX, worldY, worldZ] = this.toWorldCoords(screenX / this.zoom, (screenY + z * Config.GRID_SIZE) / this.zoom)
 			worldZ = z
 			let info = this.objectLayer.infos[_key(worldX, worldY, worldZ)]
 			if(info && info["imageInfos"] && info.imageInfos.length > 0) return info.imageInfos[0].image
@@ -922,20 +921,12 @@ export default class {
 
 	highlight(sprite) {
 		if(sprite != this.highlightedSprite) {
-			this.highlightedSprite = sprite
-
-			if (this.shapeSelector != null) {
-				this.shapeSelector.destroy()
+			if(this.highlightedSprite) {
+				this.highlightedSprite.tint = 0xffffff
 			}
-
-			if (sprite) {
-				let block = BLOCKS[sprite.name]
-				let gx = sprite.world.x
-				let gy = sprite.world.y
-				let anchorX = this.getAnchorX(block)
-				this.shapeSelector = this.game.add.graphics(gx - block.dim[0] * anchorX, gy - block.dim[1])
-				this.shapeSelector.lineStyle(1, 0xFFFFFF, 1);
-				this.shapeSelector.drawRect(0, 0, block.dim[0], block.dim[1])
+			this.highlightedSprite = sprite
+			if(this.highlightedSprite) {
+				this.highlightedSprite.tint = 0x888888
 			}
 		}
 	}
