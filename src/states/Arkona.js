@@ -32,6 +32,7 @@ export default class extends Phaser.State {
 		this.gameState = {}
 		this.level = null
 		this.overlayShowing = false
+		this.attacking = null
 		this.actionQueue = new Queue.Queue(this)
 		this.mouseClickAction = new MouseClickAction()
 
@@ -40,6 +41,7 @@ export default class extends Phaser.State {
 		this.space = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR)
 		this.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
 		this.t_key = this.game.input.keyboard.addKey(Phaser.Keyboard.T)
+		this.a_key = this.game.input.keyboard.addKey(Phaser.Keyboard.A)
 
 		// ui (order matters)
 		this.blocks = new Block(this)
@@ -85,6 +87,7 @@ export default class extends Phaser.State {
 
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
 			if (this.space.justDown) this.actionQueue.add(Queue.USE_OBJECT)
+			if (this.a_key.justDown) this.actionQueue.add(Queue.ATTACK)
 
 			let underMouse = this.getSpriteUnderMouse()
 			if (underMouse && this.game.input.activePointer.justReleased(25)) {
@@ -154,11 +157,16 @@ export default class extends Phaser.State {
 	}
 
 	movePlayer() {
-		if (this.isCursorKeyDown()) {
-			let dir = this.getDirFromCursorKeys()
-			if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
+		if (this.attacking) {
+			if(Date.now() - this.attacking > 200) this.attacking = null
+			this.player.attack(this.lastDir)
 		} else {
-			this.player.stand(this.lastDir)
+			if (this.isCursorKeyDown()) {
+				let dir = this.getDirFromCursorKeys()
+				if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
+			} else {
+				this.player.stand(this.lastDir)
+			}
 		}
 	}
 
@@ -227,7 +235,13 @@ export default class extends Phaser.State {
 		return sprite && this.player && Utils.dist3d(
 			this.player.sprite.gamePos[0],this.player.sprite.gamePos[1],this.player.sprite.gamePos[2],
 				sprite.gamePos[0],sprite.gamePos[1],sprite.gamePos[2],
-			) < 10
+			) < Config.ACTION_DIST
+	}
+
+	playerAttacks(npc) {
+		console.warn("Attacking: ", npc.getName())
+		this.lastDir = Config.getDirToLocation(this.player.sprite.gamePos[0], this.player.sprite.gamePos[1], npc.x, npc.y)
+		this.attacking = Date.now()
 	}
 
 	transitionToLevel(mapName, startX, startY, startDir) {

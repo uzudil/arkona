@@ -1,6 +1,8 @@
+import * as Config from "../config/Config"
+
 export default class {
 	getType() {
-		return "start_convo"
+		return "attack"
 	}
 
 	getPos() {
@@ -13,13 +15,13 @@ export default class {
 	}
 
 	check(arkona) {
-		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 6,
+		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, Config.ACTION_DIST,
 			(sprite) => this.isValid(sprite))
 		return this.sprite
 	}
 
 	isValid(sprite) {
-		return sprite.npc != null && sprite.npc.getMonster() == null
+		return sprite.npc != null && sprite.npc.getMonster() != null
 	}
 
 	setSprite(sprite) {
@@ -28,8 +30,7 @@ export default class {
 	}
 
 	run(arkona) {
-		arkona.level.npcs.forEach(npc => npc.creature.stand(npc.dir))
-		arkona.convoUi.start(this.sprite.npc)
+		arkona.playerAttacks(this.sprite.npc)
 		return true
 	}
 }

@@ -1,8 +1,3 @@
-const DEFAULT_DIRS = {
-	walk: ["e", "ne", "n", "nw", "w", "sw", "s", "se"],
-	stand: ["se", "e", "ne", "n", "nw", "w", "sw", "s"]
-}
-
 const DIRS = ["e", "ne", "n", "nw", "w", "sw", "s", "se"]
 
 function dirsFrom(startDir) {
@@ -22,8 +17,8 @@ export const CREATURES = {
 		dim: [64, 64],
 		blockName: "4x4x4.placeholder",
 		dirs: {
-			walk: ["s", "se", "e", "ne", "n", "nw", "w", "sw"],
-			stand: ["sw", "s", "se", "e", "ne", "n", "nw", "w"]
+			walk: dirsFrom("s"),
+			stand: dirsFrom("sw")
 		},
 		speed: 2.5
 	},
@@ -31,16 +26,24 @@ export const CREATURES = {
 		src: "assets/creatures/man.png",
 		dim: [64, 64],
 		blockName: "2x2x4.placeholder",
-		dirs: DEFAULT_DIRS,
+		dirs: {
+			walk: dirsFrom("e"),
+			stand: dirsFrom("se"),
+			attack: dirsFrom("e")
+		},
+		frameCounts: {
+			attack: 1
+		},
 		speed: 2.0
 	},
 	goblin: {
 		src: "assets/creatures/goblin.png",
-		dim: [48, 64],
+		dim: [64, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: {
 			walk: dirsFrom("w"),
-			stand: dirsFrom("w")
+			stand: dirsFrom("w"),
+			attack: dirsFrom("w")
 		},
 		speed: 2.5
 	},
@@ -48,14 +51,20 @@ export const CREATURES = {
 		src: "assets/creatures/man-blue.png",
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
-		dirs: DEFAULT_DIRS,
+		dirs: {
+			walk: dirsFrom("e"),
+			stand: dirsFrom("se")
+		},
 		speed: 2.0
 	},
 	man_yellow: {
 		src: "assets/creatures/man-yellow.png",
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
-		dirs: DEFAULT_DIRS,
+		dirs: {
+			walk: dirsFrom("e"),
+			stand: dirsFrom("se")
+		},
 		speed: 2.0
 	},
 	monk: {
@@ -63,8 +72,8 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: {
-			walk: ["s", "se", "e", "ne", "n", "nw", "w", "sw"],
-			stand: ["s", "se", "e", "ne", "n", "nw", "w", "sw"]
+			walk: dirsFrom("e"),
+			stand: dirsFrom("s")
 		},
 		speed: 2.0
 	},
@@ -73,8 +82,8 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: {
-			walk: ["s", "se", "e", "ne", "n", "nw", "w", "sw"],
-			stand: ["s", "se", "e", "ne", "n", "nw", "w", "sw"]
+			walk: dirsFrom("e"),
+			stand: dirsFrom("s")
 		},
 		speed: 2.0
 	},
@@ -83,8 +92,8 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		dirs: {
-			walk: ["s", "se", "e", "ne", "n", "nw", "w", "sw"],
-			stand: ["s", "se", "e", "ne", "n", "nw", "w", "sw"]
+			walk: dirsFrom("e"),
+			stand: dirsFrom("s")
 		},
 		speed: 2.0
 	},
@@ -92,14 +101,20 @@ export const CREATURES = {
 		src: "assets/creatures/woman.png",
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
-		dirs: DEFAULT_DIRS,
+		dirs: {
+			walk: dirsFrom("e"),
+			stand: dirsFrom("se")
+		},
 		speed: 2.0
 	},
 	woman_brown: {
 		src: "assets/creatures/woman.brown.png",
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
-		dirs: DEFAULT_DIRS,
+		dirs: {
+			walk: dirsFrom("e"),
+			stand: dirsFrom("se")
+		},
 		speed: 2.0
 	}
 }

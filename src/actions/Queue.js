@@ -4,6 +4,7 @@ import MovePlayer from "./MovePlayer"
 import MoveNpc from "./MoveNpc"
 import GeneratorAction from "./GeneratorAction"
 import MouseClickAction from "./MouseClickAction"
+import Attack from "./Attack"
 
 const ACTIONS = [
 	new UseObject(),
@@ -11,7 +12,8 @@ const ACTIONS = [
 	new MovePlayer(),
 	new MoveNpc(),
 	new GeneratorAction(),
-	new MouseClickAction()
+	new MouseClickAction(),
+	new Attack()
 ]
 
 export const USE_OBJECT = 0
@@ -20,6 +22,7 @@ export const MOVE_PLAYER = 2
 export const MOVE_NPC = 3
 export const GENERATORS = 4
 export const CLICK = 5
+export const ATTACK = 6
 
 const DONT_LOG = [MOVE_PLAYER, MOVE_NPC, GENERATORS]
 

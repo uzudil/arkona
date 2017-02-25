@@ -14,11 +14,41 @@ export default class {
 		this.creature = creature
 		this.creature.sprite.npc = this
 		this.dir = Config.DIR_N
-		this.lastTime = 0
 		this.stopClock = null
 	}
 
 	move() {
+		if(this.options["movement"] == Config.MOVE_ATTACK) {
+			this.moveAttack()
+		} else {
+			this.moveFriendly()
+		}
+	}
+
+	getMonster() {
+		return this.options["monster"]
+	}
+
+	// todo: eventually replace with A*
+	moveAttack() {
+		if(this.arkona.player) {
+			let dir = this.getDirToPlayer()
+			if(dir != null) this.dir = dir
+			let dist = this._getDistanceToPlayer()
+			if(dist <= Config.NEAR_DIST) {
+				// todo: attack instead
+				this.creature.attack(this.dir)
+			} else if(dist <= Config.FAR_DIST) {
+				this._takeStep()
+			} else {
+				this.moveFriendly()
+			}
+		} else {
+			this.creature.stand(this.dir)
+		}
+	}
+
+	moveFriendly() {
 		if (this._willStop()) {
 			this._stop()
 		} else if(this._isStopped()) {
@@ -41,11 +71,16 @@ export default class {
 	}
 
 	_willStop() {
+		if(this.options.movement == Config.MOVE_ATTACK) return false
 		let probability = 9.7
 		if(this.arkona.player && this.options.movement == Config.MOVE_ANCHOR) {
 			if(this.isNearPlayer()) probability = 1
 		}
 		return !this._isStopped() && Math.random() * 10 >= probability
+	}
+
+	_getDistanceToPlayer() {
+		return dist3d(this.x, this.y, this.z, ...this.arkona.player.sprite.gamePos)
 	}
 
 	isNearPlayer() {
@@ -58,21 +93,7 @@ export default class {
 	}
 
 	getDirToPlayer() {
-		return this.getDirToLocation(...this.arkona.player.sprite.gamePos)
-	}
-
-	getDirToLocation(x, y) {
-		let dx = this.x - x
-		let dy = this.y - y
-		if(dx > 0 && dy > 0) return Config.DIR_NW
-		else if(dx > 0 && dy < 0) return Config.DIR_SW
-		else if(dx < 0 && dy > 0) return Config.DIR_NE
-		else if(dx < 0 && dy < 0) return Config.DIR_SE
-		else if(dx < 0) return Config.DIR_E
-		else if(dx > 0) return Config.DIR_W
-		else if(dy < 0) return Config.DIR_S
-		else if(dy > 0) return Config.DIR_N
-		else return null
+		return Config.getDirToLocation(this.x, this.y, ...this.arkona.player.sprite.gamePos)
 	}
 
 	_stop() {

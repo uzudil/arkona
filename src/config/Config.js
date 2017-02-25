@@ -28,6 +28,8 @@ export const MOVE_ANCHOR = "anchor"
 export const MOVE_ATTACK = "attack"
 export const STOP_TIME = 3000
 export const NEAR_DIST = 4
+export const FAR_DIST = 26
+export const ACTION_DIST = 6
 export const DEBUG_BLOCKS = false
 // export const FONT_FAMILY = "Trade Winds"
 export const FONT_FAMILY = "Trade Winds"
@@ -105,4 +107,19 @@ function _isOfSprite(sprites, key) {
 	let b = BLOCKS[key]
 	return (sprites == null && (b.options == null || b.options.sprites == null)) ||
 		(b.options && b.options.sprites == sprites)
+}
+
+// todo: make it less 'choppy' based on current direction
+export function getDirToLocation(fromX, fromY, toX, toY) {
+	let dx = fromX - toX
+	let dy = fromY - toY
+	if(dx > 0 && dy > 0) return DIR_NW
+	else if(dx > 0 && dy < 0) return DIR_SW
+	else if(dx < 0 && dy > 0) return DIR_NE
+	else if(dx < 0 && dy < 0) return DIR_SE
+	else if(dx < 0) return DIR_E
+	else if(dx > 0) return DIR_W
+	else if(dy < 0) return DIR_S
+	else if(dy > 0) return DIR_N
+	else return null
 }

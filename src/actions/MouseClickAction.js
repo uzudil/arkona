@@ -1,5 +1,6 @@
 import UseObject from "./UseObject"
 import Talk from "./Talk"
+import Attack from "./Attack"
 
 export default class {
 
@@ -7,6 +8,8 @@ export default class {
 		this.sprite = null
 		this.talk = new Talk()
 		this.useObject = new UseObject()
+		this.attack = new Attack()
+		this.action = null
 	}
 
 	getType() {
@@ -17,19 +20,25 @@ export default class {
 		return this.sprite ? this.sprite.gamePos : null
 	}
 
-	// eslint-disable-next-line no-unused-vars
 	check(arkona) {
-		return this.sprite && arkona.canPlayerReach(this.sprite) &&
-			(this.talk.isValid(this.sprite) || this.useObject.isValid(arkona, this.sprite))
+		this.action = null
+		if(this.sprite && arkona.canPlayerReach(this.sprite)) {
+			if(this.useObject.isValid(arkona, this.sprite)) {
+				this.action = this.useObject
+			} else if(this.talk.isValid(this.sprite)) {
+				this.action = this.talk
+			} else if(this.attack.isValid(this.sprite)) {
+				this.action = this.attack
+			}
+		}
+		return this.action != null
 	}
 
-	// eslint-disable-next-line no-unused-vars
 	setContext(context) {
 		this.sprite = context
 	}
 
 	run(arkona) {
-		return this.useObject.setSprite(this.sprite).run(arkona) ||
-			this.talk.setSprite(this.sprite).run(arkona)
+		return this.action.setSprite(this.sprite).run(arkona)
 	}
 }

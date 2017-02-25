@@ -21,17 +21,24 @@ export default class {
 		this.sprite = this.blocks.set(this.info.blockName, x, y, z, false, (screenX, screenY) => {
 			let sprite = this.game.add.sprite(screenX, screenY, this.name)
 			let index = 0
-			for(let dir of this.info.dirs.walk) {
-				sprite.animations.add("walk." + dir, range(index, index + 4))
-				index += 4
-			}
-			for(let dir of this.info.dirs.stand) {
-				sprite.animations.add("stand." + dir, [index++])
-			}
+			index = this.loadAnimationFrames("walk", 4, index, sprite)
+			index = this.loadAnimationFrames("stand", 1, index, sprite)
+			this.loadAnimationFrames("attack", 2, index, sprite)
 			sprite.creature = this
 			return sprite
 		})
 		this.blocks.sort()
+	}
+
+	loadAnimationFrames(name, defaultFrameCount, index, sprite) {
+		if(this.info.dirs[name]) {
+			let frameCount = this.info["frameCounts"] ? this.info.frameCounts[name] || defaultFrameCount : defaultFrameCount
+			for (let dir of this.info.dirs[name]) {
+				sprite.animations.add(name + "." + dir, range(index, index + frameCount))
+				index += frameCount
+			}
+		}
+		return index
 	}
 
 	centerOn() {
@@ -44,6 +51,10 @@ export default class {
 
 	walk(dir) {
 		this.sprite.animations.play("walk." + dir, this.animationSpeed, true)
+	}
+
+	attack(dir) {
+		this.sprite.animations.play("attack." + dir, this.animationSpeed, true)
 	}
 
 	stand(dir) {
