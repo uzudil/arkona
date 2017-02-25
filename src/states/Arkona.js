@@ -87,7 +87,7 @@ export default class extends Phaser.State {
 			if (this.space.justDown) this.actionQueue.add(Queue.USE_OBJECT)
 
 			let underMouse = this.getSpriteUnderMouse()
-			if (this.game.input.activePointer.justReleased()) {
+			if (underMouse && this.game.input.activePointer.justReleased(25)) {
 				this.actionQueue.add(Queue.CLICK, underMouse)
 			}
 
