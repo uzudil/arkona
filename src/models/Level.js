@@ -1,6 +1,7 @@
 import Npc from "./Npc"
 import Creature from "./Creature"
 import * as Levels from "./../config/Levels"
+import * as Config from "./../config/Config"
 import Generator from "./Generator"
 
 export default class {
@@ -21,7 +22,8 @@ export default class {
 
 	start(arkona, onLoad) {
 		arkona.blocks.load(this.info.map, () => {
-			(this.info.npcs || []).forEach(npcInfo => this.addNpc(arkona, npcInfo))
+			(this.info.npcs || []).forEach(npcInfo => this.addNpc(arkona, npcInfo));
+			(this.info.monsters || []).forEach(monsterInfo => this.addMonster(arkona, monsterInfo));
 			for(let generatorInfo of this.info.generators || []) {
 				this.generators.push(new Generator(arkona, generatorInfo))
 			}
@@ -35,6 +37,17 @@ export default class {
 		let npc = new Npc(arkona, x, y, z, npcInfo["options"], creature)
 		this.npcs.push(npc)
 		return npc
+	}
+
+	addMonster(arkona, monsterInfo) {
+		for(let pos of monsterInfo.pos) {
+			let creature = new Creature(arkona.game, monsterInfo.monster.creature, arkona.blocks, pos[0], pos[1], pos[2] || 0)
+			let npc = new Npc(arkona, pos[0], pos[1], pos[2] || 0, {
+				movement: Config.MOVE_ATTACK,
+				monster: monsterInfo.monster
+			}, creature)
+			this.npcs.push(npc)
+		}
 	}
 
 	removeNpcByName(arkona, name) {

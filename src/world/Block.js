@@ -634,7 +634,7 @@ export default class {
 
 	_canSwapPlaces(sprite, blockerSprite) {
 		// only the player and another creature
-		if(sprite["userControlled"] && blockerSprite["creature"]) {
+		if(sprite["userControlled"] && blockerSprite["npc"] && blockerSprite.npc.getMonster() == null) {
 			let a = BLOCKS[sprite.name]
 			let b = BLOCKS[blockerSprite.name]
 			// they should be the same size

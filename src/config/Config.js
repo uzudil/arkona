@@ -109,7 +109,7 @@ function _isOfSprite(sprites, key) {
 		(b.options && b.options.sprites == sprites)
 }
 
-// todo: make it less 'choppy' based on current direction
+// todo: use angles instead
 export function getDirToLocation(fromX, fromY, toX, toY) {
 	let dx = fromX - toX
 	let dy = fromY - toY

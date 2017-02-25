@@ -25,6 +25,7 @@ export default class extends Phaser.State {
 		this.atlas(4)
 
 		this.load.image("logo", "./assets/images/logo.png")
+		this.load.image("back", "./assets/images/back.png")
 
 		Creature.preload(this.game)
 	}
@@ -53,14 +54,17 @@ export default class extends Phaser.State {
 		this.game.stage.backgroundColor = "#000000";
 
 
-		this.logo = this.add.image(512, 100, "logo")
+		this.back = this.add.image(512, 400, "back")
+		this.back.anchor.setTo(0.5, 0.5)
+
+		this.logo = this.add.image(750, 100, "logo")
 		this.logo.anchor.setTo(0.5, 0)
 
 		var style = {font: "bold 20px " + Config.FONT_FAMILY, fill: "#888"};
 		this.menu = []
 		let y = 230
 		for(let s of ["Game Editor", "New Game", "Load Game", "Options"]) {
-			let m = this.game.add.text(512, y, s, style)
+			let m = this.game.add.text(750, y, s, style)
 			m.anchor.setTo(0.5, 0.5)
 			this.menu.push(m)
 			y += 35

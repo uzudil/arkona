@@ -39,6 +39,21 @@ export const LEVELS = {
 		]
 
 	},
+	orc_cave: {
+		map: "orc_cave",
+		startPos: [62, 6, 0],
+		startDir: "s",
+		lamplight: true,
+		connect: [
+			{
+				src: { x: 64, y: 1, z: 0 },
+				dst: { map: "woods", x: 22, y: 100, dir: "e" }
+			}
+		],
+		monsters: [
+			{ monster: MONSTERS.goblin, pos: [ [19, 8], [28, 13], [26, 20], [9, 57], [15, 62], [54, 59], [58,49], [62, 37] ] },
+		]
+	},
 	woods: {
 		map: "woods",
 		startPos: [1, 37, 0],
@@ -54,10 +69,16 @@ export const LEVELS = {
 			{
 				src: { dir: "n" },
 				dst: { map: "woods2", x: 52, y: 194 }
+			},
+			{
+				src: { x: 18, y: 105, z: 0 },
+				dst: { map: "orc_cave", x: 62, y: 6, dir: "s" }
 			}
 		],
 		generators: [
 			{ x: 157, y: 99, z: 0, type: MONSTERS.goblin, count: 2 },
+			{ x: 20, y: 85, z: 0, type: MONSTERS.goblin, count: 2 },
+			{ x: 99, y: 84, z: 0, type: MONSTERS.goblin },
 			{ x: 196, y: 48, z: 0, type: MONSTERS.goblin },
 			{ x: 125, y: 23, z: 0, type: MONSTERS.goblin }
 		],

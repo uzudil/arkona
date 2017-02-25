@@ -344,7 +344,7 @@ export default class extends Phaser.State {
 
 			this.blocks.sort()
 		}
-		this.posLabel.text = "Pos: " + x + "," + y + "," + z
+		this.posLabel.text = "Pos: " + x + "," + y + "," + z + (this.blocks.highlightedSprite ? " Shape:" + this.blocks.highlightedSprite.gamePos[0] + "," + this.blocks.highlightedSprite.gamePos[1] + "," + this.blocks.highlightedSprite.gamePos[2] : "")
 	}
 
 	deleteShape(x, y) {
