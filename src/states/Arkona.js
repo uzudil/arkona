@@ -2,7 +2,8 @@ import Phaser from "phaser"
 import $ from "jquery"
 import Block from "../world/Block"
 import * as Config from "../config/Config"
-import Creature from "../models/Creature"
+import * as Creatures from "../config/Creatures"
+import AnimatedSprite from "../models/Animation"
 import Level from "../models/Level"
 import Messages from "../ui/Messages"
 import ConvoUI from "../ui/ConvoUI"
@@ -159,13 +160,13 @@ export default class extends Phaser.State {
 	movePlayer() {
 		if (this.attacking) {
 			if(Date.now() - this.attacking > 200) this.attacking = null
-			this.player.attack(this.lastDir)
+			this.player.setAnimation("attack", this.lastDir)
 		} else {
 			if (this.isCursorKeyDown()) {
 				let dir = this.getDirFromCursorKeys()
 				if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
 			} else {
-				this.player.stand(this.lastDir)
+				this.player.setAnimation("stand", this.lastDir)
 			}
 		}
 	}
@@ -206,7 +207,7 @@ export default class extends Phaser.State {
 		this.blocks.checkRoof(px - 1, py - 1, pz)
 		if (dir != null) {
 			this.lastDir = dir
-			this.player.walk(dir)
+			this.player.setAnimation("walk", this.lastDir)
 		}
 		let dst = this.level.checkBounds(this, px, py)
 		if(dst) {
@@ -260,15 +261,18 @@ export default class extends Phaser.State {
 		}
 		this.level = new Level(mapName)
 		this.level.start(this, () => {
-			this.player = new Creature(this.game, "man", this.blocks,
+			let creatureInfo = Creatures.CREATURES[Config.PLAYER_CREATURE_NAME]
+			this.player = new AnimatedSprite(this.game, Config.PLAYER_CREATURE_NAME, this.blocks,
 				startX == null ? this.level.info.startPos[0] : startX,
 				startY == null ? this.level.info.startPos[1] : startY,
-				0)
+				0,
+				creatureInfo.animations,
+				creatureInfo.blockName)
 			this.player.sprite.userControlled = true
 			this.player.animationSpeed = 16
 			let dir = startDir || this.level.info["startDir"]
 			if(dir) this.lastDir = dir
-			this.player.stand(dir || this.lastDir || Config.DIR_E)
+			this.player.setAnimation("stand", dir || this.lastDir || Config.DIR_E)
 			this.player.centerOn()
 			this.lamp.setVisible(this.level.info["lamplight"]);
 			this.saveGame()

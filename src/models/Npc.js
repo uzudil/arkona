@@ -1,8 +1,18 @@
 import * as Config from "./../config/Config"
 import { dist3d } from "../utils"
+import * as Creatures from "../config/Creatures"
+import AnimatedSprite from "./Animation"
 
 export default class {
-	constructor(arkona, x, y, z, options, creature) {
+
+	static preload(game) {
+		for(let k in Creatures.CREATURES) {
+			let c = Creatures.CREATURES[k]
+			game.load.spritesheet(k, c.src + "?cb=" + Date.now(), ...c.dim)
+		}
+	}
+
+	constructor(arkona, x, y, z, options, creatureName) {
 		this.arkona = arkona
 		this.x = x
 		this.y = y
@@ -11,10 +21,12 @@ export default class {
 		this.anchorY = y
 		this.anchorZ = z
 		this.options = options || {}
-		this.creature = creature
-		this.creature.sprite.npc = this
 		this.dir = Config.DIR_N
 		this.stopClock = null
+		this.creatureName = creatureName
+		this.info = Creatures.CREATURES[creatureName]
+		this.animatedSprite = new AnimatedSprite(arkona.game, creatureName, arkona.blocks, x, y, z, this.info.animations, this.info.blockName)
+		this.animatedSprite.sprite.npc = this
 	}
 
 	move() {
@@ -37,14 +49,14 @@ export default class {
 			let dist = this._getDistanceToPlayer()
 			if(dist <= Config.NEAR_DIST) {
 				// todo: attack instead
-				this.creature.attack(this.dir)
+				this.animatedSprite.setAnimation("attack", this.dir)
 			} else if(dist <= Config.FAR_DIST) {
 				this._takeStep()
 			} else {
 				this.moveFriendly()
 			}
 		} else {
-			this.creature.stand(this.dir)
+			this.animatedSprite.setAnimation("stand", this.dir)
 		}
 	}
 
@@ -63,7 +75,7 @@ export default class {
 			let dir = this.getDirToPlayer()
 			if(dir != null) this.dir = dir
 		}
-		this.creature.stand(this.dir)
+		this.animatedSprite.setAnimation("stand", this.dir)
 	}
 
 	_isStopped() {
@@ -102,16 +114,16 @@ export default class {
 	}
 
 	_takeStep() {
-		let [nx, ny, nz] = this.arkona.moveInDir(this.x, this.y, this.z, this.dir, this.creature.info.speed)
+		let [nx, ny, nz] = this.arkona.moveInDir(this.x, this.y, this.z, this.dir, this.info.speed)
 		if(this.x == nx && this.y == ny) {
-			this.creature.stand(this.dir)
+			this.animatedSprite.setAnimation("stand", this.dir)
 			return true
 		} else if(this._moveToNextStep(nx, ny, nz)) {
 			[this.x, this.y, this.z] = [nx, ny, nz]
-			this.creature.walk(this.dir)
+			this.animatedSprite.setAnimation("walk", this.dir)
 			return true
 		} else {
-			this.creature.stand(this.dir)
+			this.animatedSprite.setAnimation("stand", this.dir)
 			return false
 		}
 	}
@@ -121,7 +133,7 @@ export default class {
 			dist3d(this.anchorX, this.anchorY, this.anchorZ, nx, ny, nz) > 16) {
 			return false
 		}
-		return this.creature.moveTo(nx, ny, nz)
+		return this.animatedSprite.moveTo(nx, ny, nz)
 	}
 
 	_changeDir() {
@@ -129,7 +141,7 @@ export default class {
 	}
 
 	getName() {
-		return this.options.name || this.creature.name
+		return this.options.name || this.creatureName
 	}
 
 	setPosFromSprite(sprite) {

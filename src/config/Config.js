@@ -22,7 +22,7 @@ export const DIR_SW = "sw"
 export const DIR_W = "w"
 export const DIR_NW = "nw"
 export const DIR_NONE = "none"
-export const DIRS = [DIR_N, DIR_NE, DIR_E, DIR_SE, DIR_S, DIR_SW, DIR_W, DIR_NW]
+export const DIRS = [DIR_E, DIR_NE, DIR_N, DIR_NW, DIR_W, DIR_SW, DIR_S, DIR_SE]
 export const MOVE_RANDOM = "random"
 export const MOVE_ANCHOR = "anchor"
 export const MOVE_ATTACK = "attack"
@@ -38,6 +38,7 @@ export const ARKONA_FONT_FAMILY = "Old Standard TT"
 export const ARKONA_FONT_FAMILY_NAME = "Old Standard TT"
 export const MAX_Z = 15
 export const START_MAP = "median"
+export const PLAYER_CREATURE_NAME = "man"
 
 export const NO_BLEND = 0
 export const BLENDS = 1
@@ -122,4 +123,15 @@ export function getDirToLocation(fromX, fromY, toX, toY) {
 	else if(dy < 0) return DIR_S
 	else if(dy > 0) return DIR_N
 	else return null
+}
+
+export function dirsFrom(startDir) {
+	let idx = DIRS.indexOf(startDir)
+	let dirs = []
+	for(let i = 0; i < DIRS.length; i++) {
+		dirs.push(DIRS[idx])
+		idx++
+		if(idx >= DIRS.length) idx = 0
+	}
+	return dirs
 }

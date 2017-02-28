@@ -1,5 +1,4 @@
 import Npc from "./Npc"
-import Creature from "./Creature"
 import * as Levels from "./../config/Levels"
 import * as Config from "./../config/Config"
 import Generator from "./Generator"
@@ -33,19 +32,17 @@ export default class {
 
 	addNpc(arkona, npcInfo) {
 		let [x, y, z] = [npcInfo.x, npcInfo.y, npcInfo["z"] || 0]
-		let creature = new Creature(arkona.game, npcInfo.creature, arkona.blocks, x, y, z)
-		let npc = new Npc(arkona, x, y, z, npcInfo["options"], creature)
+		let npc = new Npc(arkona, x, y, z, npcInfo["options"], npcInfo.creature)
 		this.npcs.push(npc)
 		return npc
 	}
 
 	addMonster(arkona, monsterInfo) {
 		for(let pos of monsterInfo.pos) {
-			let creature = new Creature(arkona.game, monsterInfo.monster.creature, arkona.blocks, pos[0], pos[1], pos[2] || 0)
 			let npc = new Npc(arkona, pos[0], pos[1], pos[2] || 0, {
 				movement: Config.MOVE_ATTACK,
 				monster: monsterInfo.monster
-			}, creature)
+			}, monsterInfo.monster.creature)
 			this.npcs.push(npc)
 		}
 	}
@@ -60,7 +57,7 @@ export default class {
 	}
 
 	removeNpc(arkona, npc) {
-		arkona.blocks.remove(npc.creature.sprite)
+		arkona.blocks.remove(npc.animatedSprite.sprite)
 		let idx = this.npcs.indexOf(npc)
 		this.npcs.splice(idx, 1)
 	}

@@ -28,7 +28,7 @@ export default class {
 	}
 
 	run(arkona) {
-		arkona.level.npcs.forEach(npc => npc.creature.stand(npc.dir))
+		arkona.level.npcs.forEach(npc => npc.animatedSprite.setAnimation("stand", npc.dir))
 		arkona.convoUi.start(this.sprite.npc)
 		return true
 	}
