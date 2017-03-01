@@ -51,7 +51,8 @@ export const LEVELS = {
 			}
 		],
 		monsters: [
-			{ monster: MONSTERS.goblin, pos: [ [19, 8], [28, 13], [26, 20], [9, 57], [15, 62], [54, 59], [58,49], [62, 37] ] },
+			{ monster: MONSTERS.goblin, pos: [ [28, 13], [26, 20], [9, 57], [15, 62], [54, 59], [58,49], [62, 37] ] },
+			{ monster: MONSTERS.ogre, pos: [ [19, 8] ] },
 		]
 	},
 	woods: {

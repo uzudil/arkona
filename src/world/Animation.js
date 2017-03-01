@@ -7,6 +7,7 @@ export default class {
 		this.name = name
 		this.blocks = blocks
 		this.animationSpeed = Config.ANIMATION_SPEED
+		this.lastDir = null
 
 		this.sprite = this.blocks.set(blockName, x, y, z, false, (screenX, screenY) => {
 			let sprite = this.game.add.sprite(screenX, screenY, this.name)
@@ -21,7 +22,11 @@ export default class {
 
 	loadAnimationFrames(animationInfo, index, sprite) {
 		for (let dir of animationInfo.dirs) {
-			sprite.animations.add(animationInfo.name + "." + dir, range(index, index + animationInfo.frameCount))
+			let anim = sprite.animations.add(animationInfo.name + "." + dir, range(index, index + animationInfo.frameCount))
+			if(animationInfo.name == "attack") {
+				// switch back to stand after attack animation
+				anim.onComplete.add(() => this.setAnimation("stand", this.lastDir));
+			}
 			index += animationInfo.frameCount
 		}
 		return index
@@ -36,14 +41,17 @@ export default class {
 	}
 
 	setAnimation(name, dir) {
+		this.lastDir = dir
 		if(name == "stand") {
 			if(dir) {
 				this.sprite.animations.play("stand." + dir)
 			} else {
 				this.sprite.animations.stop()
 			}
-		} else {
+		} else if(name == "walk") {
 			this.sprite.animations.play(name + "." + dir, this.animationSpeed, true)
+		} else {
+			this.sprite.animations.play(name + "." + dir, this.animationSpeed)
 		}
 	}
 }

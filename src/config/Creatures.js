@@ -33,6 +33,17 @@ export const CREATURES = {
 		],
 		speed: 2.5
 	},
+	ogre: {
+		src: "assets/creatures/ogre.png",
+		dim: [96, 96],
+		blockName: "4x4x4.placeholder",
+		animations: [
+			{ name: "walk", frameCount: 4, dirs: dirsFrom("w") },
+			{ name: "stand", frameCount: 1, dirs: dirsFrom("w") },
+			{ name: "attack", frameCount: 2, dirs: dirsFrom("w") },
+		],
+		speed: 2.5
+	},
 	man_blue: {
 		src: "assets/creatures/man-blue.png",
 		dim: [32, 64],

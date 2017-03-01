@@ -54,8 +54,9 @@ export default class {
 			let dist = this.arkona.getDistanceToPlayer(this.x, this.y, this.z)
 			if(dist <= Config.NEAR_DIST) {
 				// todo: attack instead
-				this.animatedSprite.setAnimation("attack", this.dir)
-				this.alive.attack(this.arkona.player.alive)
+				if(this.alive.attack(this.arkona.player.alive)) {
+					this.animatedSprite.setAnimation("attack", this.dir)
+				}
 			} else if(dist <= Config.FAR_DIST) {
 				this._takeStep()
 			} else {
