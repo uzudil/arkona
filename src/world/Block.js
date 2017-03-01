@@ -842,6 +842,11 @@ export default class {
 		]
 	}
 
+	toAbsScreenCoords(worldX, worldY, worldZ) {
+		let [screenX, screenY] = this.toScreenCoords(worldX, worldY, worldZ)
+		return [(screenX + this.objectLayer.group.x) * this.zoom, (screenY + this.objectLayer.group.y) * this.zoom]
+	}
+
 	toWorldCoords(screenX, screenY) {
 		let sx = (screenX - this.game.world.centerX - this.floorLayer.group.x) / Config.GRID_SIZE
 		let sy = (screenY - this.floorLayer.group.y) / Config.GRID_SIZE
@@ -944,9 +949,7 @@ export default class {
 
 	// todo: not sure if this works right
 	isOnScreen(worldX, worldY, worldZ) {
-		let [screenX, screenY] = this.toScreenCoords(worldX, worldY, worldZ)
-		screenX += this.objectLayer.x
-		screenY += this.objectLayer.y
+		let [screenX, screenY] = this.toAbsScreenCoords(worldX, worldY, worldZ)
 		return screenX >= 0 && screenX < Config.WIDTH && screenY >= 0 && screenY < Config.HEIGHT
 	}
 }

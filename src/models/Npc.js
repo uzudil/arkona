@@ -26,6 +26,7 @@ export default class {
 
 	onDamage(amount) {
 		console.warn(this.getName() + " takes " + amount + " damage.")
+		this.arkona.damages.add(amount, this.x - 2, this.y - 2, this.z)
 	}
 
 	onDeath() {

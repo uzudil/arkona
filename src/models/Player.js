@@ -48,6 +48,11 @@ export default class {
 
 	onDamage(amount) {
 		console.warn("Player damaged for " + amount + ".")
+		this.arkona.damages.add(amount,
+			this.animatedSprite.sprite.gamePos[0] - 2,
+			this.animatedSprite.sprite.gamePos[1] - 2,
+			this.animatedSprite.sprite.gamePos[2],
+			true)
 	}
 
 	onDeath() {
