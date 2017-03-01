@@ -1,7 +1,7 @@
 import Phaser from "phaser"
 import { centerGameObjects, loadSettings, saveSettings } from "../utils"
 import * as Config from "../config/Config"
-import Npc from "../models/Npc"
+import * as Creatures from "../config/Creatures"
 import $ from "jquery"
 import Transition from "../ui/Transition"
 import Arkona from "./Arkona"
@@ -27,7 +27,10 @@ export default class extends Phaser.State {
 		this.load.image("logo", "./assets/images/logo.png")
 		this.load.image("back", "./assets/images/back.png")
 
-		Npc.preload(this.game)
+		for(let k in Creatures.CREATURES) {
+			let c = Creatures.CREATURES[k]
+			this.game.load.spritesheet(k, c.src + "?cb=" + Date.now(), ...c.dim)
+		}
 	}
 
 	atlas(n) {

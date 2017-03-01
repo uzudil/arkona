@@ -2,8 +2,7 @@ import Phaser from "phaser"
 import $ from "jquery"
 import Block from "../world/Block"
 import * as Config from "../config/Config"
-import * as Creatures from "../config/Creatures"
-import AnimatedSprite from "../models/Animation"
+import Player from "../models/Player"
 import Level from "../models/Level"
 import Messages from "../ui/Messages"
 import ConvoUI from "../ui/ConvoUI"
@@ -13,7 +12,6 @@ import Lamp from "../ui/Lamp"
 import * as Queue from "../actions/Queue"
 import MouseClickAction from "../actions/MouseClickAction"
 import Stats from "stats.js"
-import * as Utils from "../utils"
 
 export default class extends Phaser.State {
 	constructor() {
@@ -29,13 +27,12 @@ export default class extends Phaser.State {
 
 	create() {
 		this.game.stage.backgroundColor = "#000000"
-		this.lastDir = null
 		this.gameState = {}
 		this.level = null
 		this.overlayShowing = false
-		this.attacking = null
 		this.actionQueue = new Queue.Queue(this)
 		this.mouseClickAction = new MouseClickAction()
+		this.player = new Player(this)
 
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys()
@@ -74,7 +71,7 @@ export default class extends Phaser.State {
 			this.stats.begin()
 		}
 
-		if(this.loading || !this.player) return
+		if(this.loading || !this.player.animatedSprite) return
 
 		this.blocks.update()
 
@@ -84,7 +81,11 @@ export default class extends Phaser.State {
 			if(this.level.npcs) this.actionQueue.add(Queue.MOVE_NPC, this.level.npcs)
 			if(this.level.generators) this.actionQueue.add(Queue.GENERATORS, this.level.generators)
 
-			this.movePlayer()
+			let moving = this.isCursorKeyDown()
+			if (moving) {
+				let dir = this.getDirFromCursorKeys()
+				if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
+			}
 
 			if (this.t_key.justDown) this.actionQueue.add(Queue.TALK)
 			if (this.space.justDown) this.actionQueue.add(Queue.USE_OBJECT)
@@ -99,6 +100,8 @@ export default class extends Phaser.State {
 			if(this.actionQueue.update()) {
 				this.blocks.sort()
 			}
+
+			this.player.update(moving)
 		}
 
 		this.level.onLoad(this)
@@ -157,20 +160,6 @@ export default class extends Phaser.State {
 		}
 	}
 
-	movePlayer() {
-		if (this.attacking) {
-			if(Date.now() - this.attacking > 200) this.attacking = null
-			this.player.setAnimation("attack", this.lastDir)
-		} else {
-			if (this.isCursorKeyDown()) {
-				let dir = this.getDirFromCursorKeys()
-				if (dir != null) this.actionQueue.add(Queue.MOVE_PLAYER, dir)
-			} else {
-				this.player.setAnimation("stand", this.lastDir)
-			}
-		}
-	}
-
 	isCursorKeyDown() {
 		return this.cursors.up.isDown || this.cursors.left.isDown || this.cursors.down.isDown || this.cursors.right.isDown
 	}
@@ -197,52 +186,20 @@ export default class extends Phaser.State {
 		return dir
 	}
 
-	/**
-	 * The player just moved in this direction.
-	 *
-	 * @param dir the direction of the player's last step
-	 */
-	playerMoved(dir) {
-		let [px, py, pz] = this.player.sprite.gamePos
-		this.blocks.checkRoof(px - 1, py - 1, pz)
-		if (dir != null) {
-			this.lastDir = dir
-			this.player.setAnimation("walk", this.lastDir)
-		}
+	checkMapBoundary(px, py) {
 		let dst = this.level.checkBounds(this, px, py)
 		if(dst) {
 			this.transitionToLevel(dst.map, dst.x, dst.y, dst.dir)
 		}
 	}
 
-	/**
-	 * The player was just blocked by this sprite.
-	 *
-	 * @param sprite the sprite blocking the player
-	 */
-	playerBlockedBy(sprite) {
-		let dst = this.level.checkPos(this, ...sprite.gamePos)
+	checkMapPosition(x, y, z) {
+		let dst = this.level.checkPos(this, x, y, z)
 		if(dst) {
 			this.transitionToLevel(dst.map, dst.x, dst.y, dst.dir)
 			return true
 		}
 		return false
-	}
-
-	canPlayerReach(sprite) {
-		// todo: find path to sprite
-
-		// for now just check distance
-		return sprite && this.player && Utils.dist3d(
-			this.player.sprite.gamePos[0],this.player.sprite.gamePos[1],this.player.sprite.gamePos[2],
-				sprite.gamePos[0],sprite.gamePos[1],sprite.gamePos[2],
-			) < Config.ACTION_DIST
-	}
-
-	playerAttacks(npc) {
-		console.warn("Attacking: ", npc.getName())
-		this.lastDir = Config.getDirToLocation(this.player.sprite.gamePos[0], this.player.sprite.gamePos[1], npc.x, npc.y)
-		this.attacking = Date.now()
 	}
 
 	transitionToLevel(mapName, startX, startY, startDir) {
@@ -261,19 +218,7 @@ export default class extends Phaser.State {
 		}
 		this.level = new Level(mapName)
 		this.level.start(this, () => {
-			let creatureInfo = Creatures.CREATURES[Config.PLAYER_CREATURE_NAME]
-			this.player = new AnimatedSprite(this.game, Config.PLAYER_CREATURE_NAME, this.blocks,
-				startX == null ? this.level.info.startPos[0] : startX,
-				startY == null ? this.level.info.startPos[1] : startY,
-				0,
-				creatureInfo.animations,
-				creatureInfo.blockName)
-			this.player.sprite.userControlled = true
-			this.player.animationSpeed = 16
-			let dir = startDir || this.level.info["startDir"]
-			if(dir) this.lastDir = dir
-			this.player.setAnimation("stand", dir || this.lastDir || Config.DIR_E)
-			this.player.centerOn()
+			this.player.onLevelStart(startX, startY, startDir)
 			this.lamp.setVisible(this.level.info["lamplight"]);
 			this.saveGame()
 			this.transition.fadeOut(() => {
@@ -293,8 +238,8 @@ export default class extends Phaser.State {
 		window.localStorage["arkona"] = JSON.stringify({
 			version: 1,
 			level: this.level.name,
-			pos: this.player.sprite.gamePos,
-			dir: this.lastDir,
+			pos: this.player.animatedSprite.sprite.gamePos,
+			dir: this.player.lastDir,
 			state: this.gameState
 		})
 	}
@@ -337,6 +282,7 @@ export default class extends Phaser.State {
 		this.overlayShowing = false
 	}
 
+	// move along a direction vector
 	moveInDir(x, y, z, dir, speed) {
 		let d = this.game.time.elapsedMS / (60 * speed)
 		// smooth movement, fallback to a delta of 1 if can't maintain fps

@@ -15,7 +15,7 @@ export default class {
 	}
 
 	check(arkona) {
-		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, Config.ACTION_DIST,
+		this.sprite = arkona.blocks.findClosestObject(arkona.player.animatedSprite.sprite, Config.ACTION_DIST,
 			(sprite) => this.isValid(sprite))
 		return this.sprite
 	}
@@ -30,7 +30,7 @@ export default class {
 	}
 
 	run(arkona) {
-		arkona.playerAttacks(this.sprite.npc)
+		arkona.player.attack(this.sprite.npc)
 		return true
 	}
 }

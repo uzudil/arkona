@@ -15,7 +15,7 @@ export default class {
 	}
 
 	check(arkona) {
-		this.sprite = arkona.blocks.findClosestObject(arkona.player.sprite, 10,
+		this.sprite = arkona.blocks.findClosestObject(arkona.player.animatedSprite.sprite, 10,
 			(sprite) => this.isValid(arkona, sprite))
 		return this.sprite
 	}

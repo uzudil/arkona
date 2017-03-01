@@ -22,7 +22,7 @@ export default class {
 
 	check(arkona) {
 		this.action = null
-		if(this.sprite && arkona.canPlayerReach(this.sprite)) {
+		if(this.sprite && arkona.player.canReach(this.sprite)) {
 			if(this.useObject.isValid(arkona, this.sprite)) {
 				this.action = this.useObject
 			} else if(this.talk.isValid(this.sprite)) {

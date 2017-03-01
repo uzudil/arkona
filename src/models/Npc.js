@@ -2,15 +2,9 @@ import * as Config from "./../config/Config"
 import { dist3d } from "../utils"
 import * as Creatures from "../config/Creatures"
 import AnimatedSprite from "./Animation"
+import Alive from "./Alive"
 
 export default class {
-
-	static preload(game) {
-		for(let k in Creatures.CREATURES) {
-			let c = Creatures.CREATURES[k]
-			game.load.spritesheet(k, c.src + "?cb=" + Date.now(), ...c.dim)
-		}
-	}
 
 	constructor(arkona, x, y, z, options, creatureName) {
 		this.arkona = arkona
@@ -27,6 +21,15 @@ export default class {
 		this.info = Creatures.CREATURES[creatureName]
 		this.animatedSprite = new AnimatedSprite(arkona.game, creatureName, arkona.blocks, x, y, z, this.info.animations, this.info.blockName)
 		this.animatedSprite.sprite.npc = this
+		this.alive = new Alive(this.getMonster() ? this.getMonster()["alive"] : {}, this)
+	}
+
+	onDamage(amount) {
+		console.warn(this.getName() + " takes " + amount + " damage.")
+	}
+
+	onDeath() {
+		console.warn(this.getName() + " dies.")
 	}
 
 	move() {
@@ -43,13 +46,14 @@ export default class {
 
 	// todo: eventually replace with A*
 	moveAttack() {
-		if(this.arkona.player) {
+		if(this.arkona.player.animatedSprite) {
 			let dir = this.getDirToPlayer()
 			if(dir != null) this.dir = dir
 			let dist = this._getDistanceToPlayer()
 			if(dist <= Config.NEAR_DIST) {
 				// todo: attack instead
 				this.animatedSprite.setAnimation("attack", this.dir)
+				this.alive.attack(this.arkona.player.alive)
 			} else if(dist <= Config.FAR_DIST) {
 				this._takeStep()
 			} else {
@@ -85,18 +89,18 @@ export default class {
 	_willStop() {
 		if(this.options.movement == Config.MOVE_ATTACK) return false
 		let probability = 9.7
-		if(this.arkona.player && this.options.movement == Config.MOVE_ANCHOR) {
+		if(this.arkona.player.animatedSprite && this.options.movement == Config.MOVE_ANCHOR) {
 			if(this.isNearPlayer()) probability = 1
 		}
 		return !this._isStopped() && Math.random() * 10 >= probability
 	}
 
 	_getDistanceToPlayer() {
-		return dist3d(this.x, this.y, this.z, ...this.arkona.player.sprite.gamePos)
+		return dist3d(this.x, this.y, this.z, ...this.arkona.player.animatedSprite.sprite.gamePos)
 	}
 
 	isNearPlayer() {
-		return this.isNearLocation(...this.arkona.player.sprite.gamePos)
+		return this.isNearLocation(...this.arkona.player.animatedSprite.sprite.gamePos)
 	}
 
 	isNearLocation(x, y, z) {
@@ -105,7 +109,7 @@ export default class {
 	}
 
 	getDirToPlayer() {
-		return Config.getDirToLocation(this.x, this.y, ...this.arkona.player.sprite.gamePos)
+		return Config.getDirToLocation(this.x, this.y, ...this.arkona.player.animatedSprite.sprite.gamePos)
 	}
 
 	_stop() {
