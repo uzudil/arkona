@@ -942,6 +942,7 @@ export default class {
 		})
 	}
 
+	// todo: not sure if this works right
 	isOnScreen(worldX, worldY, worldZ) {
 		let [screenX, screenY] = this.toScreenCoords(worldX, worldY, worldZ)
 		screenX += this.objectLayer.x

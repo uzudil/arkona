@@ -12,6 +12,7 @@ import Lamp from "../ui/Lamp"
 import * as Queue from "../actions/Queue"
 import MouseClickAction from "../actions/MouseClickAction"
 import Stats from "stats.js"
+import { dist3d } from "../utils"
 
 export default class extends Phaser.State {
 	constructor() {
@@ -289,5 +290,9 @@ export default class extends Phaser.State {
 		let dx = Math.max(-1, Math.min(1, Config.MOVE_DELTA[dir][0] * d))
 		let dy = Math.max(-1, Math.min(1, Config.MOVE_DELTA[dir][1] * d))
 		return [x + dx, y + dy, z]
+	}
+
+	getDistanceToPlayer(x, y, z) {
+		return dist3d(x, y, z, ...this.player.animatedSprite.sprite.gamePos)
 	}
 }

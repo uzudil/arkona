@@ -27,11 +27,17 @@ export default class {
 				console.warn("Starting " + this.info.type.creature + " at " + npc.animatedSprite.sprite.gamePos)
 				npc.setPosFromSprite(npc.animatedSprite.sprite)
 				this.generated.push(npc)
+				npc.generator = this
 			} else {
 				console.warn("Generator unable to position " + this.info.type.creature + " at " + this.info.x + "," + this.info.y + "," + this.info.z)
 				this.arkona.level.removeNpc(this.arkona, npc)
 			}
 		}
+	}
+
+	remove(npc) {
+		let idx = this.generated.indexOf(npc)
+		this.generated.splice(idx, 1)
 	}
 
 	getCount() {
@@ -43,6 +49,6 @@ export default class {
 	}
 
 	isOnScreen() {
-		return this.arkona.blocks.isOnScreen(this.info.x, this.info.y, this.info.z)
+		return this.arkona.getDistanceToPlayer(this.info.x, this.info.y, this.info.z) < 25
 	}
 }

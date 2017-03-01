@@ -57,6 +57,9 @@ export default class {
 	}
 
 	removeNpc(arkona, npc) {
+		if(npc["generator"]) {
+			npc.generator.remove(npc)
+		}
 		arkona.blocks.remove(npc.animatedSprite.sprite)
 		let idx = this.npcs.indexOf(npc)
 		this.npcs.splice(idx, 1)

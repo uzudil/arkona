@@ -1,7 +1,7 @@
 import * as Config from "./../config/Config"
 import { dist3d } from "../utils"
 import * as Creatures from "../config/Creatures"
-import AnimatedSprite from "./Animation"
+import AnimatedSprite from "../world/Animation"
 import Alive from "./Alive"
 
 export default class {
@@ -30,6 +30,7 @@ export default class {
 
 	onDeath() {
 		console.warn(this.getName() + " dies.")
+		this.arkona.level.removeNpc(this.arkona, this)
 	}
 
 	move() {
@@ -49,7 +50,7 @@ export default class {
 		if(this.arkona.player.animatedSprite) {
 			let dir = this.getDirToPlayer()
 			if(dir != null) this.dir = dir
-			let dist = this._getDistanceToPlayer()
+			let dist = this.arkona.getDistanceToPlayer(this.x, this.y, this.z)
 			if(dist <= Config.NEAR_DIST) {
 				// todo: attack instead
 				this.animatedSprite.setAnimation("attack", this.dir)
@@ -95,17 +96,12 @@ export default class {
 		return !this._isStopped() && Math.random() * 10 >= probability
 	}
 
-	_getDistanceToPlayer() {
-		return dist3d(this.x, this.y, this.z, ...this.arkona.player.animatedSprite.sprite.gamePos)
-	}
-
 	isNearPlayer() {
 		return this.isNearLocation(...this.arkona.player.animatedSprite.sprite.gamePos)
 	}
 
 	isNearLocation(x, y, z) {
-		let distanceToPlayer = dist3d(this.x, this.y, this.z, x, y, z)
-		return distanceToPlayer <= Config.NEAR_DIST
+		return dist3d(this.x, this.y, this.z, x, y, z) <= Config.NEAR_DIST
 	}
 
 	getDirToPlayer() {

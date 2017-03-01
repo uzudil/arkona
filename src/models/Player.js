@@ -1,6 +1,6 @@
 import * as Config from "../config/Config"
 import * as Creatures from "../config/Creatures"
-import AnimatedSprite from "./Animation"
+import AnimatedSprite from "../world/Animation"
 import Alive from "./Alive"
 import * as Utils from "../utils"
 
@@ -12,7 +12,7 @@ export default class {
 
 		this.alive = new Alive({
 			health: 10,
-			strength: 1,
+			strength: 3,
 			attackWait: 300
 		}, this)
 

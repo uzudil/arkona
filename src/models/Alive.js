@@ -1,3 +1,6 @@
+/**
+ * Anything that is alive, can attack and can be killed. Headless creature combat stats.
+ */
 export default class {
 	constructor(info, events) {
 		this.info = info || {}
@@ -12,7 +15,7 @@ export default class {
 		let now = Date.now()
 		if(now - this.lastAttack > this.attackWait) {
 			this.lastAttack = now
-			other.takeDamage((Math.random() * this.strength)|0)
+			other.takeDamage(Math.max(1, (Math.random() * this.strength)|0))
 			return true
 		} else {
 			return false
