@@ -9,6 +9,7 @@ import BootState from "./states/Boot"
 import SplashState from "./states/Splash"
 import EditorState from "./states/Editor"
 import ArkonaState from "./states/Arkona"
+import IntroState from "./states/Intro"
 
 import * as Config from "./config/Config"
 
@@ -29,6 +30,7 @@ class Game extends Phaser.Game {
 		this.state.add("Boot", BootState, false)
 		this.state.add("Splash", SplashState, false)
 		this.state.add("Editor", EditorState, false)
+		this.state.add("Intro", IntroState, false)
 		this.state.add("Arkona", ArkonaState, false)
 
 		this.state.start("Boot")

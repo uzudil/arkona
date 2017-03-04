@@ -13,6 +13,7 @@ import * as Queue from "../actions/Queue"
 import MouseClickAction from "../actions/MouseClickAction"
 import Stats from "stats.js"
 import Damages from "../ui/Damages"
+import Device from "../ui/Device"
 import { dist3d } from "../utils"
 
 export default class extends Phaser.State {
@@ -47,6 +48,7 @@ export default class extends Phaser.State {
 		this.blocks = new Block(this)
 		this.damages = new Damages(this)
 		this.lamp = new Lamp(this)
+		this.device = new Device(this)
 		this.messages = new Messages(this)
 		this.convoUi = new ConvoUI(this)
 		this.transition = new Transition()

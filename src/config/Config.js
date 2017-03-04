@@ -37,7 +37,7 @@ export const FONT_FAMILY_NAME = "Trade Winds"
 export const ARKONA_FONT_FAMILY = "Old Standard TT"
 export const ARKONA_FONT_FAMILY_NAME = "Old Standard TT"
 export const MAX_Z = 15
-export const START_MAP = "median"
+export const START_MAP = "farm"
 export const PLAYER_CREATURE_NAME = "man"
 
 export const NO_BLEND = 0
@@ -110,19 +110,29 @@ function _isOfSprite(sprites, key) {
 		(b.options && b.options.sprites == sprites)
 }
 
-// todo: use angles instead
 export function getDirToLocation(fromX, fromY, toX, toY) {
-	let dx = fromX - toX
+	let dx = toX - fromX
 	let dy = fromY - toY
-	if(dx > 0 && dy > 0) return DIR_NW
-	else if(dx > 0 && dy < 0) return DIR_SW
-	else if(dx < 0 && dy > 0) return DIR_NE
-	else if(dx < 0 && dy < 0) return DIR_SE
-	else if(dx < 0) return DIR_E
-	else if(dx > 0) return DIR_W
-	else if(dy < 0) return DIR_S
-	else if(dy > 0) return DIR_N
-	else return null
+	let theta = Math.atan2(dy, dx)
+	let angle = theta/Math.PI*180
+	let e = 22.5
+	let oct = angle / e
+	let dir;
+	if((oct >= 0 && oct <= 1) || (oct < 0 && oct > -1)) dir = DIR_E;
+	else if(oct >= 1 && oct < 3) dir = DIR_NE;
+	else if(oct >= 3 && oct < 5) dir = DIR_N;
+	else if(oct >= 5 && oct < 7) dir = DIR_NW;
+	else if(oct >= 7 || oct < -7) dir = DIR_W;
+	else if(oct >= -7 && oct < -5) dir = DIR_SW;
+	else if(oct >= -5 && oct < -3) dir = DIR_S;
+	else if(oct >= -3 && oct < -1) dir = DIR_SE;
+	else throw "Can't find direction for angle=" + angle;
+	// console.warn("from=" + fromX.toFixed(2) + "," + fromY.toFixed(2) +
+	// 	" to " + toX.toFixed(2) + "," + toY.toFixed(2) +
+	// 	" angle=" + angle.toFixed(2) +
+	// 	" oct=" + oct.toFixed(2) +
+	// 	" dir=" + dir)
+	return dir
 }
 
 export function dirsFrom(startDir) {

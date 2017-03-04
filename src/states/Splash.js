@@ -26,6 +26,7 @@ export default class extends Phaser.State {
 
 		this.load.image("logo", "./assets/images/logo.png")
 		this.load.image("back", "./assets/images/back.png")
+		this.load.image("device", "./assets/images/device.png")
 
 		for(let k in Creatures.CREATURES) {
 			let c = Creatures.CREATURES[k]
@@ -112,7 +113,7 @@ export default class extends Phaser.State {
 				// new game
 				if(!Arkona.doesSaveGameExist() || confirm("Delete saved game?")) {
 					this.transition.fadeIn(() => {
-						this.state.start("Arkona")
+						this.state.start("Intro")
 					})
 				}
 			} else if(this.menuIndex == 2) {

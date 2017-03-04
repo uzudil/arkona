@@ -25,8 +25,7 @@ export const LEVELS = {
 		onLoad: function(arkona) {
 			if(!arkona.gameState["intro_seen"]) {
 				arkona.gameState["intro_seen"] = true
-				arkona.narrate("After stealing the Alteran Disruptor, you successfully escaped from the agents of Kronos. " +
-					"However, now you have crash landed on a strange planet and your ship is damaged. " +
+				arkona.narrate("You have crash landed on a strange planet and your ship is damaged. " +
 					"How will you get back home? " +
 					"Perhaps you should ask someone for help?")
 			}
