@@ -36,6 +36,7 @@ export default class extends Phaser.State {
 		this.actionQueue = new Queue.Queue(this)
 		this.mouseClickAction = new MouseClickAction()
 		this.player = new Player(this)
+		this.paused = false
 
 		// controls
 		this.cursors = this.game.input.keyboard.createCursorKeys()
@@ -80,7 +81,7 @@ export default class extends Phaser.State {
 
 		this.blocks.update()
 
-		if(!this.updateUI()) {
+		if(!this.paused && !this.updateUI()) {
 
 			// show damage texts
 			this.damages.update()
@@ -301,5 +302,13 @@ export default class extends Phaser.State {
 
 	getDistanceToPlayer(x, y, z) {
 		return dist3d(x, y, z, ...this.player.animatedSprite.sprite.gamePos)
+	}
+
+	pause() {
+		this.paused = true
+	}
+
+	unpause() {
+		this.paused = false
 	}
 }

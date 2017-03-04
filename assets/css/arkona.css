@@ -44,7 +44,7 @@ body {
     border: #ccc 3px solid;
 }
 
-#overlay {
+.overlay {
     display: none;
     position: fixed;
     left: 50%; top: 50%;
@@ -55,7 +55,7 @@ body {
     z-index: 100;
 }
 
-#overlay .text {
+.overlay .text {
     position: absolute;
     top: 50%;
     margin-top: -120px;
@@ -92,6 +92,13 @@ body {
     background: #435;
     color: #ccc;
     font-family: "Trade Winds";
+}
+
+.dialog.big {
+    width: 500px;
+    height: 400px;
+    margin-left: -300px;
+    margin-top: -200px;
 }
 
 .dialog .title {
@@ -142,4 +149,8 @@ body {
 
 .dialog .button-row button {
     width: 80%;
+}
+
+#death {
+    text-align: center;
 }

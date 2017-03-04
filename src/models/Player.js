@@ -3,6 +3,7 @@ import * as Creatures from "../config/Creatures"
 import AnimatedSprite from "../world/Animation"
 import Alive from "./Alive"
 import * as Utils from "../utils"
+import $ from "jquery"
 
 export default class {
 	constructor(arkona) {
@@ -47,7 +48,6 @@ export default class {
 	}
 
 	onDamage(amount) {
-		console.warn("Player damaged for " + amount + ".")
 		this.arkona.damages.add(amount,
 			this.animatedSprite.sprite.gamePos[0] - 2,
 			this.animatedSprite.sprite.gamePos[1] - 2,
@@ -56,7 +56,9 @@ export default class {
 	}
 
 	onDeath() {
-		console.warn("Player dies.")
+		this.arkona.pause()
+		$("#overlay-shadow").show()
+		$("#death").show()
 	}
 
 	setAnimation(name) {
