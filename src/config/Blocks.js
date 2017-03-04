@@ -70,6 +70,7 @@ export const BLOCKS = {
 	"mountain3": { size: [4, 4, 4], pos: [128, 272], dim: [64, 64] },
 	"mountain.cave": { size: [4, 4, 7], pos: [256, 512], dim: [64, 80] },
 	"sign.ns": { size: [2, 1, 4], pos: [352, 512], dim: [20, 48] },
+	"sign.ew": { size: [1, 2, 4], pos: [384, 512], dim: [20, 48] },
 
 	// new mountains
 	"mtn.ctr": { size: [8, 8, 8], pos: [0, 0], dim: [128, 160], options: { sprites: 4 } },
@@ -105,7 +106,8 @@ export const BLOCKS = {
 	"table": { size: [3, 2, 3], pos: [192, 0], dim: [48, 64], options: { sprites: 2 } },
 	"straw-bale": { size: [2, 6, 2], pos: [0, 80], dim: [64, 64], options: { sprites: 2 } },
 	"chimney.ns": { size: [3, 1, 10], pos: [96, 48], dim: [32, 104], options: { sprites: 2 } },
-	"pod": { size: [8, 8, 8], pos: [192, 64], dim: [96, 96], options: { sprites: 2 } },
+	// "pod": { size: [8, 8, 8], pos: [192, 64], dim: [96, 96], options: { sprites: 2 } },
+	"pod": { size: [8, 10, 4], pos: [0, 208], dim: [144, 176], options: { sprites: 3 } },
 	"well": { size: [5, 5, 6], pos: [312, 0], dim: [80, 112], options: { sprites: 2 } },
 	"flowers.yellow.big": { size: [2, 2, 2], pos: [528, 0], dim: [36, 40], options: { sprites: 2 } },
 	"flowers.yellow.small": { size: [1, 1, 2], pos: [576, 0], dim: [16, 20], options: { sprites: 2 } },

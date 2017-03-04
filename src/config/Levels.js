@@ -263,7 +263,7 @@ export const LEVELS = {
 				action: (arkona) => arkona.showOverlay("sign", "Eldun")
 			},
 			{
-				type: "use_object", x: 10, y: 76, z: 0,
+				type: "use_object", x: 9, y: 76, z: 0,
 				// eslint-disable-next-line no-unused-vars
 				allow: (arkona) => true,
 				action: (arkona) => arkona.showOverlay("sign", "Ravenous")
