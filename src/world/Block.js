@@ -760,10 +760,10 @@ export default class {
 			if (blendLevel == Config.NO_BLEND) {
 				this.clearEdge(gx, gy)
 			} else {
-				let n = blendLevel > this.getBlendLevel(gx, gy - Config.GROUND_TILE_H)
-				let s = blendLevel > this.getBlendLevel(gx, gy + Config.GROUND_TILE_H)
-				let w = blendLevel > this.getBlendLevel(gx - Config.GROUND_TILE_W, gy)
-				let e = blendLevel > this.getBlendLevel(gx + Config.GROUND_TILE_W, gy)
+				let n = blendLevel > this.getBlendLevel(gx, gy - Config.GROUND_TILE_H) && gy > 0
+				let s = blendLevel > this.getBlendLevel(gx, gy + Config.GROUND_TILE_H) && gy < this.h - Config.GROUND_TILE_H - 1
+				let w = blendLevel > this.getBlendLevel(gx - Config.GROUND_TILE_W, gy) && gx > 0
+				let e = blendLevel > this.getBlendLevel(gx + Config.GROUND_TILE_W, gy) && gx < this.w - Config.GROUND_TILE_W - 1
 				this.setEdge(gx, gy, { n: n, s: s, e: e, w: w })
 			}
 		}
