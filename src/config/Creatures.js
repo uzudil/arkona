@@ -69,7 +69,7 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		animations: [
-			{ name: "walk", frameCount: 4, dirs: dirsFrom("e") },
+			{ name: "walk", frameCount: 4, dirs: dirsFrom("s") },
 			{ name: "stand", frameCount: 1, dirs: dirsFrom("s") },
 		],
 		speed: 2.0
@@ -79,7 +79,7 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		animations: [
-			{ name: "walk", frameCount: 4, dirs: dirsFrom("e") },
+			{ name: "walk", frameCount: 4, dirs: dirsFrom("s") },
 			{ name: "stand", frameCount: 1, dirs: dirsFrom("s") },
 		],
 		speed: 2.0
@@ -89,7 +89,7 @@ export const CREATURES = {
 		dim: [32, 64],
 		blockName: "2x2x4.placeholder",
 		animations: [
-			{ name: "walk", frameCount: 4, dirs: dirsFrom("e") },
+			{ name: "walk", frameCount: 4, dirs: dirsFrom("s") },
 			{ name: "stand", frameCount: 1, dirs: dirsFrom("s") },
 		],
 		speed: 2.0

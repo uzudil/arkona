@@ -23,6 +23,7 @@ export default class extends Phaser.State {
 		this.atlas(2)
 		this.atlas(3)
 		this.atlas(4)
+		this.atlas(5)
 
 		this.load.image("logo", "./assets/images/logo.png")
 		this.load.image("back", "./assets/images/back.png")

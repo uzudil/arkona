@@ -6,6 +6,11 @@ export const BLOCKS = {
 	"oak": { size: [4, 4, 6], pos: [384, 384], dim: [64, 80] },
 	"pine": { size: [4, 4, 6], pos: [640, 384], dim: [64, 80] },
 	"dead": { size: [4, 4, 4], pos: [256, 384], dim: [64, 64] },
+    "pine2": { size: [4, 4, 6], pos: [0, 0], dim: [64, 96], options: { sprites: 5 } },
+    "trunk.broken": { size: [2, 4, 2], pos: [80, 0], dim: [48, 48], options: { sprites: 5 } },
+    "bush": { size: [2, 2, 2], pos: [144, 0], dim: [32, 36], options: { sprites: 5 } },
+    "rock.1": { size: [2, 2, 2], pos: [192, 0], dim: [32, 32], options: { sprites: 5 } },
+    "rock.2": { size: [2, 2, 4], pos: [240, 0], dim: [32, 48], options: { sprites: 5 } },
 
 	// floors
 	// blendLevels: 0=no blend, 1=blends into 0, 2=blends into 0 & 1
@@ -133,7 +138,7 @@ export const BLOCKS = {
 	"candolabra.ns": { size: [2, 1, 5], pos: [512, 320], dim: [24, 60], options: { sprites: 2 } },
 	"candolabra.ew": { size: [1, 2, 5], pos: [544, 320], dim: [24, 60], options: { sprites: 2 } },
 	"bridge.plank.ew": { size: [8, 2, 1], pos: [576, 320], dim: [80, 88], options: { sprites: 2 } },
-	"bridge.plank.ns": { size: [8, 2, 1], pos: [672, 320], dim: [80, 88], options: { sprites: 2 } },
+	"bridge.plank.ns": { size: [2, 8, 1], pos: [672, 320], dim: [80, 88], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

@@ -278,7 +278,7 @@ export default class extends Phaser.State {
 				this.blocks.set("trunk", x, y, 0)
 			}
 
-			let name = getRandom([...Array(4).fill("oak"), ...Array(3).fill("pine"), "brown"])
+			let name = getRandom([...Array(4).fill("oak"), ...Array(3).fill("pine"), ...Array(3).fill("pine2"), "brown"])
 			this.blocks.clear(name, x, y, 4)
 			this.blocks.set(name, x, y, 4)
 			this.blocks.sort()
