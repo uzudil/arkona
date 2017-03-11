@@ -64,6 +64,8 @@ export const BLOCKS = {
 	"stone.wall.y": { size: [1, 4, 6], pos: [280, 0], dim: [40, 96] },
 	"wood.wall.x": { size: [4, 1, 6], pos: [896, 0], dim: [40, 96] },
 	"wood.wall.y": { size: [1, 4, 6], pos: [960, 0], dim: [40, 96] },
+	"brick.wall.x": { size: [4, 1, 6], pos: [1024, 0], dim: [40, 96] },
+	"brick.wall.y": { size: [1, 4, 6], pos: [1088, 0], dim: [40, 96] },
 
 	// new doors
 	"regular.door.x": { size: [1, 3, 6], pos: [192, 306], dim: [32, 80] },
@@ -139,6 +141,7 @@ export const BLOCKS = {
 	"candolabra.ew": { size: [1, 2, 5], pos: [544, 320], dim: [24, 60], options: { sprites: 2 } },
 	"bridge.plank.ew": { size: [8, 2, 1], pos: [576, 320], dim: [80, 88], options: { sprites: 2 } },
 	"bridge.plank.ns": { size: [2, 8, 1], pos: [672, 320], dim: [80, 88], options: { sprites: 2 } },
+	"warf.ns": { size: [4, 4, 1], pos: [304, 0], dim: [64, 68], options: { sprites: 5 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },

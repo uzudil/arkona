@@ -34,7 +34,11 @@ export const LEVELS = {
 			{
 				src: { dir: "w" },
 				dst: { map: "woods", x: 219, y: 89 }
-			}
+			},
+            {
+                src: { dir: "n" },
+                dst: { map: "woods4", x: 84, y: 152 }
+            }
 		]
 
 	},
@@ -215,6 +219,62 @@ export const LEVELS = {
 			{
 				src: { dir: "n" },
 				dst: { map: "eldun", x: 135, y: 155 }
+			},
+			{
+				src: { dir: "e" },
+				dst: { map: "woods4", x: 4, y: 110 }
+			}
+		]
+	},
+	woods4: {
+		map: "woods4",
+		startPos: [4, 80, 0],
+		connect: [
+			{
+				src: { dir: "s" },
+				dst: { map: "farm", x: 70, y: 2 }
+			},
+			{
+				src: { dir: "w" },
+				dst: { map: "woods2", x: 123, y: 152 }
+			},
+			{
+				src: { dir: "e" },
+				dst: { map: "harbor", x: 2, y: 34 }
+			}
+		]
+	},
+	woods3: {
+		map: "woods3",
+		startPos: [4, 80, 0],
+		connect: [
+			{
+				src: { dir: "s" },
+				dst: { map: "eldun", x: 30, y: 2 }
+			},
+			{
+				src: { dir: "n" },
+				dst: { map: "voln", x: 80, y: 152 }
+			}
+		]
+	},
+	voln: {
+		map: "voln",
+		startPos: [4, 80, 0],
+		connect: [
+			{
+				src: { dir: "s" },
+				dst: { map: "woods3", x: 94, y: 2 }
+			}
+		]
+	},
+	harbor: {
+		map: "harbor",
+		startPos: [4, 80, 0],
+		connect: [
+			{
+				src: { dir: "w" },
+				dst: { map: "woods4", x: 155, y: 32 }
 			}
 		]
 	},
@@ -225,6 +285,10 @@ export const LEVELS = {
 			{
 				src: { dir: "s" },
 				dst: { map: "woods2", x: 63, y: 0 }
+			},
+			{
+				src: { dir: "n" },
+				dst: { map: "woods3", x: 65, y: 152 }
 			},
 			{
 				src: { x: 7, y: 84, z: 0 },

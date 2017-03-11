@@ -16,7 +16,7 @@ export const SHARYA = new Convo("Harm me not, mighty warrior, I beg thee!")
 							.answer("Thanks, I'll go find these keepers of knowledge.")
 					)
 					.answer("Thanks for the info. How do I get to Median?",
-						new Convo("Take the path through the woods to the north. It will take thee to Median. " +
+						new Convo("Take the path through the woods to the west. It will take thee to Median. " +
 							"In the woods, thou should watch out for beasts.", "R_MEDIAN")
 							.answer("And the monks there can help me?", "R_MONKS")
 							.answer("Great thanks, I'll be on my way.")
