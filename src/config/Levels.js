@@ -266,7 +266,10 @@ export const LEVELS = {
 				src: { dir: "s" },
 				dst: { map: "woods3", x: 94, y: 2 }
 			}
-		]
+		],
+        npcs: [
+            { creature: "cow", x: 66, y: 91, options: { convo: FARM_CONVO.COW } }
+        ],
 	},
 	harbor: {
 		map: "harbor",

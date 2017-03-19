@@ -142,6 +142,10 @@ class Layer {
 		while(this.group.children.length > 0) this.group.children[0].destroy()
 	}
 
+	tint(color) {
+		this.group.children.forEach(sprite => sprite.tint = color)
+	}
+
 	hasImage(name, x, y) {
 		let key = _key(x, y, 0)
 		let info = this.world[key]
@@ -951,5 +955,9 @@ export default class {
 	isOnScreen(worldX, worldY, worldZ) {
 		let [screenX, screenY] = this.toAbsScreenCoords(worldX, worldY, worldZ)
 		return screenX >= 0 && screenX < Config.WIDTH && screenY >= 0 && screenY < Config.HEIGHT
+	}
+
+	tint(color) {
+		this.layers.forEach(layer => layer.tint(color))
 	}
 }

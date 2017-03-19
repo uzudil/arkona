@@ -49,6 +49,7 @@ export default class extends Phaser.State {
 		this.blocks.newMap("demo", 40, 40, "grass")
 
 		this.activeBlock = null
+        this.lastBlock = null
 		this.palette = new Palette(this)
 
 		var style = {font: "bold 14px Arial", fill: "#fff", boundsAlignH: "left", boundsAlignV: "top"};
@@ -77,6 +78,7 @@ export default class extends Phaser.State {
 		this.shift = this.game.input.keyboard.addKey(Phaser.Keyboard.SHIFT)
 		this.esc = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
 		this.dungeon = this.game.input.keyboard.addKey(Phaser.Keyboard.N)
+		this.undo = this.game.input.keyboard.addKey(Phaser.Keyboard.Z)
 	}
 
 	render() {
@@ -282,11 +284,15 @@ export default class extends Phaser.State {
 			this.blocks.clear(name, x, y, 4)
 			this.blocks.set(name, x, y, 4)
 			this.blocks.sort()
-		} else if (this.mountain.isDown && this.blocks.isFree(x, y, 0, 4, 4, 8)) {
-			let name = getRandom([...Array(3).fill("mountain1"), ...Array(3).fill("mountain3"), "mountain2"])
-			this.blocks.clear(name, x, y, 0)
-			this.blocks.set(name, x, y, 0)
-			this.blocks.sort()
+		} else if (this.mountain.isDown) {
+			let mx = ((x/8)|0)*8+4
+			let my = ((y/8)|0)*8+4
+            if(this.blocks.isFree(mx, my, 0, 8, 8, 8)) {
+                let name = getRandom([...Array(3).fill("mtn.ctr"), ...Array(3).fill("mtn.ctr.2"), "mtn.ctr.2.snow"])
+                this.blocks.clear(name, mx, my, 0)
+                this.blocks.set(name, mx, my, 0)
+                this.blocks.sort()
+            }
 		}
 	}
 
@@ -298,6 +304,11 @@ export default class extends Phaser.State {
 			return
 		} else {
 			this.game.input.enabled = true;
+		}
+
+		if (this.undo.justDown && this.lastBlock) {
+			this.blocks.clear(this.lastBlock.name, ...this.lastBlock.gamePos)
+            this.lastBlock = null
 		}
 
 		if (this.esc.justDown && this.activeBlock) {
@@ -329,9 +340,9 @@ export default class extends Phaser.State {
 					if(!this.blocks.isStamp(this.activeBlock.name)) {
 						this.blocks.clear("grass", x, y, 0)
 					}
-					this.blocks.set(this.activeBlock.name, x, y, 0)
+					this.lastBlock = this.blocks.set(this.activeBlock.name, x, y, 0)
 				} else {
-					this.blocks.set(this.activeBlock.name, x, y, z)
+                    this.lastBlock = this.blocks.set(this.activeBlock.name, x, y, z)
 				}
 
 				z = this.blocks.getTopAt(x, y, this.activeBlock)
