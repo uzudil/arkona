@@ -154,3 +154,89 @@ body {
 #death {
     text-align: center;
 }
+
+#convo-editor {
+    color: black;
+    z-index: 100;
+    position: absolute;
+    display: none;
+    background: lightslategray;
+    width: 100%;
+    height: 100%;
+    top:0; left:0;
+}
+
+#convo-editor-left {
+    width: 30%;
+    height: 100%;
+    float: left;
+}
+
+#levels {
+    border: 5px inset darkslateblue;
+    padding: 5px;
+    height: 50%;
+    overflow: auto;
+}
+
+#npcs {
+    border: 5px inset darkslateblue;
+    padding: 5px;
+    height: 50%;
+    overflow: auto;
+}
+
+#convo-editor-right {
+    width: 70%;
+    height: 100%;
+    float: left;
+}
+
+#convo-tree {
+    border: 5px inset darkslateblue;
+    padding: 5px;
+    height: 50%;
+    overflow: auto;
+    font-family: Courier, monospace;
+}
+
+#convo-details {
+    border: 5px inset darkslateblue;
+    padding: 5px;
+    height: 50%;
+    overflow: auto;
+}
+
+.convo-line {
+    cursor: pointer;
+    padding: 2px;
+}
+
+.convo-line:hover {
+    color: #ffffcc;
+    background: darkslateblue;
+    font-weight: bold;
+}
+
+.convo-title {
+    color: white;
+    text-shadow: 1px 1px black;
+    background: darkslateblue;
+    padding: 3px;
+}
+
+.convo-indent {
+    margin-left: 15px;
+    margin-top: 15px;
+}
+
+.convo-toggle {
+    margin-right: 5px;
+    color: #ffffcc;
+    cursor: pointer;
+}
+
+.convo-answer {
+    font-style: italic;
+    color: darkslateblue;
+}

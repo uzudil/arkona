@@ -5,6 +5,7 @@ import * as Creatures from "../config/Creatures"
 import $ from "jquery"
 import Transition from "../ui/Transition"
 import Arkona from "./Arkona"
+import ConvoEditor from "../editor/ConvoEditor"
 
 export default class extends Phaser.State {
 	init() {
@@ -68,7 +69,7 @@ export default class extends Phaser.State {
 		var style = {font: "bold 20px " + Config.FONT_FAMILY, fill: "#888"};
 		this.menu = []
 		let y = 230
-		for(let s of ["Game Editor", "New Game", "Load Game", "Options"]) {
+		for(let s of ["Game Editor", "New Game", "Load Game", "Options", "Convo Editor"]) {
 			let m = this.game.add.text(750, y, s, style)
 			m.anchor.setTo(0.5, 0.5)
 			this.menu.push(m)
@@ -126,6 +127,8 @@ export default class extends Phaser.State {
 				let o = loadSettings()
 				$("#use-webgl").attr("checked", o["use_webgl"])
 				$("#options").show();
+            } else if(this.menuIndex == 4) {
+				new ConvoEditor();
 			}
 		}
 	}
