@@ -1,9 +1,10 @@
-import {MOVE_ANCHOR} from "./Config"
+import {MOVE_ANCHOR, MOVE_NEAR_PLAYER} from "./Config"
 import {MONSTERS} from "./Monsters"
 import * as FARM_CONVO from "../convo/farm"
 import * as MEDIAN_CONVO from "../convo/median"
 import * as ELDUN_CONVO from "../convo/eldun"
 import * as ARCHIVES_CONVO from "../convo/archives"
+import * as VOLN_CONVO from "../convo/voln"
 
 export const LEVELS = {
 	farm: {
@@ -268,6 +269,15 @@ export const LEVELS = {
 			}
 		],
         npcs: [
+            { creature: "woman_brown", x: 30, y: 42, options: { movement: MOVE_ANCHOR, name: "Farmer Rhee", convo: VOLN_CONVO.RHEE } },
+            { creature: "man_blue", x: 80, y: 15, options: { movement: MOVE_NEAR_PLAYER, name: "Sgt Travor", convo: VOLN_CONVO.TRAVOR } },
+            { creature: "man_yellow", x: 67, y: 96, options: { movement: MOVE_ANCHOR, name: "Hiso", convo: VOLN_CONVO.HISO } },
+            { creature: "woman", x: 68, y: 106, options: { movement: MOVE_ANCHOR, name: "Niso", convo: VOLN_CONVO.NISO } },
+            { creature: "man_yellow", x: 91, y: 90, options: { movement: MOVE_ANCHOR, name: "Encat", convo: VOLN_CONVO.ENCAT } },
+            { creature: "woman_brown", x: 87, y: 67, options: { movement: MOVE_ANCHOR, name: "Vernon", convo: VOLN_CONVO.VERNON } },
+            { creature: "monk_blue", x: 35, y: 136, options: { movement: MOVE_ANCHOR, name: "The hermit", convo: VOLN_CONVO.HERMIT } },
+            { creature: "woman", x: 120, y: 90, options: { movement: MOVE_ANCHOR, name: "Kat", convo: VOLN_CONVO.KAT } },
+            { creature: "man_blue", x: 124, y: 61, z: 7, options: { movement: MOVE_ANCHOR, name: "Mayor Gratt", convo: VOLN_CONVO.MAYOR } },
             { creature: "cow", x: 66, y: 91, options: { convo: FARM_CONVO.COW } }
         ],
 	},

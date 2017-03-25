@@ -35,6 +35,10 @@ export default class {
 	}
 
 	move() {
+		// precalculate some stuff
+        this.distToPlayer = this.arkona.getDistanceToPlayer(this.x, this.y, this.z)
+		this.dirToPlayer = this.getDirToPlayer()
+
 		if(this.options["movement"] == Config.MOVE_ATTACK) {
 			this.moveAttack()
 		} else {
@@ -49,15 +53,13 @@ export default class {
 	// todo: eventually replace with A*
 	moveAttack() {
 		if(this.arkona.player.animatedSprite) {
-			let dir = this.getDirToPlayer()
-			if(dir != null) this.dir = dir
-			let dist = this.arkona.getDistanceToPlayer(this.x, this.y, this.z)
-			if(dist <= Config.NEAR_DIST) {
+			if(this.dirToPlayer != null) this.dir = this.dirToPlayer
+			if(this.distToPlayer <= Config.NEAR_DIST) {
 				// todo: attack instead
 				if(this.alive.attack(this.arkona.player.alive)) {
 					this.animatedSprite.setAnimation("attack", this.dir)
 				}
-			} else if(dist <= Config.FAR_DIST) {
+			} else if(this.distToPlayer <= Config.FAR_DIST) {
 				this._takeStep()
 			} else {
 				this.moveFriendly()
@@ -79,8 +81,7 @@ export default class {
 
 	_turnToPlayer() {
 		if(this.isNearPlayer()) {
-			let dir = this.getDirToPlayer()
-			if(dir != null) this.dir = dir
+			if(this.dirToPlayer != null) this.dir = this.dirToPlayer
 		}
 		this.animatedSprite.setAnimation("stand", this.dir)
 	}
@@ -91,9 +92,14 @@ export default class {
 
 	_willStop() {
 		if(this.options.movement == Config.MOVE_ATTACK) return false
-		let probability = 9.7
-		if(this.arkona.player.animatedSprite && this.options.movement == Config.MOVE_ANCHOR) {
-			if(this.isNearPlayer()) probability = 1
+
+		// move near player acts as anchor when the player is far
+        if(this.options.movement == Config.MOVE_NEAR_PLAYER && this.distToPlayer < Config.MID_DIST) return false;
+
+		// anchor stops near the player
+        let probability = 9.7
+		if(this.arkona.player.animatedSprite && this.distToPlayer < Config.NEAR_DIST) {
+			probability = 1
 		}
 		return !this._isStopped() && Math.random() * 10 >= probability
 	}
@@ -131,15 +137,23 @@ export default class {
 	}
 
 	_moveToNextStep(nx, ny, nz) {
-		if(this.options.movement == Config.MOVE_ANCHOR &&
-			dist3d(this.anchorX, this.anchorY, this.anchorZ, nx, ny, nz) > 16) {
-			return false
-		}
+        if(this.options.movement == Config.MOVE_NEAR_PLAYER && this.distToPlayer < Config.NEAR_DIST) {
+            return false
+        } else if(this.options.movement == Config.MOVE_NEAR_PLAYER && this.distToPlayer < Config.MID_DIST && this.dir != this.dirToPlayer) {
+            return false
+        } else if((this.options.movement == Config.MOVE_ANCHOR || this.options.movement == Config.MOVE_NEAR_PLAYER) &&
+            dist3d(this.anchorX, this.anchorY, this.anchorZ, nx, ny, nz) > Config.MID_DIST) {
+            return false
+        }
 		return this.animatedSprite.moveTo(nx, ny, nz)
 	}
 
 	_changeDir() {
-		this.dir = Config.getRandomDir()
+        if(this.options.movement == Config.MOVE_NEAR_PLAYER && this.distToPlayer < Config.MID_DIST) {
+            this.dir = this.dirToPlayer
+		} else {
+            this.dir = Config.getRandomDir()
+		}
 	}
 
 	getName() {
