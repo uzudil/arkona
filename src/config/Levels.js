@@ -259,6 +259,16 @@ export const LEVELS = {
 			}
 		]
 	},
+	urgil: {
+		map: "urgil",
+		startPos: [192, 54, 0],
+		connect: [
+			{
+				src: { dir: "e" },
+				dst: { map: "voln", x: 3, y: 78 }
+			}
+		]
+	},
 	voln: {
 		map: "voln",
 		startPos: [4, 80, 0],
@@ -266,6 +276,10 @@ export const LEVELS = {
 			{
 				src: { dir: "s" },
 				dst: { map: "woods3", x: 94, y: 2 }
+			},
+			{
+				src: { dir: "w" },
+				dst: { map: "urgil", x: 192, y: 54 }
 			}
 		],
         npcs: [

@@ -62,6 +62,8 @@ export const BLOCKS = {
 	"wood.column": { size: [1, 1, 6], pos: [176, 0], dim: [16, 64] },
 	"stone.wall.x": { size: [4, 1, 6], pos: [216, 0], dim: [40, 96] },
 	"stone.wall.y": { size: [1, 4, 6], pos: [280, 0], dim: [40, 96] },
+	"stone.wall.ruin.x": { size: [4, 1, 4], pos: [336, 20], dim: [40, 74] },
+	"stone.wall.ruin.y": { size: [1, 4, 4], pos: [400, 20], dim: [40, 74] },
 	"wood.wall.x": { size: [4, 1, 6], pos: [896, 0], dim: [40, 96] },
 	"wood.wall.y": { size: [1, 4, 6], pos: [960, 0], dim: [40, 96] },
 	"brick.wall.x": { size: [4, 1, 6], pos: [1024, 0], dim: [40, 96] },
@@ -95,6 +97,7 @@ export const BLOCKS = {
 	"mtn.ctr.2.snow": { size: [8, 8, 8], pos: [400, 384], dim: [128, 160], options: { sprites: 4 } },
 
 	"corn": { size: [2, 2, 4], pos: [0, 384], dim: [32, 48] },
+	"rocks": { size: [4, 4, 4], pos: [0, 464], dim: [64, 80] },
 	"fence.ew": { size: [4, 1, 4], pos: [64, 384], dim: [40, 64] },
 	"fence.ns": { size: [1, 4, 4], pos: [112, 384], dim: [40, 64] },
 	"fence.sm.ew": { size: [1, 4, 2], pos: [386, 322], dim: [40, 44], options: { sprites: 2 } },
@@ -142,6 +145,9 @@ export const BLOCKS = {
 	"bridge.plank.ew": { size: [8, 2, 1], pos: [576, 320], dim: [80, 88], options: { sprites: 2 } },
 	"bridge.plank.ns": { size: [2, 8, 1], pos: [672, 320], dim: [80, 88], options: { sprites: 2 } },
 	"warf.ns": { size: [4, 4, 1], pos: [304, 0], dim: [64, 68], options: { sprites: 5 } },
+    "barrel": { size: [4, 1, 5], pos: [0, 400], dim: [40, 80], options: { sprites: 2 } },
+    "bar": { size: [5, 2, 4], pos: [64, 416], dim: [56, 80], options: { sprites: 2 } },
+    "force": { size: [2, 2, 2], pos: [128, 416], dim: [32, 48], options: { sprites: 2 } },
 
 	// roofs
 	"roof.ns": { size: [10, 10, 6], pos: [496, 0], dim: [164, 172] },
